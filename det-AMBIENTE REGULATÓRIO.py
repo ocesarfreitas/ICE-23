@@ -75,13 +75,14 @@ def sinconfi(df1,df2,imposto,var):
     df_mun = df1[df1['Conta'] == var]
     df_mun = df_mun[df_mun['Coluna'] == 'Receitas Brutas Realizadas']
     df_mun['Cod.IBGE'] = df_mun['Cod.IBGE'].astype(int).astype(str).str[2:].astype(np.int64)
-    df_mun = database.merge(df_mun, how='left', on = ['Cod.IBGE','UF']).dropna()
+    df_mun = database.merge(df_mun, how='left', on = ['Cod.IBGE','UF'])
     df_mun = df_mun[['Município','UF','Valor']]
+    df_mun = df_mun[(df_mun['Município'] != 'BRASILIA')]
     
     df_uf = df2[df2['Conta'] == var]
     df_uf = df_uf[df_uf['UF'] == 'DF']
     df_uf = df_uf[df_uf['Coluna'] == 'Receitas Brutas Realizadas']
-    df_uf['Município'] = ['Brasília']
+    df_uf['Município'] = ['BRASILIA']
     df_uf = df_uf[['Município','UF','Valor']]
     
     globals()[f'df_{imposto}'] = df_mun.append(df_uf).reset_index(drop=True)
@@ -97,3 +98,12 @@ sinconfi(sinconfi_mun,sinconfi_uf,imposto='ISS',var='1.1.1.8.02.3.0 - Imposto so
 # Cara alguma coisa = 0
 
 ## FIRJAN
+df_firjan = pd.read_excel("DETERMINANTE AMBIENTE REGULATÓRIO/Firjan/Firjan - Evolucao por Indicador 2013 a 2020 - IFGF 2021.xlsx", usecols="B:C,AA")
+df_firjan['Município'] = df_firjan['Município'].str.upper().str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
+teste = database.merge(df_firjan, how='left', on = ['Município','UF'])
+
+# ---------------------------------------------------------------------------------------------
+# 2.2.3. SUBDETERMINANTE COMPLEXIDADE BUROCRÁTICA
+
+
+
