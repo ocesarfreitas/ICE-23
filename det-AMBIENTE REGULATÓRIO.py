@@ -1,5 +1,5 @@
 import pandas as pd
-# import numpy as np
+import numpy as np
 from funcs import *
 
 # 2.2. DETERMINANTE AMBIENTE REGULATÓRIO
@@ -53,7 +53,47 @@ indicador_pro['Taxa de Congestionamento em Tribunais'] = (1-(indicador_pro['BAIX
 
 del indicador_pro['Justiça']
 del indicador_pro['Tribunal município']
+del indicador_pro['BAIXADOS']
+del indicador_pro['NOVOS']
+del indicador_pro['PENDENTES']
+
+subdet_tempo = indicador.reset_index().merge(indicador_pro, how='inner', on='Município').set_index(['Município','UF'])
     
 # ---------------------------------------------------------------------------------------------
 # 2.2.2. SUBDETERMINANTE TRIBUTAÇÃO
 
+## SINCONFI
+database = database.reset_index()
+database['Cod.IBGE'] = amostra['COD. MUNIC'] 
+
+sinconfi_mun = pd.read_csv("DETERMINANTE AMBIENTE REGULATÓRIO/Sinconfi/finbra_mun.csv",
+                           encoding='ISO-8859-1', sep=';', decimal=',')
+sinconfi_uf = pd.read_csv("DETERMINANTE AMBIENTE REGULATÓRIO/Sinconfi/finbra_uf.csv",
+                          encoding='ISO-8859-1', sep=';', decimal=',')
+
+def sinconfi(df1,df2,imposto,var):
+    df_mun = df1[df1['Conta'] == var]
+    df_mun = df_mun[df_mun['Coluna'] == 'Receitas Brutas Realizadas']
+    df_mun['Cod.IBGE'] = df_mun['Cod.IBGE'].astype(int).astype(str).str[2:].astype(np.int64)
+    df_mun = database.merge(df_mun, how='left', on = ['Cod.IBGE','UF']).dropna()
+    df_mun = df_mun[['Município','UF','Valor']]
+    
+    df_uf = df2[df2['Conta'] == var]
+    df_uf = df_uf[df_uf['UF'] == 'DF']
+    df_uf = df_uf[df_uf['Coluna'] == 'Receitas Brutas Realizadas']
+    df_uf['Município'] = ['Brasília']
+    df_uf = df_uf[['Município','UF','Valor']]
+    
+    globals()[f'df_{imposto}'] = df_mun.append(df_uf).reset_index(drop=True)
+    
+### ICMS
+sinconfi(sinconfi_mun,sinconfi_uf,imposto='ICMS',var='1.1.1.8.02.0.0 - Impostos sobre a Produção, Circulação de Mercadorias e Serviços')
+
+### IPTU
+sinconfi(sinconfi_mun,sinconfi_uf,imposto='IPTU',var='1.1.1.8.01.1.0 - Imposto sobre a Propriedade Predial e Territorial Urbana')
+
+### ISS
+sinconfi(sinconfi_mun,sinconfi_uf,imposto='ISS',var='1.1.1.8.02.3.0 - Imposto sobre Serviços de Qualquer Natureza')
+# Cara alguma coisa = 0
+
+## FIRJAN
