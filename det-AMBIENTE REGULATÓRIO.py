@@ -1,7 +1,6 @@
 import pandas as pd
 # import numpy as np
 from funcs import *
-import glob
 
 # 2.2. DETERMINANTE AMBIENTE REGULATÓRIO
 database = pd.DataFrame()
@@ -20,24 +19,23 @@ subdet = 'Tempo de processos'
 
 # ---------------------------------------------------------------------------------------------
 # 2.2.1. SUBDETERMINANTE TEMPO DE PROCESSOS
-"Eu sei que isso tá feio e ineficiente amg kkkk"
-
 subdet = 'Tempo de processos'
 
-def read_excel(filename):
-    pd.read_excel(filename, header=1, usecols="I,R,AA,AB")
+for i in list(range(1,13)):
+    globals()[f"indicador_{i}"] = pd.read_excel(f'DETERMINANTE AMBIENTE REGULATÓRIO/REDESIM/tempos-abertura-Brasil{i}2021.xlsx', 
+                                                    header=1, usecols="I,R,AA,AB")
+    pdList = []
+    pdList.extend(value for name, value in locals().items() if name.startswith("indicador"))
+    indicador = pd.concat(pdList, axis = 0)
 
-if __name__ == '__main__':
-    files = glob.glob("DETERMINANTE AMBIENTE REGULATÓRIO/REDESIM/*.xlsx")
-    parc_indicador = [read_excel(filename) for filename in files]
-    indicador = pd.concat(parc_indicador)
+var = ['novos','baixados','pendentes']
+for i in list(range(0,3)):
+    globals()[f"indicador_pro_{i}"] = pd.read_excel(f'DETERMINANTE AMBIENTE REGULATÓRIO/CNJ/{var[i]}_cnj.xlsx')
+    pd_List = []
+    pd_List.extend(value for name, value in locals().items() if name.startswith("indicador_pro"))
+    indicador_pro = pd.concat(pdList, axis = 0)
 
-def read_csv(filename):
-    pd.read_csv(filename)
-
-if __name__ == '__main__':
-    files = glob.glob("DETERMINANTE AMBIENTE REGULATÓRIO/CNJ/*.csv")
-    parc_indicador_temp = [read_csv(filename) for filename in files]
-    indicador_tempo = pd.concat(parc_indicador)    
+    
 # ---------------------------------------------------------------------------------------------
 # 2.2.2. SUBDETERMINANTE TRIBUTAÇÃO
+
