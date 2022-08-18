@@ -24,7 +24,7 @@ def missing_data(df):
             if df[c].isna().sum()/len(df) > 0.3:
                 df[c].fillna(ind[c], inplace=True)
         
-        df[c].fillna(0)
+        df[c] = df[c].fillna(0)
                 
     return df
 
