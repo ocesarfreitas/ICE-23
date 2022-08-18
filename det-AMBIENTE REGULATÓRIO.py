@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 from funcs import *
+from functools import reduce
+import basedosdados as bd
 
 # 2.2. DETERMINANTE AMBIENTE REGULATÓRIO
 database = pd.DataFrame()
@@ -8,9 +10,11 @@ df = {}
 
 # 1. AMOSTRA
 
-amostra = pd.read_csv('AMOSTRA/100-municipios.csv')
+amostra = pd.read_csv('AMOSTRA/100-municipios.csv', converters={i: str for i in range(0,101)})
+amostra['Cod.IBGE'] = amostra['COD. UF'].str.cat(amostra['COD. MUNIC']).astype(np.int64)
 database['Município'] = amostra['NOME DO MUNICÍPIO'].str.upper().str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
 database['UF'] = amostra['UF']
+database['Cod.IBGE'] = amostra['Cod.IBGE']
 database = database.set_index(['Município', 'UF'])
 
 # 2.2.
@@ -35,7 +39,6 @@ indicador['Tempo de Registro de Localização'] = indicador['QTDE. HH. LIBERAÇ�
 indicador = indicador.groupby(['Município','UF']).mean()
 indicador = indicador.fillna(0)
 
-del indicador['MUNICÍPIO']
 del indicador['QTDE.  HH VIABILIDADE END']
 del indicador['QTDE. HH. LIBERAÇÃO DBE']
 
@@ -51,8 +54,6 @@ indicador_pro = database.merge(indicador_pro, how='left',on='Município')
 indicador_pro = indicador_pro.pivot_table(index='Município', columns='Tipo variável', values='Indicador Valor')
 indicador_pro['Taxa de Congestionamento em Tribunais'] = (1-(indicador_pro['BAIXADOS']/(indicador_pro['NOVOS']+indicador_pro['PENDENTES'])))
 
-del indicador_pro['Justiça']
-del indicador_pro['Tribunal município']
 del indicador_pro['BAIXADOS']
 del indicador_pro['NOVOS']
 del indicador_pro['PENDENTES']
@@ -70,11 +71,17 @@ sinconfi_mun = pd.read_csv("DETERMINANTE AMBIENTE REGULATÓRIO/Sinconfi/finbra_m
                            encoding='ISO-8859-1', sep=';', decimal=',')
 sinconfi_uf = pd.read_csv("DETERMINANTE AMBIENTE REGULATÓRIO/Sinconfi/finbra_uf.csv",
                           encoding='ISO-8859-1', sep=';', decimal=',')
+base = '`basedosdados.br_ibge_pib.municipio`'
+project_id = 'double-balm-306418'
+var = ('id_municipio, pib')
+cod_ibge = list(database['Cod.IBGE'])
+query = f'SELECT {var}, CASE id_municipio WHEN  FROM {base} WHERE (ano = 2019)'
+pib_mun = bd.read_sql(query=query,billing_project_id=project_id)
 
-def sinconfi(df1,df2,imposto,var):
+def sinconfi(df1,df2,pib,imposto,var):
     df_mun = df1[df1['Conta'] == var]
     df_mun = df_mun[df_mun['Coluna'] == 'Receitas Brutas Realizadas']
-    df_mun['Cod.IBGE'] = df_mun['Cod.IBGE'].astype(int).astype(str).str[2:].astype(np.int64)
+    df_mun['Cod.IBGE'] = df_mun['Cod.IBGE'].astype(np.int64)
     df_mun = database.merge(df_mun, how='left', on = ['Cod.IBGE','UF'])
     df_mun = df_mun[['Município','UF','Valor']]
     df_mun = df_mun[(df_mun['Município'] != 'BRASILIA')]
@@ -85,22 +92,36 @@ def sinconfi(df1,df2,imposto,var):
     df_uf['Município'] = ['BRASILIA']
     df_uf = df_uf[['Município','UF','Valor']]
     
-    globals()[f'df_{imposto}'] = df_mun.append(df_uf).reset_index(drop=True)
+    pib = pib.rename(columns={'id_municipio':'Cod.IBGE'}).astype(np.int64)
+    pib = database.merge(pib, how='left', on=['Cod.IBGE']).set_index(['Município','UF'])
+    df = df_mun.append(df_uf).merge(pib, how='left',on=['Município','UF']).reset_index(drop=True)
+    df[f'Alíquota Interna do {imposto}'] = df['Valor']/df['pib']
+    
+    globals()[f'df_{imposto}'] = df.drop(['Valor','pib','Cod.IBGE'], axis=1)
     
 ### ICMS
-sinconfi(sinconfi_mun,sinconfi_uf,imposto='ICMS',var='1.1.1.8.02.0.0 - Impostos sobre a Produção, Circulação de Mercadorias e Serviços')
+sinconfi(sinconfi_mun,sinconfi_uf,pib_mun,imposto='ICMS',var='1.1.1.8.02.0.0 - Impostos sobre a Produção, Circulação de Mercadorias e Serviços')
 
 ### IPTU
-sinconfi(sinconfi_mun,sinconfi_uf,imposto='IPTU',var='1.1.1.8.01.1.0 - Imposto sobre a Propriedade Predial e Territorial Urbana')
+sinconfi(sinconfi_mun,sinconfi_uf,pib_mun,imposto='IPTU',var='1.1.1.8.01.1.0 - Imposto sobre a Propriedade Predial e Territorial Urbana')
 
 ### ISS
-sinconfi(sinconfi_mun,sinconfi_uf,imposto='ISS',var='1.1.1.8.02.3.0 - Imposto sobre Serviços de Qualquer Natureza')
-# Cara alguma coisa = 0
+sinconfi(sinconfi_mun,sinconfi_uf,pib_mun,imposto='ISS',var='1.1.1.8.02.3.0 - Imposto sobre Serviços de Qualquer Natureza')
+df_ISS = df_ISS.fillna(0)
 
 ## FIRJAN
 df_firjan = pd.read_excel("DETERMINANTE AMBIENTE REGULATÓRIO/Firjan/Firjan - Evolucao por Indicador 2013 a 2020 - IFGF 2021.xlsx", usecols="B:C,AA")
 df_firjan['Município'] = df_firjan['Município'].str.upper().str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
-teste = database.merge(df_firjan, how='left', on = ['Município','UF'])
+df_firjan = database.merge(df_firjan, how='left', on = ['Município','UF']).fillna(0)
+df_firjan = df_firjan.set_index(['Município','UF'])
+df_firjan = df_firjan['IFGF 2020'].to_frame()
+df_firjan = df_firjan.replace(to_replace=r'nd',value=0,regex=True)
+df_firjan = df_firjan.rename(columns={'IFGF 2020':'Qualidade de Gestão Fiscal'})
+
+dfs = [df_ICMS,df_IPTU,df_ISS,df_firjan]
+
+subdet_tri = reduce(lambda left,right: pd.merge(left, right, on=['Município','UF'], 
+                                                how='outer'), dfs)
 
 # ---------------------------------------------------------------------------------------------
 # 2.2.3. SUBDETERMINANTE COMPLEXIDADE BUROCRÁTICA
@@ -163,11 +184,13 @@ iv = ['1.1.1.2.01.0.0 - Imposto sobre a Propriedade Territorial Rural',
       '1.1.1.3.03.0.0 - Imposto sobre a Renda - Retido na Fonte',
       '1.1.1.8.01.1.0 - Imposto sobre a Propriedade Predial e Territorial Urbana',
       '1.1.1.8.01.4.0 - Imposto sobre Transmissão ¿Inter Vivos¿ de Bens Imóveis e de Direitos Reais sobre Imóveis',
-      'TOTAL DAS RECEITAS (III) = (I + II)']
+      '1.1.1.0.00.0.0 - Impostos',
+      '1.1.2.0.00.0.0 - Taxas',
+      '1.2.0.0.00.0.0 - Contribuições']
 
-def sinconfi2(df1,df2):
+def sinconfi_ihh(df1,df2):
     df_mun = df1.query('Conta in @tributos')
-    df_mun['Cod.IBGE'] = df_mun['Cod.IBGE'].astype(int).astype(str).str[2:].astype(np.int64)
+    df_mun['Cod.IBGE'] = df_mun['Cod.IBGE'].astype(np.int64)
     df_mun = database.merge(df_mun, how='left', on = ['Cod.IBGE','UF'])
     df_mun = df_mun[['Município','UF','Conta','Valor']]
     
@@ -177,7 +200,9 @@ def sinconfi2(df1,df2):
     df_uf = df_uf[['Município','UF','Conta','Valor']]
     
     df_ihh = df_mun.append(df_uf).reset_index(drop=True)
-    df_ihh = df_ihh.pivot_table(index=['Município','UF'], columns='Conta', values='Valor').fillna(0)
+    df_ihh = df_ihh.pivot_table(index=['Município','UF'], columns='Conta', values='Valor',
+                                aggfunc=np.sum,fill_value=0)
+    
     df_ihh['Total I + T + C'] = df_ihh['1.1.1.0.00.0.0 - Impostos'] + df_ihh['1.1.2.0.00.0.0 - Taxas'] + df_ihh['1.2.0.0.00.0.0 - Contribuições']
     del df_ihh['1.1.1.0.00.0.0 - Impostos']
     del df_ihh['1.1.2.0.00.0.0 - Taxas']
@@ -186,33 +211,45 @@ def sinconfi2(df1,df2):
     df_ihh = df_ihh.apply(np.square)
     del df_ihh['Total I + T + C']
     df_ihh['IHH'] = df_ihh.sum(axis=1)
-    df_ihh = df_ihh['IHH'].to_frame()
       
-    df3 = df1.query('Conta in @iv')
-    df3 = df3[df3['Coluna'] == 'Receitas Brutas Realizadas']
-    df3['Cod.IBGE'] = df3['Cod.IBGE'].astype(int).astype(str).str[2:].astype(np.int64)
-    df3 = database.merge(df3, how='left', on = ['Cod.IBGE','UF'])
-    df3 = df3[['Município','UF','Conta','Valor']]
+    globals()['df_ihh'] = df_ihh['IHH'].to_frame()
     
-    df4 = df2.query('Conta in @iv')
-    df4 = df4[df4['Coluna'] == 'Receitas Brutas Realizadas']
-    df4 = df4[df4['UF'] == 'DF']
-    df4['Município'] = ['BRASILIA'] * len(df4)
-    df4 = df4[['Município','UF','Conta','Valor']]
-    
-    df5 = df3.append(df4).reset_index(drop=True)
-    df5 = df5.pivot_table(index=['Município','UF'], columns='Conta', values='Valor').fillna(0)
-    df5['Total Impostos'] = df5['1.1.1.2.01.0.0 - Imposto sobre a Propriedade Territorial Rural'] + df5['1.1.1.3.03.0.0 - Imposto sobre a Renda - Retido na Fonte'] + df5['1.1.1.8.01.1.0 - Imposto sobre a Propriedade Predial e Territorial Urbana'] + df5['1.1.1.8.01.4.0 - Imposto sobre Transmissão ¿Inter Vivos¿ de Bens Imóveis e de Direitos Reais sobre Imóveis']
-    del df5['1.1.1.2.01.0.0 - Imposto sobre a Propriedade Territorial Rural']
-    del df5['1.1.1.3.03.0.0 - Imposto sobre a Renda - Retido na Fonte']
-    del df5['1.1.1.8.01.1.0 - Imposto sobre a Propriedade Predial e Territorial Urbana'] 
-    del df5['1.1.1.8.01.4.0 - Imposto sobre Transmissão ¿Inter Vivos¿ de Bens Imóveis e de Direitos Reais sobre Imóveis']
-    df5['ind_v'] = df5.apply(df5['Total Impostos']/df5['TOTAL DAS RECEITAS (III) = (I + II)'])
-    df5 = df5['ind_v']
-    df_iv = df5['ind_v'].to_frame()
-    
-    globals()['df_merge'] = df_ihh.merge(df_iv, how='left', on=['Município','UF'])
-    
-sinconfi2(sinconfi_mun, sinconfi_uf)
+sinconfi_ihh(sinconfi_mun, sinconfi_uf)
 
-df1 = df1.query('Conta in @iv')
+def sinconfi_iv(df1,df2):
+    df1 = df1.query('Conta in @iv')
+    df1 = df1[df1['Coluna'] == 'Receitas Brutas Realizadas']
+    df1['Cod.IBGE'] = df1['Cod.IBGE'].astype(np.int64)
+    df1 = database.merge(df1, how='left', on = ['Cod.IBGE','UF'])
+    df1 = df1[['Município','UF','Conta','Valor']].dropna()
+
+    df2 = df2.query('Conta in @iv')
+    df2 = df2[df2['Coluna'] == 'Receitas Brutas Realizadas']
+    df2 = df2[df2['UF'] == 'DF']
+    df2['Município'] = ['BRASILIA'] * len(df2)
+    df2 = df2[['Município','UF','Conta','Valor']]
+
+    df3 = df1.append(df2).reset_index(drop=True)
+    df3 = df3.pivot_table(index=['Município','UF'], columns='Conta', values='Valor',
+                          fill_value=0, aggfunc=np.sum)
+    df3['Total Impostos'] = df3['1.1.1.2.01.0.0 - Imposto sobre a Propriedade Territorial Rural'] + df3['1.1.1.3.03.0.0 - Imposto sobre a Renda - Retido na Fonte'] + df3['1.1.1.8.01.1.0 - Imposto sobre a Propriedade Predial e Territorial Urbana'] + df3['1.1.1.8.01.4.0 - Imposto sobre Transmissão ¿Inter Vivos¿ de Bens Imóveis e de Direitos Reais sobre Imóveis']
+    del df3['1.1.1.2.01.0.0 - Imposto sobre a Propriedade Territorial Rural']
+    del df3['1.1.1.3.03.0.0 - Imposto sobre a Renda - Retido na Fonte']
+    del df3['1.1.1.8.01.1.0 - Imposto sobre a Propriedade Predial e Territorial Urbana'] 
+    del df3['1.1.1.8.01.4.0 - Imposto sobre Transmissão ¿Inter Vivos¿ de Bens Imóveis e de Direitos Reais sobre Imóveis']
+    df3['Total I + T + C'] = df3['1.1.1.0.00.0.0 - Impostos'] + df3['1.1.2.0.00.0.0 - Taxas'] + df3['1.2.0.0.00.0.0 - Contribuições']
+    del df3['1.1.1.0.00.0.0 - Impostos']
+    del df3['1.1.2.0.00.0.0 - Taxas']
+    del df3['1.2.0.0.00.0.0 - Contribuições']
+    df3['ind_v'] = df3['Total Impostos']/df3['Total I + T + C']
+    
+    globals()['df_iv'] = df3['ind_v'].to_frame()
+    
+sinconfi_iv(sinconfi_mun, sinconfi_uf)
+
+ind_simpli_tri = df_ihh.merge(df_iv, how='left', on=['Município','UF'])
+
+ind_simpli_tri['Simplicidade Tributária'] = ind_simpli_tri['IHH']*ind_simpli_tri['ind_v']
+
+
+
