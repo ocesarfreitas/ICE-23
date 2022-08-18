@@ -104,6 +104,115 @@ teste = database.merge(df_firjan, how='left', on = ['Município','UF'])
 
 # ---------------------------------------------------------------------------------------------
 # 2.2.3. SUBDETERMINANTE COMPLEXIDADE BUROCRÁTICA
+### Sinconfi
 
+tributos = ['1.1.1.2.01.0.0 - Imposto sobre a Propriedade Territorial Rural', 
+            '1.1.1.3.00.0.0 - Impostos sobre a Renda e Proventos de Qualquer Natureza',
+            '1.1.1.3.03.1.0 - Imposto sobre a Renda - Retido na Fonte – Trabalho',
+            '1.1.1.3.03.2.0 - Imposto sobre a Renda - Retido na Fonte – Capital',
+            '1.1.1.3.03.3.0 - Imposto sobre a Renda - Retido na Fonte - Remessa ao Exterior',
+            '1.1.1.3.03.4.0 - Imposto sobre a Renda - Retido na Fonte - Outros Rendimentos',
+            '1.1.1.8.01.1.0 - Imposto sobre a Propriedade Predial e Territorial Urbana',
+            '1.1.1.8.01.4.0 - Imposto sobre Transmissão ¿Inter Vivos¿ de Bens Imóveis e de Direitos Reais sobre Imóveis',
+            '1.1.1.8.02.1.0 - Imposto sobre Operações Relativas à Circulação de Mercadorias e sobre Prestações de Serviços de Transporte Interestadual e Intermunicipal e de Comunicação',
+            '1.1.1.8.02.3.0 - Imposto sobre Serviços de Qualquer Natureza',
+            '1.1.1.8.02.4.0 - Adicional ISS - Fundo Municipal de Combate à Pobreza',
+            '1.1.1.8.02.5.0 - Imposto sobre Vendas a Varejo de Combustíveis Líquidos e Gasosos (IVVC)',
+            '1.1.2.1.00.0.0 - Taxas pelo Exercício do Poder de Polícia',
+            '1.1.2.1.01.0.0 - Taxas de Inspeção, Controle e Fiscalização',
+            '1.1.2.1.02.0.0 - Taxas de Fiscalização das Telecomunicações',
+            '1.1.2.1.03.0.0 - Taxa de Controle e Fiscalização de Produtos Químicos',
+            '1.1.2.1.04.0.0 - Taxa de Controle e Fiscalização Ambiental',
+            '1.1.2.1.05.0.0 - Taxa de Controle e Fiscalização da Pesca e Aquicultura',
+            '1.1.2.2.01.0.0 - Taxas pela Prestação de Serviços',
+            '1.1.2.2.02.0.0 - Emolumentos e Custas Judiciais',
+            '1.1.3.8.00.0.0 - Contribuição de Melhoria - Específica de Estados, DF e Municípios',
+            '1.2.1.0.01.0.0 - Contribuição para o Financiamento da Seguridade Social – COFINS',
+            '1.2.1.0.02.0.0 - Contribuição Social sobre o Lucro Líquido – CSLL',
+            '1.2.1.0.03.0.0 - Contribuições para o Regime Geral de Previdência Social – RGPS',
+            '1.2.1.0.04.1.0 - Contribuição Patronal de Servidor Ativo Civil para o RPPS',
+            '1.2.1.0.04.2.0 - Contribuição do Servidor Ativo Civil para o RPPS',
+            '1.2.1.0.04.3.0 - Contribuição do Servidor Inativo para o RPPS',
+            '1.2.1.0.04.4.0 - Contribuição do Pensionista para o RPPS',
+            '1.2.1.0.04.5.0 - Contribuição Patronal para o RPPS Oriunda de Sentenças Judiciais',
+            '1.2.1.0.04.6.0 - Contribuição do Servidor Ativo ao RPPS Oriunda de Sentenças Judiciais',
+            '1.2.1.0.04.7.0 - Contribuição do Servidor Inativo ao RPPS Oriunda de Sentenças Judiciais',
+            '1.2.1.0.04.8.0 - Contribuição do Pensionista ao RPPS Oriunda de Sentenças Judiciais',
+            '1.2.1.0.06.1.0 - Contribuição para os Fundos de Assistência Médica - Policiais Militares',
+            '1.2.1.0.06.2.0 - Contribuição para os Fundos de Assistência Médica dos Bombeiros Militares',
+            '1.2.1.0.06.3.0 - Contribuição para os Fundos de Assistência Médica dos Servidores Civis',
+            '1.2.1.0.06.9.0 - Contribuição para os Fundos de Assistência Médica de Outros Beneficiários',
+            '1.2.1.0.09.0.0 - Contribuição para os Programas de Integração Social e de Formação do Patrimônio do Servidor Público - PIS e PASEP',
+            '1.2.1.0.10.0.0 - Cota-Parte da Contribuição Sindical',
+            '1.2.1.0.11.0.0 - Contribuições Referentes ao Fundo de Garantia do Tempo de Serviço – FGTS',
+            '1.2.1.0.12.0.0 - Contribuição Social do Salário-Educação',
+            '1.2.1.0.99.0.0 - Outras Contribuições Sociais',
+            '1.2.1.8.01.1.0 - Contribuição Previdenciária para Amortização do Déficit Atuarial',
+            '1.2.1.8.01.2.0 - Contribuição Patronal dos Servidores Civis Inativos',
+            '1.2.1.8.01.3.0 - Contribuição Patronal dos Pensionistas Civis',
+            '1.2.1.8.02.2.0 - Contribuição do Militar Ativo',
+            '1.2.1.8.02.3.0 - Contribuição do Militar Inativo',
+            '1.2.2.8.00.0.0 - Contribuições Econômicas Específicas de EST/DF/MUN',
+            '1.2.3.0.00.0.0 - Contribuições para Entidades Privadas de Serviço Social e de Formação Profissional',
+            '1.2.4.0.00.0.0 - Contribuição para o Custeio do Serviço de Iluminação Pública',
+            '1.1.1.0.00.0.0 - Impostos',
+            '1.1.2.0.00.0.0 - Taxas',
+            '1.2.0.0.00.0.0 - Contribuições']
 
+iv = ['1.1.1.2.01.0.0 - Imposto sobre a Propriedade Territorial Rural',
+      '1.1.1.3.03.0.0 - Imposto sobre a Renda - Retido na Fonte',
+      '1.1.1.8.01.1.0 - Imposto sobre a Propriedade Predial e Territorial Urbana',
+      '1.1.1.8.01.4.0 - Imposto sobre Transmissão ¿Inter Vivos¿ de Bens Imóveis e de Direitos Reais sobre Imóveis',
+      'TOTAL DAS RECEITAS (III) = (I + II)']
 
+def sinconfi2(df1,df2):
+    df_mun = df1.query('Conta in @tributos')
+    df_mun['Cod.IBGE'] = df_mun['Cod.IBGE'].astype(int).astype(str).str[2:].astype(np.int64)
+    df_mun = database.merge(df_mun, how='left', on = ['Cod.IBGE','UF'])
+    df_mun = df_mun[['Município','UF','Conta','Valor']]
+    
+    df_uf = df2.query('Conta in @tributos')
+    df_uf = df_uf[df_uf['UF'] == 'DF']
+    df_uf['Município'] = ['BRASILIA'] * len(df_uf)
+    df_uf = df_uf[['Município','UF','Conta','Valor']]
+    
+    df_ihh = df_mun.append(df_uf).reset_index(drop=True)
+    df_ihh = df_ihh.pivot_table(index=['Município','UF'], columns='Conta', values='Valor').fillna(0)
+    df_ihh['Total I + T + C'] = df_ihh['1.1.1.0.00.0.0 - Impostos'] + df_ihh['1.1.2.0.00.0.0 - Taxas'] + df_ihh['1.2.0.0.00.0.0 - Contribuições']
+    del df_ihh['1.1.1.0.00.0.0 - Impostos']
+    del df_ihh['1.1.2.0.00.0.0 - Taxas']
+    del df_ihh['1.2.0.0.00.0.0 - Contribuições']
+    df_ihh = df_ihh.apply(lambda x: x/df_ihh['Total I + T + C'])
+    df_ihh = df_ihh.apply(np.square)
+    del df_ihh['Total I + T + C']
+    df_ihh['IHH'] = df_ihh.sum(axis=1)
+    df_ihh = df_ihh['IHH'].to_frame()
+      
+    df3 = df1.query('Conta in @iv')
+    df3 = df3[df3['Coluna'] == 'Receitas Brutas Realizadas']
+    df3['Cod.IBGE'] = df3['Cod.IBGE'].astype(int).astype(str).str[2:].astype(np.int64)
+    df3 = database.merge(df3, how='left', on = ['Cod.IBGE','UF'])
+    df3 = df3[['Município','UF','Conta','Valor']]
+    
+    df4 = df2.query('Conta in @iv')
+    df4 = df4[df4['Coluna'] == 'Receitas Brutas Realizadas']
+    df4 = df4[df4['UF'] == 'DF']
+    df4['Município'] = ['BRASILIA'] * len(df4)
+    df4 = df4[['Município','UF','Conta','Valor']]
+    
+    df5 = df3.append(df4).reset_index(drop=True)
+    df5 = df5.pivot_table(index=['Município','UF'], columns='Conta', values='Valor').fillna(0)
+    df5['Total Impostos'] = df5['1.1.1.2.01.0.0 - Imposto sobre a Propriedade Territorial Rural'] + df5['1.1.1.3.03.0.0 - Imposto sobre a Renda - Retido na Fonte'] + df5['1.1.1.8.01.1.0 - Imposto sobre a Propriedade Predial e Territorial Urbana'] + df5['1.1.1.8.01.4.0 - Imposto sobre Transmissão ¿Inter Vivos¿ de Bens Imóveis e de Direitos Reais sobre Imóveis']
+    del df5['1.1.1.2.01.0.0 - Imposto sobre a Propriedade Territorial Rural']
+    del df5['1.1.1.3.03.0.0 - Imposto sobre a Renda - Retido na Fonte']
+    del df5['1.1.1.8.01.1.0 - Imposto sobre a Propriedade Predial e Territorial Urbana'] 
+    del df5['1.1.1.8.01.4.0 - Imposto sobre Transmissão ¿Inter Vivos¿ de Bens Imóveis e de Direitos Reais sobre Imóveis']
+    df5['ind_v'] = df5.apply(df5['Total Impostos']/df5['TOTAL DAS RECEITAS (III) = (I + II)'])
+    df5 = df5['ind_v']
+    df_iv = df5['ind_v'].to_frame()
+    
+    globals()['df_merge'] = df_ihh.merge(df_iv, how='left', on=['Município','UF'])
+    
+sinconfi2(sinconfi_mun, sinconfi_uf)
+
+df1 = df1.query('Conta in @iv')
