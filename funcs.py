@@ -37,21 +37,24 @@ def extreme_values(df):
         top_values = [i for i in df[c] if i > df[c].quantile(0.98)]
         bottom_values = [i for i in df[c] if i < df[c].quantile(0.02)]
         removed = []
-
+        
         if len(top_values) > 1:
             for i in top_values:
                 nlist = [t for t in top_values if t != i]
                 if i >= 5*sum(nlist)/(len(nlist)):
                     removed.append(i)
-
-        if len(top_values) > 1:
+        
+        if len(bottom_values) > 1:
             for j in bottom_values:
-                if i <= 5*sum(top_values.remove(i))/(len(top_values)-1):
+                nlist = [t for t in bottom_values if t != i]
+                if j <= sum(nlist)/(5*len(nlist)):
                     removed.append(j)
 
+        #print(removed)
         for r in df.index:
             if df.loc[r,c] in removed:
-                df.iat[r,c] = 0
+                #print()
+                df.at[r,c] = 0
             
     return df
 
