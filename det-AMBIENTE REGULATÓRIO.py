@@ -250,6 +250,3 @@ sinconfi_iv(sinconfi_mun, sinconfi_uf)
 ind_simpli_tri = df_ihh.merge(df_iv, how='left', on=['Município','UF'])
 
 ind_simpli_tri['Simplicidade Tributária'] = ind_simpli_tri['IHH']*ind_simpli_tri['ind_v']
-
-
-
