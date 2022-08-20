@@ -24,7 +24,9 @@ database['Cod.IBGE'] = amostra['Cod.IBGE']
 database['pop_est'] = amostra['POPULAÇÃO ESTIMADA']
 database = database.set_index(['Município', 'UF'])
 
-# 2.5
+# 2.5.
+## 2.5.1. e 2.5.3.
+
 base = '`basedosdados.br_ibge_pib.municipio`'
 project_id = 'double-balm-306418'
 var = ('id_municipio, pib')
@@ -43,4 +45,13 @@ df_bcb['Operações de Crédito por Município'] = df_bcb['VERBETE_160_OPERACOES
 df_bcb['420+432'] = df_bcb['VERBETE_420_DEPOSITOS_DE_POUPANCA'] + df_bcb['VERBETE_432_DEPOSITOS_A_PRAZO']
 df_bcb['Capital Poupado per capita'] = df_bcb['420+432']/df_bcb['pop_est'].astype(np.int64)
 df_bcb = df_bcb.iloc[:,[6,8]]
+
+## 2.5.2. 
+"Tem que usar a do ano passado"
+df_crunchbase = pd.read_excel('DETERMINANTE ACESSO A CAPITAL/crunchbase_2021.xlsx', usecols="A:C").fillna(0)
+df_crunchbase['Município'] = df_crunchbase['Município'].str.upper().str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
+df_crunchbase = database.merge(df_crunchbase, how='left', on=['Município','UF']).merge(pib_mun, how='left',on='Cod.IBGE')
+df_crunchbase['Proporção Relativa de Capital de Risco'] = (df_crunchbase['Total funding amount']/df_crunchbase['pib'])*100
+
+
 
