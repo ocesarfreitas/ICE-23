@@ -131,11 +131,14 @@ variaveis = ('id_municipio, count(*)')
 base = '`basedosdados.br_me_rais.microdados_vinculos`'
 project_id = 'double-balm-306418'
 cod_ibge = tuple(database['Cod.IBGE'].astype(str))
-query = (
-    f'SELECT {variaveis} FROM {base} WHERE ano = 2020 AND cbo_2002 IN {cbo_2002} '
-    f'AND id_municipio IN {cod_ibge} GROUP BY id_municipio'
-    ) # Unir com a outra base da RAIS para todos os trabalhadores
-
+query_1 = (f'SELECT {variaveis} AS n_cet FROM {base} WHERE ano = 2020 AND cbo_2002 IN' 
+           f' {cbo_2002} AND id_municipio IN {cod_ibge} GROUP BY id_municipio')
+query_2 = (f'SELECT {variaveis} AS n_trab FROM {base} WHERE ano = 2020 AND id_municipio' 
+           f' IN {cod_ibge} GROUP BY id_municipio')
 ## Importando o data lake
-df_rais_2 = bd.read_sql(query=query, billing_project_id=project_id)
-df_rais = df_rais.rename(columns={'id_municipio':'Cod.IBGE'}).set_index('Cod.IBGE')
+df_rais_2_1 = bd.read_sql(query=query_1, billing_project_id=project_id)
+df_rais_2_2 = bd.read_sql(query=query_2, billing_project_id=project_id)
+df_rais_2 = df_rais_2_1.merge(df_rais_2_2, how='left',on='id_municipio') 
+df_rais_2['Proporção de Funcionários em C&T'] = df_rais_2['n_cet']/df_rais_2['n_trab']
+
+
