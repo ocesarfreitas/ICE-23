@@ -145,6 +145,7 @@ df_rais_2['Proporção de Funcionários em C&T'] = df_rais_2['n_cet']/df_rais_2[
 
 df_bndes = pd.read_excel('DETERMINANTE INOVAÇÃO/naoautomaticas.xlsx', 
                          usecols='D:F,I', header=4)
-
+df_bndes = df_bndes.rename({'Município - código':'Cod.IBGE'},axis=1).astype(str)
+df_bndes = df_bndes.merge(database, how='right', on='Cod.IBGE').astype(int)
 
 
