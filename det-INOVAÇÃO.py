@@ -141,4 +141,10 @@ df_rais_2_2 = bd.read_sql(query=query_2, billing_project_id=project_id)
 df_rais_2 = df_rais_2_1.merge(df_rais_2_2, how='left',on='id_municipio') 
 df_rais_2['Proporção de Funcionários em C&T'] = df_rais_2['n_cet']/df_rais_2['n_trab']
 
+## Subdeterminante: Indicador Média de Investimentos do BNDES e da FINEP
+
+df_bndes = pd.read_excel('DETERMINANTE INOVAÇÃO/naoautomaticas.xlsx', 
+                         usecols='D:F,I', header=4)
+
+
 
