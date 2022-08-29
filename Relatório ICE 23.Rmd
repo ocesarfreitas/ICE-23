@@ -1,0 +1,90 @@
+---
+title: "Relatório Índice das Cidades Empreendedoras 2023"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+author: 
+  - César Freitas
+  - Vítor Borges
+output:
+  pdf_document:
+    number_sections: true
+    keep_tex: true
+    toc: true
+    toc_depth: 2
+abstract: "A"
+classoption: dvipsnames
+header-includes:
+- \usepackage[utf8]{inputenc}
+- \usepackage{dcolumn}
+- \usepackage{csquotes}
+- \usepackage{indentfirst}
+- \renewcommand{\abstractname}{Resumo}
+- \renewcommand{\tablename}{Tabela}
+- \renewcommand{\figurename}{Figura}
+- \usepackage{hyperref}
+- \usepackage{microtype}
+- \usepackage{bookmark}
+- \usepackage[onehalfspacing]{setspace}
+- \hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,   
+    urlcolor=blue, 
+    citecolor=YellowOrange!95!black
+  }
+- \usepackage{float}
+- \floatplacement{figure}{H}
+indent: true
+toc-title: "Sumário"
+geometry: "left=3cm, right=2cm, top=3cm, bottom=2cm"
+fontsize: 12
+---
+
+<!-- Vítor para você da um olhada em como talvez fique aqui pelo RMD, talvez seja
+     a forma mais interessante para fazer o relatório.
+     Ai só colocaríamos aqui os códigos mesmo, sem rodar eles, para ficar mais fácil -->
+
+\newpage
+
+```{python setup, eval=FALSE, echo=TRUE}
+import pandas as pd
+import numpy as np
+import basedosdados as bd
+```
+
+# Amostra
+```{python amostra 1, eval=FALSE, echo=TRUE}
+# A
+df = pd.read_excel('POP2021_20220711.xls', 'Municípios')
+df = df.head(-32)
+df.columns = df.iloc[0]
+df = df.drop(0)
+df.index = range(len(df))
+for i in range(len(df)):
+    if type(df.iloc[i]['POPULAÇÃO ESTIMADA']) == str:
+        pop = int(df.iloc[i]['POPULAÇÃO ESTIMADA'].split('(')[0].replace('.',''))
+        df.at[i, 'POPULAÇÃO ESTIMADA'] = pop
+top100 = df.sort_values(by=['POPULAÇÃO ESTIMADA'], ascending=False).head(101)
+
+# A
+am = pd.read_excel('Amostra.xlsx')
+for i in range(len(am)):
+    name = am['Município'][i].split('-')[0].strip()
+    am.at[i,'Município'] = name
+
+# A
+def Union(lst1, lst2):
+    final_list = list(set(lst1) | set(lst2))
+    return final_list
+
+final_sample = Union(am['Município'],top100['NOME DO MUNICÍPIO'])
+
+# A
+for i in am['Município']:
+    if i not in list(top100['NOME DO MUNICÍPIO']):
+        print(i)
+        
+top100.to_csv('100-municipios.csv', index=False)
+```
+
+# Determinantes
+
