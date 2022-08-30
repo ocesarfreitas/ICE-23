@@ -142,10 +142,27 @@ df_rais_2 = df_rais_2_1.merge(df_rais_2_2, how='left',on='id_municipio')
 df_rais_2['Proporção de Funcionários em C&T'] = df_rais_2['n_cet']/df_rais_2['n_trab']
 
 ## Subdeterminante: Indicador Média de Investimentos do BNDES e da FINEP
-
+###
 df_bndes = pd.read_excel('DETERMINANTE INOVAÇÃO/naoautomaticas.xlsx', 
                          usecols='D:F,I', header=4)
 df_bndes = df_bndes.rename({'Município - código':'Cod.IBGE'},axis=1).astype(str)
-df_bndes = df_bndes.merge(database, how='right', on='Cod.IBGE').astype(int)
+df_bndes = df_bndes.merge(database, how='right', on='Cod.IBGE')
+df_bndes.iloc[:,3:4] = df_bndes.iloc[:,3:4].apply(pd.to_numeric)
+df_bndes = df_bndes.groupby(['Município','UF','Cod.IBGE']).sum()
+
+###
+df_finep = pd.read_excel('DETERMINANTE INOVAÇÃO/19_08_2022_Contratacao.xls', 
+                         usecols='E,K:M', header=5).drop([4], axis=0)
+df_finep['Data Assinatura'] = pd.to_datetime(df_finep['Data Assinatura'], format='%Y-%m-%d')
+df_finep = df_finep[(df_finep['Data Assinatura'] >= '2021-01-01 00:00:00') 
+                     & (df_finep['Data Assinatura'] <= '2021-12-31 00:00:00')]
+
+df_finep['Município'] = df_finep['Município'].str.upper().str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
+df_finep = df_finep.groupby(['Município','UF']).sum()
+df_finep = df_finep.merge(database, how='right',on=['Município','UF']).fillna(0)
+
+df_finep_bndes = df_finep.merge(df_bndes, how='left',on=['Município','UF']).fillna(0)
+df_finep_bndes = df_finep_bndes.merge(df_rais_2_1, left_on='Cod.IBGE', right_on='id_municipio')
+df_finep_bndes['Média de Investimentos do BNDES e FINEP'] = (df_finep_bndes['Valor Finep'] + df_finep_bndes['Valor contratado  R$'])/df_finep_bndes['n_cet']
 
 
