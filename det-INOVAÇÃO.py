@@ -165,4 +165,215 @@ df_finep_bndes = df_finep.merge(df_bndes, how='left',on=['Município','UF']).fil
 df_finep_bndes = df_finep_bndes.merge(df_rais_2_1, left_on='Cod.IBGE', right_on='id_municipio')
 df_finep_bndes['Média de Investimentos do BNDES e FINEP'] = (df_finep_bndes['Valor Finep'] + df_finep_bndes['Valor contratado  R$'])/df_finep_bndes['n_cet']
 
+# 
+
+df_inpi_contrato = pd.read_excel('DETERMINANTE INOVAÇÃO/5 - Depósitos de Marcas por Cidade.xls',
+                                 usecols='A,B,U,V', header=7).dropna()
+
+df_inpi_contrato = df_inpi_contrato.rename(columns={df_inpi_contrato.columns[0]:'Cod.IBGE',
+                                                    df_inpi_contrato.columns[1]:'Município'})
+
+df_inpi_contrato['2018+2019'] = df_inpi_contrato.iloc[:,2] + df_inpi_contrato.iloc[:,3]
+df_inpi_contrato['Cod.IBGE'] = df_inpi_contrato['Cod.IBGE'].astype(str)
+df_inpi_contrato = df_inpi_contrato.merge(database, how='right', on='Cod.IBGE')
+df_inpi_contrato = df_inpi_contrato.merge(df_rais, how='right', on='Cod.IBGE')
+df_inpi_contrato['Contratos de Concessão'] = (df_inpi_contrato['2018+2019'])/df_inpi_contrato['mil_emp']
+
+## 2.6.2. Output
+### 2.6.2.1. Indicador Patentes
+letras = ['a','b','c']
+tipo = ['PI','MU','CA']
+for i in list(range(0,3)):
+    globals()[f'df_inpi_patente_{i}'] = pd.read_excel(f'DETERMINANTE INOVAÇÃO/5{letras[i]} - Depósitos de Patentes do Tipo {tipo[i]} por Cidade.xls',
+                                     usecols='A,B,U,V', header=7).dropna().assign(tipo=tipo[i])
+    pdList = []
+    pdList.extend(value for name, value in locals().items() if name.startswith('df_inpi_patente_'))
+    indicador_patente = pd.concat(pdList, axis=0)
+
+indicador_patente = indicador_patente.rename(columns={indicador_patente.columns[0]:'Cod.IBGE',
+                                                      indicador_patente.columns[1]:'Município'})
+
+indicador_patente['2018+2019'] = indicador_patente.iloc[:,2] + indicador_patente.iloc[:,3]
+indicador_patente['Cod.IBGE'] = indicador_patente['Cod.IBGE'].astype(str)
+indicador_patente = indicador_patente.pivot(index='Cod.IBGE', columns='tipo',values='2018+2019').fillna(0)
+cols = indicador_patente.columns[: indicador_patente.shape[0]]
+indicador_patente['CA+MU+PI'] = indicador_patente[cols].sum(axis=1)
+indicador_patente = indicador_patente.merge(database, how='right', on='Cod.IBGE')
+indicador_patente = indicador_patente.merge(df_rais, how='right', on='Cod.IBGE')
+indicador_patente['Patentes'] = (indicador_patente['CA+MU+PI'])/df_inpi_contrato['mil_emp']
+
+### 2.6.2.2. Indicador Tamanho da indústria Inovadora
+list_cnae = tuple([
+    'Fabricação de cloro e álcalis','Fabricação de intermediários para fertilizantes',
+    'Fabricação de adubos e fertilizantes','Fabricação de gases industriais',
+    'Fabricação de produtos químicos inorgânicos não especificados anteriormente',
+    'Fabricação de produtos petroquímicos básicos','Fabricação de intermediários para plastificantes, resinas e fibras',
+    'Fabricação de produtos químicos orgânicos não especificados anteriormente',
+    'Fabricação de resinas termoplásticas','Fabricação de resinas termofixas',
+    'Fabricação de elastômeros','Fabricação de fibras artificiais e sintéticas',
+    'Fabricação de defensivos agrícolas','Fabricação de desinfestantes domissanitários',
+    'Fabricação de sabões e detergentes sintéticos','Fabricação de produtos de limpeza e polimento',
+    'Fabricação de cosméticos, produtos de perfumaria e de higiene pessoal',
+    'Fabricação de tintas, vernizes, esmaltes e lacas','Fabricação de tintas de impressão',
+    'Fabricação de impermeabilizantes, solventes e produtos afins',
+    'Fabricação de adesivos e selantes','Fabricação de explosivos',
+    'Fabricação de aditivos de uso industrial','Fabricação de catalisadores',
+    'Fabricação de produtos químicos não especificados anteriormente',
+    'Fabricação de produtos farmoquímicos','Fabricação de medicamentos para uso humano',
+    'Fabricação de medicamentos para uso veterinário','Fabricação de preparações farmacêuticas',
+    'Fabricação de aparelhos e equipamentos de medida, teste e controle','Fabricação de cronômetros e relógios',
+    'Fabricação de aparelhos eletromédicos e eletroterapêuticos e equipamentos de irradiação',
+    'Fabricação de equipamentos e instrumentos ópticos, fotográficos e cinematográficos',
+    'Fabricação de geradores, transformadores e motores elétricos',
+    'Fabricação de pilhas, baterias e acumuladores elétricos, exceto para veículos automotores',
+    'Fabricação de baterias e acumuladores para veículos automotores',
+    'Fabricação de aparelhos e equipamentos para distribuição e controle de energia elétrica',
+    'Fabricação de material elétrico para instalações em circuito de consumo',
+    'Fabricação de fios, cabos e condutores elétricos isolados',
+    'Fabricação de lâmpadas e outros equipamentos de iluminação',
+    'Fabricação de fogões, refrigeradores e máquinas de lavar e secar para uso doméstico',
+    'Fabricação de aparelhos eletrodomésticos não especificados anteriormente',
+    'Fabricação de equipamentos e aparelhos elétricos não especificados anteriormente',
+    'Fabricação de motores e turbinas, exceto para aviões e veículos rodoviários',
+    'Fabricação de equipamentos hidráulicos e pneumáticos, exceto válvulas',
+    'Fabricação de válvulas, registros e dispositivos semelhantes','Fabricação de compressores',
+    'Fabricação de equipamentos de transmissão para fins industriais',
+    'Fabricação de aparelhos e equipamentos para instalações térmicas',
+    'Fabricação de máquinas, equipamentos e aparelhos para transporte e elevação de cargas e pessoas',
+    'Fabricação de máquinas e aparelhos de refrigeração e ventilação para uso industrial e comercial',
+    'Fabricação de aparelhos e equipamentos de ar condicionado',
+    'Fabricação de máquinas e equipamentos para saneamento básico e ambiental',
+    'Fabricação de máquinas e equipamentos de uso geral não especificados anteriormente',
+    'Fabricação de tratores agrícolas','Fabricação de equipamentos para irrigação agrícola',
+    'Fabricação de máquinas e equipamentos para a agricultura e pecuária, exceto para irrigação',
+    'Fabricação de máquinas-ferramenta','Fabricação de máquinas e equipamentos para a prospecção e extração de petróleo',
+    'Fabricação de outras máquinas e equipamentos para uso na extração mineral, exceto na extração de petróleo',
+    'Fabricação de tratores, exceto agrícolas','Fabricação de máquinas e equipamentos para terraplenagem, pavimentação e construção, exceto tratores',
+    'Fabricação de máquinas para a indústria metalúrgica, exceto máquinas-ferramenta',
+    'Fabricação de máquinas e equipamentos para as indústrias de alimentos, bebidas e fumo',
+    'Fabricação de máquinas e equipamentos para a indústria têxtil',
+    'Fabricação de máquinas e equipamentos para as indústrias do vestuário, do couro e de calçados',
+    'Fabricação de máquinas e equipamentos para as indústrias de celulose, papel e papelão e artefatos',
+    'Fabricação de máquinas e equipamentos para a indústria do plástico',
+    'Fabricação de máquinas e equipamentos para uso industrial específico não especificados anteriormente',
+    'Fabricação de automóveis, camionetas e utilitários','Fabricação de caminhões e ônibus',
+    'Fabricação de cabines, carrocerias e reboques para veículos automotores',
+    'Fabricação de peças e acessórios para o sistema motor de veículos automotores',
+    'Fabricação de peças e acessórios para os sistemas de marcha e transmissão de veículos automotores',
+    'Fabricação de peças e acessórios para o sistema de freios de veículos automotores',
+    'Fabricação de peças e acessórios para o sistema de direção e suspensão de veículos automotores',
+    'Fabricação de material elétrico e eletrônico para veículos automotores, exceto baterias',
+    'Fabricação de peças e acessórios para veículos automotores não especificados anteriormente',
+    'Recondicionamento e recuperação de motores para veículos automotores',
+    'Fabricação de locomotivas, vagões e outros materiais rodantes',
+    'Fabricação de peças e acessórios para veículos ferroviários','Fabricação de aeronaves',
+    'Fabricação de turbinas, motores e outros componentes e peças para aeronaves',
+    'Fabricação de motocicletas','Fabricação de bicicletas e triciclos não-motorizados',
+    'Fabricação de equipamentos de transporte não especificados anteriormente'])
+
+variaveis = ('cnae_2, descricao')
+base = '`basedosdados.br_bd_diretorios_brasil.cnae_2`'
+project_id = 'double-balm-306418'
+query = (f'SELECT {variaveis} FROM {base} WHERE descricao IN {list_cnae}')
+cnae_2 = bd.read_sql(query=query, billing_project_id=project_id)
+cnae_2['cnae_2'] = cnae_2['cnae_2'].str.replace(r"(\d)\.",r"\1").str.replace(r"(\d)\-",r"\1")
+cnae_2 = tuple(cnae_2['cnae_2'])
+
+variaveis = ('id_municipio, count(*)')
+base = '`basedosdados.br_me_rais.microdados_estabelecimentos`'
+project_id = 'double-balm-306418'
+cod_ibge = tuple(database['Cod.IBGE'].astype(str))
+query = (f'SELECT {variaveis} FROM {base} WHERE ano = 2020 AND id_municipio' 
+         f' IN {cod_ibge} AND cnae_2 IN {cnae_2} GROUP BY id_municipio')
+df_rais_inova = bd.read_sql(query=query, billing_project_id=project_id)
+df_rais_inova = df_rais_inova.merge(df_rais, left_on='id_municipio', right_on='Cod.IBGE')
+df_rais_inova['Tamanho da Indústria Inovadora'] = df_rais_inova['f0__x']/df_rais_inova['f0__y']
+
+### 2.6.2.3. Indicador Tamanho da indústria Criativa
+list_cnae = tuple([
+    'Lapidação de gemas e fabricação de artefatos de ourivesaria e joalheria',
+    'Fabricação de bijuterias e artefatos semelhantes','Fabricação de instrumentos musicais',
+    'Edição de livros','Edição de jornais','Edição de revistas',
+    'Edição de Cadastros, Listas e de Outros Produtos Gráficos',
+    'Edição integrada à impressão de livros','Edição integrada à impressão de jornais',
+    'Edição integrada à impressão de revistas', 'Atividades de televisão aberta',
+    'Edição integrada à impressão de cadastros, listas e de outros produtos gráficos',
+    'Atividades de produção cinematográfica, de vídeos e de programas de televisão',
+    'Atividades de pós-produção cinematográfica, de vídeos e de programas de televisão',
+    'Distribuição cinematográfica, de vídeo e de programas de televisão',
+    'Atividades de exibição cinematográfica','Agências de notícias',
+    'Atividades de gravação de som e de edição de música','Atividades de rádio',
+    'Programadoras e atividades relacionadas à televisão por assinatura',
+    'Serviços de arquitetura','Agências de publicidade',
+    'Pesquisa e desenvolvimento experimental em ciências físicas e naturais',
+    'Pesquisa e desenvolvimento experimental em ciências sociais e humanas',
+    'Atividades de publicidade não especificadas anteriormente',
+    'Design e decoração de interiores','Atividades fotográficas e similares',
+    'Aluguel de fitas de vídeo, DVDs e similares','Ensino de arte e cultura',
+    'Ensino de idiomas','Artes cênicas, espetáculos e atividades complementares',
+    'Criação artística','Gestão de espaços para artes cênicas, espetáculos e outras atividades artísticas',
+    'Atividades de bibliotecas e arquivos',
+    'Atividades de museus e de exploração, restauração artística e conservação de lugares e prédios históricos e atrações similares',
+    'Atividades de jardins botânicos, zoológicos, parques nacionais, reservas ecológicas e áreas de proteção ambiental',
+    'Atividades de organizações associativas ligadas à cultura e à arte'])
+
+variaveis = ('cnae_2, descricao')
+base = '`basedosdados.br_bd_diretorios_brasil.cnae_2`'
+project_id = 'double-balm-306418'
+query = (f'SELECT {variaveis} FROM {base} WHERE descricao IN {list_cnae}')
+cnae_2 = bd.read_sql(query=query, billing_project_id=project_id)
+cnae_2['cnae_2'] = cnae_2['cnae_2'].str.replace(r"(\d)\.",r"\1").str.replace(r"(\d)\-",r"\1")
+cnae_2 = tuple(cnae_2['cnae_2'])
+
+variaveis = ('id_municipio, count(*)')
+base = '`basedosdados.br_me_rais.microdados_estabelecimentos`'
+project_id = 'double-balm-306418'
+cod_ibge = tuple(database['Cod.IBGE'].astype(str))
+query = (f'SELECT {variaveis} FROM {base} WHERE ano = 2020 AND id_municipio' 
+         f' IN {cod_ibge} AND cnae_2 IN {cnae_2} GROUP BY id_municipio')
+df_rais_cria = bd.read_sql(query=query, billing_project_id=project_id)
+df_rais_cria = df_rais_cria.merge(df_rais, left_on='id_municipio', right_on='Cod.IBGE')
+df_rais_cria['Tamanho da Indústria Criativa'] = df_rais_cria['f0__x']/df_rais_cria['f0__y']
+
+### 2.6.2.3. Indicador Tamanho das Empresas TIC
+list_cnae = tuple([
+    'Fabricação de componentes eletrônicos','Fabricação de equipamentos de informática',
+    'Fabricação de periféricos para equipamentos de informática',
+    'Fabricação de equipamentos transmissores de comunicação',
+    'Fabricação de aparelhos telefônicos e de outros equipamentos de comunicação',
+    'Fabricação de aparelhos de recepção, reprodução, gravação e amplificação de áudio e vídeo',
+    'Fabricação de mídias virgens, magnéticas e ópticas',
+    'Comércio atacadista de computadores, periféricos e suprimentos de informática',
+    'Comércio atacadista de componentes eletrônicos e equipamentos de telefonia e comunicação',
+    'Telecomunicações sem fio','Operadoras de televisão por assinatura por cabo',
+    'Telecomunicações por satélite','Operadoras de televisão por assinatura por microondas',
+    'Operadoras de televisão por assinatura por satélite','Outras atividades de telecomunicações',
+    'Desenvolvimento de programas de computador sob encomenda',
+    'Desenvolvimento e licenciamento de programas de computador customizáveis',
+    'Desenvolvimento e licenciamento de programas de computador não-customizáveis',
+    'Consultoria em tecnologia da informação',
+    'Suporte técnico, manutenção e outros serviços em tecnologia da informação',
+    'Tratamento de dados, provedores de serviços de aplicação e serviços de hospedagem na internet',
+    'Portais, provedores de conteúdo e outros serviços de informação na internet',
+    'Reparação e manutenção de computadores e de equipamentos periféricos',
+    'Reparação e manutenção de equipamentos de comunicação'])
+
+variaveis = ('cnae_2, descricao')
+base = '`basedosdados.br_bd_diretorios_brasil.cnae_2`'
+project_id = 'double-balm-306418'
+query = (f'SELECT {variaveis} FROM {base} WHERE descricao IN {list_cnae}')
+cnae_2 = bd.read_sql(query=query, billing_project_id=project_id)
+cnae_2['cnae_2'] = cnae_2['cnae_2'].str.replace(r"(\d)\.",r"\1").str.replace(r"(\d)\-",r"\1")
+cnae_2 = tuple(cnae_2['cnae_2'])
+
+variaveis = ('id_municipio, count(*)')
+base = '`basedosdados.br_me_rais.microdados_estabelecimentos`'
+project_id = 'double-balm-306418'
+cod_ibge = tuple(database['Cod.IBGE'].astype(str))
+query = (f'SELECT {variaveis} FROM {base} WHERE ano = 2020 AND id_municipio' 
+         f' IN {cod_ibge} AND cnae_2 IN {cnae_2} GROUP BY id_municipio')
+df_rais_tic = bd.read_sql(query=query, billing_project_id=project_id)
+df_rais_tic = df_rais_tic.merge(df_rais, left_on='id_municipio', right_on='Cod.IBGE')
+df_rais_tic['Tamanho das Empresas TIC'] = df_rais_tic['f0__x']/df_rais_tic['f0__y']
+
 
