@@ -34,26 +34,20 @@ def extreme_values(df):
     
     for c in df.columns:
     
-        top_values = [i for i in df[c] if i > df[c].quantile(0.98)]
-        bottom_values = [i for i in df[c] if i < df[c].quantile(0.02)]
-        removed = []
+        df_sort = np.argsort(df[c])        
+            
+        top_values = df_sort[-3:]
+        bottom_values = df_sort[:3]
+        removed =[]
         
-        if len(top_values) > 1:
-            for i in top_values:
-                nlist = [t for t in top_values if t != i]
-                if i >= 5*sum(nlist)/(len(nlist)):
-                    removed.append(i)
+        if top_values[-1] > 5*np.mean(top_values[:-1]):
+            removed.append(top_values[-1])
         
-        if len(bottom_values) > 1:
-            for j in bottom_values:
-                nlist = [t for t in bottom_values if t != i]
-                if j <= sum(nlist)/(5*len(nlist)):
-                    removed.append(j)
+        if bottom_values[0] > 5*np.mean(bottom_values[1:]):
+            removed.append(bottom_values[0])
 
-        #print(removed)
         for r in df.index:
             if df.loc[r,c] in removed:
-                #print()
                 df.at[r,c] = 0
             
     return df
