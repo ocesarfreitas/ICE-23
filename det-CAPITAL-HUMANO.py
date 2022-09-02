@@ -46,7 +46,13 @@ pai_mae_EM['prop_mae_EM'] = pai_mae_EM['mae_EM']/pai_mae_EM['n_inscritos']
 pai_mae_EM['Proporção de Adultos com pelo menos o Ensino Médio Completo'] = (pai_mae_EM['prop_pai_EM']+pai_mae_EM['prop_mae_EM'])/2
  
 ### 2.7.1.2. Indicador Taxa Líquida de Matrícula no Ensino Médio
-
+variaveis = ('id_municipio, count(*)')
+base = '`basedosdados.br_me_rais.microdados_estabelecimentos`'
+project_id = 'double-balm-306418'
+cod_ibge = tuple(database['Cod.IBGE'].astype(str))
+query = (f'SELECT {variaveis} FROM {base} WHERE ano = 2020 AND id_municipio' 
+         f' IN {cod_ibge} AND cnae_2 IN {cnae_2} GROUP BY id_municipio')
+df_rais_tic = bd.read_sql(query=query, billing_project_id=project_id)
 
 
 
