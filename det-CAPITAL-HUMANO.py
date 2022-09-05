@@ -24,8 +24,18 @@ database['Cod.IBGE'] = amostra['Cod.IBGE']
 database = database.set_index(['Município', 'UF'])
 
 ## 2.7.1. Subdeterminante Acesso e Qualidade da Mão de Obra Básica
+subdet = 'Acesso e Qualidade da Mão de Obra Básica'
+
 ### 2.7.1.1. Indicador nota ideb
-"Mesmo do ano passada porque é uma prova bianual"
+df_ideb = pd.read_excel('Arquivos ICE - 23/Ind_Originais_ICE_2022.xlsx', header=5,
+                        usecols="B:C,BA")
+subdet_acesso = df_ideb.rename(columns={df_ideb.columns[1]:'Município',
+                                        df_ideb.columns[2]:'Nota do IDEB'})
+
+subdet_acesso = subdet_acesso.merge(amostra, how='right', left_on='Município',
+                                    right_on='NOME DO MUNICÍPIO')
+subdet_acesso = subdet_acesso[['UF_x','Município','Nota do IDEB','Cod.IBGE']]
+subdet_acesso = subdet_acesso.rename(columns={'UF_x':'UF'})
 
 ### 2.7.1.2. Indicador proporção de adultos com pelo menos o ensino médio completo
 df_enem = pd.read_csv('DETERMINANTE CAPITAL HUMANO/ENEM_2021_100mun.csv')
@@ -44,27 +54,78 @@ pai_mae_EM = pai_mae_EM.merge(num_inscritos, how='inner', on='CO_MUNICIPIO_ESC')
 pai_mae_EM['prop_pai_EM'] = pai_mae_EM['pai_EM']/pai_mae_EM['n_inscritos']
 pai_mae_EM['prop_mae_EM'] = pai_mae_EM['mae_EM']/pai_mae_EM['n_inscritos']
 pai_mae_EM['Proporção de Adultos com pelo menos o Ensino Médio Completo'] = (pai_mae_EM['prop_pai_EM']+pai_mae_EM['prop_mae_EM'])/2
- 
-### 2.7.1.3. Indicador Taxa Líquida de Matrícula no Ensino Médio
-df_ce_2021 = pd.read_csv('DETERMINANTE CAPITAL HUMANO/CE_2021_100mun.csv',
-                         sep=',', encoding='latin-1')
-df_ce_2021 = df_ce_2021[['CO_ENTIDADE','CO_MUNICIPIO','QT_MAT_MED','QT_MAT_BAS_0_3',
-                         'QT_MAT_BAS_4_5','QT_MAT_BAS_6_10','QT_MAT_BAS_11_14',
-                         'QT_MAT_BAS_15_17','QT_MAT_BAS_18_MAIS']].dropna()
-df_ce_2021 = df_ce_2021[df_ce_2021['QT_MAT_MED'] != 0]
-df_ce_2021 = df_ce_2021[df_ce_2021['QT_MAT_BAS_15_17'] != 0]
 
+interesse = ['Proporção de Adultos com pelo menos o Ensino Médio Completo']
+pai_mae_EM = pai_mae_EM[interesse].reset_index()
+pai_mae_EM['CO_MUNICIPIO_ESC'] = pai_mae_EM['CO_MUNICIPIO_ESC'].astype(str)
+
+subdet_acesso = subdet_acesso.merge(pai_mae_EM, how='right', left_on='Cod.IBGE',
+                                    right_on='CO_MUNICIPIO_ESC')
+
+### 2.7.1.3. Indicador Taxa Líquida de Matrícula no Ensino Médio
+#### Pessoas entre 15 e 17 anos no município (população 2010)
+variaveis = 'id_setor_censitario, sigla_uf, v049, v050, v051'
+base = '`basedosdados.br_ibge_censo_demografico.setor_censitario_idade_total_2010`'
+project_id = 'double-balm-306418'
+query = (f'SELECT {variaveis} FROM {base}')
+
+df_censo_15_17 = bd.read_sql(query=query, billing_project_id=project_id)
+df_censo_15_17['Cod.IBGE'] = df_censo_15_17['id_setor_censitario'].str[:7]
+df_censo_15_17['UF'] = df_censo_15_17['sigla_uf'].str[:2]
+df_censo_15_17 = df_censo_15_17.merge(database, how='right', on='Cod.IBGE')
+df_censo_15_17 = df_censo_15_17.dropna()
+
+df_censo_15_17 = df_censo_15_17.iloc[:,2:7].set_index(['Cod.IBGE','UF'])
+df_censo_15_17.iloc[:,0:3] = df_censo_15_17.iloc[:,0:3].apply(pd.to_numeric)
+df_censo_15_17 = df_censo_15_17.groupby('Cod.IBGE').sum()
+df_censo_15_17['pop_15_17'] = df_censo_15_17.sum(axis=1)
+
+#### População 2010
+variaveis = 'id_municipio, populacao'
 base = '`basedosdados.br_ibge_populacao.municipio`'
 project_id = 'double-balm-306418'
 cod_ibge = tuple(database['Cod.IBGE'].astype(str))
-query = (f'SELECT * FROM {base} WHERE id_municipio IN {cod_ibge} AND ano = 2010')
-df_censo = bd.read_sql(query=query, billing_project_id=project_id)
+query = (f'SELECT {variaveis} FROM {base} WHERE ano = 2010 AND id_municipio IN {cod_ibge}')
+
+pop_2010 = bd.read_sql(query=query, billing_project_id=project_id)
+populacao = pop_2010.merge(amostra, left_on='id_municipio', right_on='Cod.IBGE')
+interesse = ['Cod.IBGE','populacao','POPULAÇÃO ESTIMADA']
+populacao = populacao[interesse]
+populacao['tx_crecimento'] = 1 + (populacao['POPULAÇÃO ESTIMADA'].astype(int)-populacao['populacao'])/populacao['populacao']
+
+df_censo_15_17 = df_censo_15_17.merge(populacao, how='right', on='Cod.IBGE')
+df_censo_15_17['pop_15_17_atualizado'] = df_censo_15_17['pop_15_17']*df_censo_15_17['tx_crecimento']
+
+interesse = ['Cod.IBGE','pop_15_17_atualizado']
+df_censo_15_17 = df_censo_15_17[interesse]
+
+#### censo escolar população entre 15 e 17 anos
+df_ce_2021 = pd.read_csv('DETERMINANTE CAPITAL HUMANO/CE_2021_100mun.csv',
+                         sep=',', encoding='latin-1')
+df_ce_2021 = df_ce_2021[['CO_MUNICIPIO','QT_MAT_MED']].dropna()
+df_ce_2021 = df_ce_2021.groupby('CO_MUNICIPIO').sum().reset_index()
+df_ce_2021['CO_MUNICIPIO'] = df_ce_2021['CO_MUNICIPIO'].astype(str)
+
+df_ce_2021 = df_ce_2021.merge(df_censo_15_17, left_on='CO_MUNICIPIO',
+                              right_on='Cod.IBGE')
+
+df_ce_2021['Taxa Líquida de Matrícula no Ensino Médio'] = df_ce_2021['QT_MAT_MED']/df_ce_2021['pop_15_17_atualizado']
+
+interesse = ['Cod.IBGE','Taxa Líquida de Matrícula no Ensino Médio']
+df_ce_2021 = df_ce_2021[interesse]
+
+subdet_acesso = subdet_acesso.merge(df_ce_2021, how='right', on='Cod.IBGE')
 
 ### 2.7.1.4. Indicador Nota Média no Enem
 nota_enem = df_enem[['CO_MUNICIPIO_ESC','NU_NOTA_CH','NU_NOTA_CN',
                      'NU_NOTA_LC','NU_NOTA_MT','NU_NOTA_REDACAO']].dropna()
 nota_enem = nota_enem.groupby('CO_MUNICIPIO_ESC').mean()
-nota_enem['NOTA_ENEM'] = nota_enem.mean(axis=1)
+nota_enem['Nota Média no ENEM'] = nota_enem.mean(axis=1)
+nota_enem = nota_enem['Nota Média no ENEM'].reset_index()
+nota_enem['CO_MUNICIPIO_ESC'] = nota_enem['CO_MUNICIPIO_ESC'].astype(str)
+
+subdet_acesso = subdet_acesso.merge(nota_enem, left_on='Cod.IBGE', 
+                                    right_on='CO_MUNICIPIO_ESC')
 
 ### 2.7.1.5. Indicador Proporção de Matriculados no Ensino Técnico e Profissionalizante
 
