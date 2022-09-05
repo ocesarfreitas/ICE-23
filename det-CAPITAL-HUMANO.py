@@ -5,16 +5,12 @@ Created on Thu Aug 18 16:50:42 2022
 """
 
 import pandas as pd
-import numpy as np
-from funcs import *
+from funcs import missing_data,extreme_values,create_subindex,negative,create_detindex
 #from functools import reduce
 import basedosdados as bd
 
-# 2.2. DETERMINANTE AMBIENTE REGULATÓRIO
-database = pd.DataFrame()
-df = {}
-
 # 1. AMOSTRA
+database = pd.DataFrame()
 
 amostra = pd.read_csv('AMOSTRA/100-municipios.csv', converters={i: str for i in range(0,101)})
 amostra['Cod.IBGE'] = amostra['COD. UF'] + amostra['COD. MUNIC']
@@ -22,6 +18,9 @@ database['Município'] = amostra['NOME DO MUNICÍPIO'].str.upper().str.normalize
 database['UF'] = amostra['UF']
 database['Cod.IBGE'] = amostra['Cod.IBGE']
 database = database.set_index(['Município', 'UF'])
+
+# 2.7. DETERMINANTE CAPITAL HUMANO
+capital_humano = {}
 
 ## 2.7.1. Subdeterminante Acesso e Qualidade da Mão de Obra Básica
 subdet = 'Acesso e Qualidade da Mão de Obra Básica'
@@ -128,25 +127,81 @@ subdet_acesso = subdet_acesso.merge(nota_enem, left_on='Cod.IBGE',
                                     right_on='CO_MUNICIPIO_ESC')
 
 ### 2.7.1.5. Indicador Proporção de Matriculados no Ensino Técnico e Profissionalizante
+#### População maior que 15 anos 
+base = '`basedosdados.br_ibge_censo_demografico.setor_censitario_idade_total_2010`'
+project_id = 'double-balm-306418'
+query = (f'SELECT * FROM {base}')
+
+df_censo_15 = bd.read_sql(query=query, billing_project_id=project_id)
+df_censo_15['Cod.IBGE'] = df_censo_15['id_setor_censitario'].str[:7]
+df_censo_15['UF'] = df_censo_15['sigla_uf'].str[:2]
+df_censo_15 = df_censo_15.set_index(['UF','Cod.IBGE'])
+df_censo_15 = df_censo_15.iloc[:,50:137].reset_index()
+df_censo_15 = df_censo_15.merge(database, how='right', on='Cod.IBGE').dropna()
+df_censo_15.iloc[:,2:89] = df_censo_15.iloc[:,2:89].apply(pd.to_numeric)
+df_censo_15 = df_censo_15.groupby('Cod.IBGE').sum().reset_index()
+df_censo_15['pop_maior_15'] = df_censo_15.sum(axis=1)
+
+interesse=['Cod.IBGE','pop_maior_15']
+df_censo_15 = df_censo_15[interesse].merge(populacao, how='right', on='Cod.IBGE')
+df_censo_15['atualizada_pop_maior_15'] = df_censo_15['pop_maior_15']*df_censo_15['tx_crecimento']
+interesse=['Cod.IBGE','atualizada_pop_maior_15']
+df_censo_15=df_censo_15[interesse]
+
+#### Censo escolar
+df_ce_tec = pd.read_csv('DETERMINANTE CAPITAL HUMANO/CE_2021_100mun.csv',
+                         sep=',', encoding='latin-1')
+df_ce_tec = df_ce_tec[['CO_MUNICIPIO','QT_MAT_PROF_TEC']].dropna()
+df_ce_tec = df_ce_tec.groupby('CO_MUNICIPIO').sum().reset_index()
+df_ce_tec['CO_MUNICIPIO'] = df_ce_tec['CO_MUNICIPIO'].astype(str)
+
+df_ce_tec = df_ce_tec.merge(df_censo_15, left_on='CO_MUNICIPIO',right_on='Cod.IBGE')
+
+df_ce_tec['Proporção de Matriculados no Ensino Técnico e Profissionalizante'] = df_ce_tec['QT_MAT_PROF_TEC']/df_ce_tec['atualizada_pop_maior_15']
+interesse = ['Cod.IBGE','Proporção de Matriculados no Ensino Técnico e Profissionalizante']
+df_ce_tec = df_ce_tec[interesse]
+
+subdet_acesso = subdet_acesso.merge(df_ce_tec, how='right', on='Cod.IBGE')
+subdet_acesso = subdet_acesso.set_index(['Município','UF'])
+del subdet_acesso['Cod.IBGE']
+del subdet_acesso['CO_MUNICIPIO_ESC_x']
+del subdet_acesso['CO_MUNICIPIO_ESC_y']
+
+missing_data(subdet_acesso)
+extreme_values(subdet_acesso)
+create_subindex(subdet_acesso, subdet)
+capital_humano[subdet] = subdet_acesso
 
 ## 2.7.2. Subdeterminante Acesso e Qualidade da Mão de Obra Qualificada
+subdet = 'Acesso e Qualidade da Mão de Obra Qualificada'
 ### 2.7.2.1. Indicador Proporção de Adultos com Pelo Menos o Ensino Superior Completo
 alvo = ['F','G']
-
 pai_SUP,mae_SUP = pd.DataFrame(),pd.DataFrame()
 
 pai_SUP['pai_SUP'] = df_enem[df_enem['Q001'].isin(alvo)].groupby('CO_MUNICIPIO_ESC').size()
 mae_SUP['mae_SUP'] = df_enem[df_enem['Q002'].isin(alvo)].groupby('CO_MUNICIPIO_ESC').size()
 
 pai_mae_SUP = pai_SUP.merge(mae_SUP, how='inner', on='CO_MUNICIPIO_ESC')
-pai_mae_SUP = pai_mae_SUP.merge(num_inscritos, how='inner', on='CO_MUNICIPIO_ESC')
+subdet_acesso_quali = pai_mae_SUP.merge(num_inscritos, how='inner', on='CO_MUNICIPIO_ESC')
 
-pai_mae_SUP['prop_pai_SUP'] = pai_mae_SUP['pai_SUP']/pai_mae_EM['n_inscritos']
-pai_mae_SUP['prop_mae_SUP'] = pai_mae_SUP['mae_SUP']/pai_mae_EM['n_inscritos']
-pai_mae_SUP['Proporção de Adultos com pelo menos o Superior Completo'] = (pai_mae_SUP['prop_pai_SUP']+pai_mae_SUP['prop_mae_SUP'])/2
+subdet_acesso_quali['prop_pai_SUP'] = subdet_acesso_quali['pai_SUP']/subdet_acesso_quali['n_inscritos']
+subdet_acesso_quali['prop_mae_SUP'] = subdet_acesso_quali['mae_SUP']/subdet_acesso_quali['n_inscritos']
+subdet_acesso_quali['Proporção de Adultos com pelo menos os Ensino Superior Completo'] = (subdet_acesso_quali['prop_pai_SUP']+subdet_acesso_quali['prop_mae_SUP'])/2
+subdet_acesso_quali = subdet_acesso_quali['Proporção de Adultos com pelo menos os Ensino Superior Completo'].reset_index()
 
 ### 2.7.2.2. Indicador Proporção de Alunos Concluintes em Cursos de Alta Qualidade
-"Mesmo do ano passada porque é uma prova bianual"
+df_enade = pd.read_excel('Arquivos ICE - 23/Ind_Originais_ICE_2022.xlsx', header=5,
+                        usecols="B:C,BH")
+df_enade = df_enade.rename(columns={df_enade.columns[2]:'Proporção de Alunos Concluintes em Cursos de Alta Qualidade'})
+df_enade = df_enade.merge(amostra, how='right', left_on='Município',right_on='NOME DO MUNICÍPIO')
+df_enade = df_enade[['UF_x','Município','Proporção de Alunos Concluintes em Cursos de Alta Qualidade','Cod.IBGE']]
+df_enade = df_enade.rename(columns={'UF_x':'UF'})
+
+subdet_acesso_quali['CO_MUNICIPIO_ESC'] = subdet_acesso_quali['CO_MUNICIPIO_ESC'].astype(str)
+subdet_acesso_quali = subdet_acesso_quali.merge(df_enade, right_on='Cod.IBGE',
+                                                left_on='CO_MUNICIPIO_ESC')
+order = ['Cod.IBGE','Município','UF','Proporção de Adultos com pelo menos os Ensino Superior Completo','Proporção de Alunos Concluintes em Cursos de Alta Qualidade']
+subdet_acesso_quali = subdet_acesso_quali[order]
 
 ### Indicador Custo Médio de Salários de Dirigentes
 cbo_2002 = tuple(['121005','121010','122105','122110','122115','122120','122205',
@@ -177,13 +232,26 @@ query = (f'SELECT {variaveis} FROM {base} WHERE ano = 2019 AND cbo_2002 IN {cbo_
 df_rais = bd.read_sql(query=query, billing_project_id=project_id)
 df_rais = df_rais.groupby('id_municipio').agg(['count','sum'])
 df_rais['Custo Médio de Salários de Dirigentes'] = df_rais.iloc[:,1]/df_rais.iloc[:,0] 
+interesse = ['Custo Médio de Salários de Dirigentes']
+df_rais = df_rais[interesse].reset_index().droplevel(level=1, axis=1)
+df_rais['Custo Médio de Salários de Dirigentes'] = negative(df_rais['Custo Médio de Salários de Dirigentes'])
 
+subdet_acesso_quali = subdet_acesso_quali.merge(df_rais, right_on='id_municipio',
+                                                left_on='Cod.IBGE')
+subdet_acesso_quali = subdet_acesso_quali.set_index(['Município','UF'])
+del subdet_acesso_quali['Cod.IBGE']
+del subdet_acesso_quali['id_municipio']
 
+missing_data(subdet_acesso_quali)
+extreme_values(subdet_acesso_quali)
+create_subindex(subdet_acesso_quali, subdet)
+capital_humano[subdet] = subdet_acesso_quali
 
+# -
+capital_humano = pd.concat(capital_humano, axis=1)
+create_detindex(capital_humano, 'Capital Humano')
 
-
-
-
+capital_humano.to_csv('DETERMINANTES/det-CAPITAL HUMANO.csv')
 
 
 
