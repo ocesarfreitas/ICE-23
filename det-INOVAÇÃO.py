@@ -10,11 +10,8 @@ from funcs import *
 #from functools import reduce
 import basedosdados as bd
 
-# 2.2. DETERMINANTE AMBIENTE REGULATÓRIO
-database = pd.DataFrame()
-df = {}
-
 # 1. AMOSTRA
+database = pd.DataFrame()
 
 amostra = pd.read_csv('AMOSTRA/100-municipios.csv', converters={i: str for i in range(0,101)})
 amostra['Cod.IBGE'] = amostra['COD. UF'] + amostra['COD. MUNIC']
@@ -23,8 +20,13 @@ database['UF'] = amostra['UF']
 database['Cod.IBGE'] = amostra['Cod.IBGE']
 database = database.set_index(['Município', 'UF'])
 
-# 2.5.
-## 2.5.1. e 2.5.3.
+# 2.3. DETERMINANTE INOVAÇÃO
+inovacao = {}
+
+## 2.6.1. INPUTS
+subdet = 'Inputs'
+
+### 2.6.1.1. Indicador Proporção de Mestres e Doutores em C&T
 variaveis = ('COUNT(quantidade_vinculos_ativos), id_municipio')
 base = '`basedosdados.br_me_rais.microdados_estabelecimentos`'
 project_id = 'double-balm-306418'
@@ -55,7 +57,10 @@ df_capes = df_capes.groupby(['Município','Cod.IBGE']).count()
 df_capes = df_rais.merge(df_capes, how='left', on='Cod.IBGE').fillna(0)
 df_capes['Proporção de Mestres e Doutores em C&T'] = df_capes['NM_AREA_AVALIACAO']/df_capes['mil_emp']
 
-## RAIS 2
+interesse = ['Cod.IBGE','Proporção de Mestres e Doutores em C&T']
+subdet_input = df_capes[interesse]
+
+### 2.6.1.2. Indicador Proporção de Funcionários em C&T
 cbo_2002 = tuple(['201105','201110','201115','201205','201210','201215','201220',
                   '201225','202105','202110','202115','202120','203005','203010',
                   '203015','203020','203025','203105','203110','203115','203120',
@@ -141,7 +146,11 @@ df_rais_2_2 = bd.read_sql(query=query_2, billing_project_id=project_id)
 df_rais_2 = df_rais_2_1.merge(df_rais_2_2, how='left',on='id_municipio') 
 df_rais_2['Proporção de Funcionários em C&T'] = df_rais_2['n_cet']/df_rais_2['n_trab']
 
-## Subdeterminante: Indicador Média de Investimentos do BNDES e da FINEP
+subdet_input = subdet_input.merge(df_rais_2, right_on='id_municipio', left_on='Cod.IBGE')
+interesse = ['Cod.IBGE','Proporção de Mestres e Doutores em C&T','Proporção de Funcionários em C&T']
+subdet_input = subdet_input[interesse]
+
+## 2.6.1.3. Indicador Média de Investimentos do BNDES e da FINEP
 ###
 df_bndes = pd.read_excel('DETERMINANTE INOVAÇÃO/naoautomaticas.xlsx', 
                          usecols='D:F,I', header=4)
@@ -150,7 +159,7 @@ df_bndes = df_bndes.merge(database, how='right', on='Cod.IBGE')
 df_bndes.iloc[:,3:4] = df_bndes.iloc[:,3:4].apply(pd.to_numeric)
 df_bndes = df_bndes.groupby(['Município','UF','Cod.IBGE']).sum()
 
-###
+####
 df_finep = pd.read_excel('DETERMINANTE INOVAÇÃO/19_08_2022_Contratacao.xls', 
                          usecols='E,K:M', header=5).drop([4], axis=0)
 df_finep['Data Assinatura'] = pd.to_datetime(df_finep['Data Assinatura'], format='%Y-%m-%d')
@@ -165,8 +174,12 @@ df_finep_bndes = df_finep.merge(df_bndes, how='left',on=['Município','UF']).fil
 df_finep_bndes = df_finep_bndes.merge(df_rais_2_1, left_on='Cod.IBGE', right_on='id_municipio')
 df_finep_bndes['Média de Investimentos do BNDES e FINEP'] = (df_finep_bndes['Valor Finep'] + df_finep_bndes['Valor contratado  R$'])/df_finep_bndes['n_cet']
 
-# 
+subdet_input = subdet_input.merge(df_finep_bndes, how='right', on='Cod.IBGE')
+interesse=['Cod.IBGE','Proporção de Mestres e Doutores em C&T','Proporção de Funcionários em C&T',
+           'Média de Investimentos do BNDES e FINEP']
+subdet_input=subdet_input[interesse]
 
+### 2.6.1.4. Indicador Infraestrutura Tecnológica
 df_inpi_contrato = pd.read_excel('DETERMINANTE INOVAÇÃO/5 - Depósitos de Marcas por Cidade.xls',
                                  usecols='A,B,U,V', header=7).dropna()
 
@@ -179,7 +192,20 @@ df_inpi_contrato = df_inpi_contrato.merge(database, how='right', on='Cod.IBGE')
 df_inpi_contrato = df_inpi_contrato.merge(df_rais, how='right', on='Cod.IBGE')
 df_inpi_contrato['Contratos de Concessão'] = (df_inpi_contrato['2018+2019'])/df_inpi_contrato['mil_emp']
 
+subdet_input = subdet_input.merge(df_inpi_contrato, how='right', on='Cod.IBGE')
+subdet_input = subdet_input.merge(amostra, how='left', on=['Cod.IBGE'])
+interesse=['Município','UF','Proporção de Mestres e Doutores em C&T',
+           'Proporção de Funcionários em C&T','Média de Investimentos do BNDES e FINEP',
+           'Contratos de Concessão']
+subdet_input = subdet_input[interesse].set_index(['Município','UF'])
+
+missing_data(subdet_input)
+extreme_values(subdet_input)
+create_subindex(subdet_input, subdet)
+inovacao[subdet] = subdet_input
+
 ## 2.6.2. Output
+subdet = 'Output'
 ### 2.6.2.1. Indicador Patentes
 letras = ['a','b','c']
 tipo = ['PI','MU','CA']
@@ -201,6 +227,11 @@ indicador_patente['CA+MU+PI'] = indicador_patente[cols].sum(axis=1)
 indicador_patente = indicador_patente.merge(database, how='right', on='Cod.IBGE')
 indicador_patente = indicador_patente.merge(df_rais, how='right', on='Cod.IBGE')
 indicador_patente['Patentes'] = (indicador_patente['CA+MU+PI'])/df_inpi_contrato['mil_emp']
+
+subdet_output = indicador_patente[['Cod.IBGE','Patentes']]
+subdet_output = subdet_output.merge(amostra, how='right', on='Cod.IBGE')
+subdet_output = subdet_output[['Cod.IBGE','NOME DO MUNICÍPIO','UF','Patentes']]
+subdet_output = subdet_output.rename(columns={'NOME DO MUNICÍPIO':'Município'})
 
 ### 2.6.2.2. Indicador Tamanho da indústria Inovadora
 list_cnae = tuple([
@@ -289,6 +320,10 @@ df_rais_inova = bd.read_sql(query=query, billing_project_id=project_id)
 df_rais_inova = df_rais_inova.merge(df_rais, left_on='id_municipio', right_on='Cod.IBGE')
 df_rais_inova['Tamanho da Indústria Inovadora'] = df_rais_inova['f0__x']/df_rais_inova['f0__y']
 
+subdet_output = subdet_output.merge(df_rais_inova, how='left', on='Cod.IBGE')
+interesse=['Cod.IBGE','Município','UF','Patentes','Tamanho da Indústria Inovadora']
+subdet_output=subdet_output[interesse]
+
 ### 2.6.2.3. Indicador Tamanho da indústria Criativa
 list_cnae = tuple([
     'Lapidação de gemas e fabricação de artefatos de ourivesaria e joalheria',
@@ -335,7 +370,12 @@ df_rais_cria = bd.read_sql(query=query, billing_project_id=project_id)
 df_rais_cria = df_rais_cria.merge(df_rais, left_on='id_municipio', right_on='Cod.IBGE')
 df_rais_cria['Tamanho da Indústria Criativa'] = df_rais_cria['f0__x']/df_rais_cria['f0__y']
 
-### 2.6.2.3. Indicador Tamanho das Empresas TIC
+subdet_output = subdet_output.merge(df_rais_cria, how='left', on='Cod.IBGE')
+interesse=['Cod.IBGE','Município','UF','Patentes','Tamanho da Indústria Inovadora',
+           'Tamanho da Indústria Criativa']
+subdet_output=subdet_output[interesse]
+
+### 2.6.2.4. Indicador Tamanho das Empresas TIC
 list_cnae = tuple([
     'Fabricação de componentes eletrônicos','Fabricação de equipamentos de informática',
     'Fabricação de periféricos para equipamentos de informática',
@@ -376,4 +416,18 @@ df_rais_tic = bd.read_sql(query=query, billing_project_id=project_id)
 df_rais_tic = df_rais_tic.merge(df_rais, left_on='id_municipio', right_on='Cod.IBGE')
 df_rais_tic['Tamanho das Empresas TIC'] = df_rais_tic['f0__x']/df_rais_tic['f0__y']
 
+subdet_output = subdet_output.merge(df_rais_tic, how='left', on='Cod.IBGE')
+interesse=['Município','UF','Patentes','Tamanho da Indústria Inovadora',
+           'Tamanho da Indústria Criativa','Tamanho das Empresas TIC']
+subdet_output=subdet_output[interesse].set_index(['Município','UF'])
 
+missing_data(subdet_output)
+extreme_values(subdet_output)
+create_subindex(subdet_output, subdet)
+inovacao[subdet] = subdet_output
+
+# -
+inovacao = pd.concat(inovacao, axis=1)
+create_detindex(inovacao, 'Inovação')
+
+inovacao.to_csv('DETERMINANTES/det-INOVACAO.csv')
