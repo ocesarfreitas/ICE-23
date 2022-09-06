@@ -6,7 +6,6 @@ import basedosdados as bd
 
 # 2.2. DETERMINANTE AMBIENTE REGULATÓRIO
 database = pd.DataFrame()
-df = {}
 
 # 1. AMOSTRA
 
@@ -35,7 +34,7 @@ for i in list(range(1,13)):
 indicador['Município'] = indicador['MUNICÍPIO'].str.upper().str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
 indicador = database.merge(indicador, how='left', on=['Município', 'UF'])
 indicador['Tempo de Viabilidade de Localização'] = indicador['QTDE.  HH VIABILIDADE END']
-indicador['Tempo de Registro de Localização'] = indicador['QTDE. HH. LIBERAÇÃO DBE']
+indicador['Tempo de Registro, Cadastro e Viabilidade de Nome'] = indicador['QTDE. HH. LIBERAÇÃO DBE']
 indicador = indicador.groupby(['Município','UF']).mean()
 indicador = indicador.fillna(0)
 
