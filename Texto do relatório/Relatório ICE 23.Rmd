@@ -38,11 +38,6 @@ toc-title: "Sumário"
 geometry: "left=3cm, right=2cm, top=3cm, bottom=2cm"
 fontsize: 12
 ---
-
-<!-- Vítor para você da um olhada em como talvez fique aqui pelo RMD, talvez seja
-     a forma mais interessante para fazer o relatório.
-     Ai só colocaríamos aqui os códigos mesmo, sem rodar eles, para ficar mais fácil -->
-
 \newpage
 
 ```{python setup, eval=FALSE, echo=TRUE}
@@ -87,4 +82,5 @@ top100.to_csv('100-municipios.csv', index=False)
 ```
 
 # Determinantes
-
+## Determinante Ambiente Regulatório
+### Subdeterminante Tempo de Processos
