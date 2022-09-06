@@ -4,6 +4,7 @@ date: "`r format(Sys.time(), '%B %d, %Y')`"
 author: 
   - César Freitas
   - Vítor Borges
+  - Arnaldo
 output:
   pdf_document:
     number_sections: true
@@ -40,15 +41,32 @@ fontsize: 12
 ---
 \newpage
 
+# Introducao
+Para a construção do Índice das Cidades Empreendedoras (ICE) de 2023, a manipulação e tratamento dos dados, bem como o cálculo dos indicadores, foram feitos em `Python`,`R` e `SQL`. Optou por utilizar diferentes linguagens 
+
+Nesta edição, a manipulação das bases de dados e o cálculo dos indicadores foram feitos exclusivamente no R.Os scripts estão disponíveis no Apêndice deste relatório. Além disso, todos arquivos de dados e scripts estão
+disponíveis no drive do projeto, disponível neste link. Por fim, os códigos em R também estão disponíveis
+em repositório GitHub.
+Os indicadores foram calculados de maneira paralela pelos bolsistas. Alguns scripts fazem referência a um
+dataframe chamado municode, enquanto outros se referem a top100_mun_cod. Ambos possuem a mesma
+informação: a lista dos 101 municípios que compõem o ICE. Os scripts que geram esses dataframes estão
+disponíveis no Apêndice.
+6
+
+# Determinantes
+## Determinante Ambiente Regulatório
+### Subdeterminante Tempo de Processos
+
+# Apêndice {.unnumbered #apend}
+## Scripts Indicadores {.unnumbered #script_ind}
 ```{python setup, eval=FALSE, echo=TRUE}
 import pandas as pd
 import numpy as np
 import basedosdados as bd
 ```
-
-# Amostra
+### Amostra {.unnumbered #amostra}
 ```{python amostra 1, eval=FALSE, echo=TRUE}
-# A
+# Leitura da base
 df = pd.read_excel('POP2021_20220711.xls', 'Municípios')
 df = df.head(-32)
 df.columns = df.iloc[0]
@@ -60,27 +78,22 @@ for i in range(len(df)):
         df.at[i, 'POPULAÇÃO ESTIMADA'] = pop
 top100 = df.sort_values(by=['POPULAÇÃO ESTIMADA'], ascending=False).head(101)
 
-# A
+# Tratando a base
 am = pd.read_excel('Amostra.xlsx')
 for i in range(len(am)):
     name = am['Município'][i].split('-')[0].strip()
     am.at[i,'Município'] = name
 
-# A
 def Union(lst1, lst2):
     final_list = list(set(lst1) | set(lst2))
     return final_list
 
 final_sample = Union(am['Município'],top100['NOME DO MUNICÍPIO'])
 
-# A
 for i in am['Município']:
     if i not in list(top100['NOME DO MUNICÍPIO']):
         print(i)
-        
+
+# Criando o arquivo
 top100.to_csv('100-municipios.csv', index=False)
 ```
-
-# Determinantes
-## Determinante Ambiente Regulatório
-### Subdeterminante Tempo de Processos

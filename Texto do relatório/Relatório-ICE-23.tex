@@ -5,6 +5,10 @@
 \documentclass[
   12,
   dvipsnames]{article}
+\title{Relatório Índice das Cidades Empreendedoras 2023}
+\author{César Freitas \and Vítor Borges \and Arnaldo}
+\date{September 06, 2022}
+
 \usepackage{amsmath,amssymb}
 \usepackage{lmodern}
 \usepackage{iftex}
@@ -24,6 +28,14 @@
   \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
 \usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Relatório Índice das Cidades Empreendedoras 2023},
+  pdfauthor={César Freitas; Vítor Borges; Arnaldo},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
 \usepackage[left=3cm, right=2cm, top=3cm, bottom=2cm]{geometry}
 \usepackage{color}
 \usepackage{fancyvrb}
@@ -99,18 +111,6 @@
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
-\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same} % disable monospaced font for URLs
-\hypersetup{
-  pdftitle={Relatório Índice das Cidades Empreendedoras 2023},
-  pdfauthor={César Freitas; Vítor Borges},
-  hidelinks,
-  pdfcreator={LaTeX via pandoc}}
-
-\title{Relatório Índice das Cidades Empreendedoras 2023}
-\author{César Freitas \and Vítor Borges}
-\date{agosto 29, 2022}
 
 \begin{document}
 \maketitle
@@ -133,11 +133,35 @@ A
 \end{Highlighting}
 \end{Shaded}
 
+\hypertarget{introducao}{%
+\section{Introducao}\label{introducao}}
+
+\hypertarget{determinantes}{%
+\section{Determinantes}\label{determinantes}}
+
+\hypertarget{determinante-ambiente-regulatuxf3rio}{%
+\subsection{Determinante Ambiente
+Regulatório}\label{determinante-ambiente-regulatuxf3rio}}
+
+\hypertarget{subdeterminante-tempo-de-processos}{%
+\subsubsection{Subdeterminante Tempo de
+Processos}\label{subdeterminante-tempo-de-processos}}
+
+\hypertarget{apend}{%
+\section*{Apêndice}\label{apend}}
+\addcontentsline{toc}{section}{Apêndice}
+
+\hypertarget{script_ind}{%
+\subsection*{Scripts Indicadores}\label{script_ind}}
+\addcontentsline{toc}{subsection}{Scripts Indicadores}
+
 \hypertarget{amostra}{%
-\section{Amostra}\label{amostra}}
+\subsubsection*{Amostra}\label{amostra}}
+\addcontentsline{toc}{subsubsection}{Amostra}
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\CommentTok{\# Leitura da base}
 \NormalTok{df }\OperatorTok{=}\NormalTok{ pd.read\_excel(}\StringTok{\textquotesingle{}POP2021\_20220711.xls\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Municípios\textquotesingle{}}\NormalTok{)}
 \NormalTok{df }\OperatorTok{=}\NormalTok{ df.head(}\OperatorTok{{-}}\DecValTok{32}\NormalTok{)}
 \NormalTok{df.columns }\OperatorTok{=}\NormalTok{ df.iloc[}\DecValTok{0}\NormalTok{]}
@@ -148,10 +172,27 @@ A
 \NormalTok{        pop }\OperatorTok{=} \BuiltInTok{int}\NormalTok{(df.iloc[i][}\StringTok{\textquotesingle{}POPULAÇÃO ESTIMADA\textquotesingle{}}\NormalTok{].split(}\StringTok{\textquotesingle{}(\textquotesingle{}}\NormalTok{)[}\DecValTok{0}\NormalTok{].replace(}\StringTok{\textquotesingle{}.\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{))}
 \NormalTok{        df.at[i, }\StringTok{\textquotesingle{}POPULAÇÃO ESTIMADA\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ pop}
 \NormalTok{top100 }\OperatorTok{=}\NormalTok{ df.sort\_values(by}\OperatorTok{=}\NormalTok{[}\StringTok{\textquotesingle{}POPULAÇÃO ESTIMADA\textquotesingle{}}\NormalTok{], ascending}\OperatorTok{=}\VariableTok{False}\NormalTok{).head(}\DecValTok{101}\NormalTok{)}
+
+\CommentTok{\# Tratando a base}
+\NormalTok{am }\OperatorTok{=}\NormalTok{ pd.read\_excel(}\StringTok{\textquotesingle{}Amostra.xlsx\textquotesingle{}}\NormalTok{)}
+\ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(}\BuiltInTok{len}\NormalTok{(am)):}
+\NormalTok{    name }\OperatorTok{=}\NormalTok{ am[}\StringTok{\textquotesingle{}Município\textquotesingle{}}\NormalTok{][i].split(}\StringTok{\textquotesingle{}{-}\textquotesingle{}}\NormalTok{)[}\DecValTok{0}\NormalTok{].strip()}
+\NormalTok{    am.at[i,}\StringTok{\textquotesingle{}Município\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ name}
+
+\KeywordTok{def}\NormalTok{ Union(lst1, lst2):}
+\NormalTok{    final\_list }\OperatorTok{=} \BuiltInTok{list}\NormalTok{(}\BuiltInTok{set}\NormalTok{(lst1) }\OperatorTok{|} \BuiltInTok{set}\NormalTok{(lst2))}
+    \ControlFlowTok{return}\NormalTok{ final\_list}
+
+\NormalTok{final\_sample }\OperatorTok{=}\NormalTok{ Union(am[}\StringTok{\textquotesingle{}Município\textquotesingle{}}\NormalTok{],top100[}\StringTok{\textquotesingle{}NOME DO MUNICÍPIO\textquotesingle{}}\NormalTok{])}
+
+\ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in}\NormalTok{ am[}\StringTok{\textquotesingle{}Município\textquotesingle{}}\NormalTok{]:}
+    \ControlFlowTok{if}\NormalTok{ i }\KeywordTok{not} \KeywordTok{in} \BuiltInTok{list}\NormalTok{(top100[}\StringTok{\textquotesingle{}NOME DO MUNICÍPIO\textquotesingle{}}\NormalTok{]):}
+        \BuiltInTok{print}\NormalTok{(i)}
+
+\CommentTok{\# Criando o arquivo}
+\NormalTok{top100.to\_csv(}\StringTok{\textquotesingle{}100{-}municipios.csv\textquotesingle{}}\NormalTok{, index}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{determinantes}{%
-\section{Determinantes}\label{determinantes}}
 
 \end{document}
