@@ -275,24 +275,40 @@ ind_simpli_tri = df_ihh.merge(df_iv, how='left', on=['Município','UF'])
 
 ind_simpli_tri['Simplicidade Tributária'] = ind_simpli_tri['IHH']*ind_simpli_tri['ind_v']
 
+ind_simpli_tri = ind_simpli_tri.merge(database, how='right',on=['Município','UF'])
+ind_simpli_tri['Cod.IBGE'] = ind_simpli_tri['Cod.IBGE'].astype(str)
+subdet_complexidade = ind_simpli_tri.merge(amostra, how='right', on='Cod.IBGE')
+interesse=['NOME DO MUNICÍPIO','UF_x','Cod.IBGE','Simplicidade Tributária']
+subdet_complexidade = subdet_complexidade[interesse]
+subdet_complexidade = subdet_complexidade.rename(columns={'UF_x':'UF',
+                                                          'NOME DO MUNICÍPIO':'Município'})
 ####
+df_cnd = pd.read_excel('DETERMINANTE AMBIENTE REGULATÓRIO/cnds_municipais.xlsx',
+                       usecols='A:C')
+subdet_complexidade = subdet_complexidade.merge(df_cnd, how='right', on=['Município','UF'])
 
+###
+df_zoneamento = pd.read_excel('Arquivos ICE - 23/Ind_Originais_ICE_2022.xlsx', header=5,
+                        usecols="B:C,O")
 
+df_zoneamento = df_zoneamento.rename(columns={'2018.1':'Atualização de Zoneamento',
+                                              'Ano':'Município'})
+df_zoneamento['Atualização de Zoneamento'] = df_zoneamento['Atualização de Zoneamento'] + 1
+df_zoneamento['Atualização de Zoneamento'] = np.where(df_zoneamento['Atualização de Zoneamento']==1, 0, df_zoneamento['Atualização de Zoneamento']) 
 
+subdet_complexidade = subdet_complexidade.merge(df_zoneamento, how='right', on=['Município','UF'])
+subdet_complexidade = subdet_complexidade.set_index(['Município','UF'])
+del subdet_complexidade['Cod.IBGE']
 
-subdet_tri = subdet_tri.merge(database, how='right',on=['Município','UF'])
-subdet_tri['Cod.IBGE'] = subdet_tri['Cod.IBGE'].astype(str)
-subdet_tri = subdet_tri.merge(amostra, how='right', on='Cod.IBGE')
-interesse=['NOME DO MUNICÍPIO','UF_x','Alíquota Interna do ICMS','Alíquota Interna do IPTU',
-           'Alíquota Interna do ISS','Qualidade de Gestão Fiscal']
-subdet_tri = subdet_tri[interesse]
-subdet_tri = subdet_tri.rename(columns={'UF_x':'UF','NOME DO MUNICÍPIO':'Município'})
-subdet_tri = subdet_tri.set_index(['Município','UF'])
-subdet_tri.iloc[:,0] = negative(subdet_tri.iloc[:,0])
-subdet_tri.iloc[:,1] = negative(subdet_tri.iloc[:,1])
-subdet_tri.iloc[:,2] = negative(subdet_tri.iloc[:,2])
+subdet_complexidade.iloc[:,2] = negative(subdet_complexidade.iloc[:,2])
 
-missing_data(subdet_tri)
-extreme_values(subdet_tri)
-create_subindex(subdet_tri, subdet)
-ambiente[subdet] = subdet_tri
+missing_data(subdet_complexidade)
+extreme_values(subdet_complexidade)
+create_subindex(subdet_complexidade, subdet)
+ambiente[subdet] = subdet_complexidade
+
+# -
+ambiente = pd.concat(ambiente, axis=1)
+create_detindex(ambiente, 'Ambiente Regulatório')
+
+ambiente.to_csv('DETERMINANTES/det-AMBIENTE REGULATÓRIO.csv')
