@@ -18,11 +18,10 @@ database = database.set_index(['Município', 'UF'])
 
 # 2.2.
 ambiente = {}
-subdet = 'Tempo de processos'
 
 # ---------------------------------------------------------------------------------------------
 # 2.2.1. SUBDETERMINANTE TEMPO DE PROCESSOS
-subdet = 'Tempo de processos'
+subdet = 'Tempo de Processos'
 
 for i in list(range(1,13)):
     globals()[f"indicador_{i}"] = pd.read_excel(f'DETERMINANTE AMBIENTE REGULATÓRIO/REDESIM/tempos-abertura-Brasil{i}2021.xlsx', 
@@ -58,14 +57,28 @@ del indicador_pro['NOVOS']
 del indicador_pro['PENDENTES']
 
 subdet_tempo = indicador.reset_index().merge(indicador_pro, how='inner', on='Município').set_index(['Município','UF'])
-    
+subdet_tempo['Cod.IBGE'] = subdet_tempo['Cod.IBGE'].astype(str).str[:7]
+amostra['Cod.IBGE'] = amostra['Cod.IBGE'].astype(str)
+subdet_tempo = subdet_tempo.merge(amostra, how='right', on='Cod.IBGE')
+interesse = ['NOME DO MUNICÍPIO','UF','Tempo de Viabilidade de Localização',
+             'Tempo de Registro, Cadastro e Viabilidade de Nome','Taxa de Congestionamento em Tribunais']
+subdet_tempo = subdet_tempo[interesse].rename(columns={'NOME DO MUNICÍPIO':'Município'})
+subdet_tempo = subdet_tempo.set_index(['Município','UF'])
+
+subdet_tempo['Tempo de Viabilidade de Localização'] = negative(subdet_tempo['Tempo de Viabilidade de Localização'])
+subdet_tempo['Tempo de Registro, Cadastro e Viabilidade de Nome'] = negative(subdet_tempo['Tempo de Registro, Cadastro e Viabilidade de Nome'])
+subdet_tempo['Taxa de Congestionamento em Tribunais'] = negative(subdet_tempo['Taxa de Congestionamento em Tribunais'])
+
+missing_data(subdet_tempo)
+extreme_values(subdet_tempo)
+create_subindex(subdet_tempo, subdet)
+ambiente[subdet] = subdet_tempo
+
 # ---------------------------------------------------------------------------------------------
 # 2.2.2. SUBDETERMINANTE TRIBUTAÇÃO
+subdet = 'Tributação'
 
 ## SINCONFI
-database = database.reset_index()
-database['Cod.IBGE'] = amostra['COD. MUNIC'] 
-
 sinconfi_mun = pd.read_csv("DETERMINANTE AMBIENTE REGULATÓRIO/Sinconfi/finbra_mun.csv",
                            encoding='ISO-8859-1', sep=';', decimal=',')
 sinconfi_uf = pd.read_csv("DETERMINANTE AMBIENTE REGULATÓRIO/Sinconfi/finbra_uf.csv",
@@ -73,8 +86,9 @@ sinconfi_uf = pd.read_csv("DETERMINANTE AMBIENTE REGULATÓRIO/Sinconfi/finbra_uf
 base = '`basedosdados.br_ibge_pib.municipio`'
 project_id = 'double-balm-306418'
 var = ('id_municipio, pib')
-cod_ibge = list(database['Cod.IBGE'])
-query = f'SELECT {var}, CASE id_municipio WHEN  FROM {base} WHERE (ano = 2019)'
+database = database.reset_index()
+cod_ibge = tuple(database['Cod.IBGE'].astype(str))
+query = f'SELECT {var} FROM {base} WHERE ano = 2019 AND id_municipio IN {cod_ibge}'
 pib_mun = bd.read_sql(query=query,billing_project_id=project_id)
 
 def sinconfi(df1,df2,pib,imposto,var):
@@ -121,9 +135,25 @@ dfs = [df_ICMS,df_IPTU,df_ISS,df_firjan]
 
 subdet_tri = reduce(lambda left,right: pd.merge(left, right, on=['Município','UF'], 
                                                 how='outer'), dfs)
+subdet_tri = subdet_tri.merge(database, how='right',on=['Município','UF'])
+subdet_tri['Cod.IBGE'] = subdet_tri['Cod.IBGE'].astype(str)
+subdet_tri = subdet_tri.merge(amostra, how='right', on='Cod.IBGE')
+interesse=['NOME DO MUNICÍPIO','UF_x','Alíquota Interna do ICMS','Alíquota Interna do IPTU',
+           'Alíquota Interna do ISS','Qualidade de Gestão Fiscal']
+subdet_tri = subdet_tri[interesse]
+subdet_tri = subdet_tri.rename(columns={'UF_x':'UF','NOME DO MUNICÍPIO':'Município'})
+subdet_tri = subdet_tri.set_index(['Município','UF'])
+subdet_tri.iloc[:,0] = negative(subdet_tri.iloc[:,0])
+subdet_tri.iloc[:,1] = negative(subdet_tri.iloc[:,1])
+subdet_tri.iloc[:,2] = negative(subdet_tri.iloc[:,2])
 
+missing_data(subdet_tri)
+extreme_values(subdet_tri)
+create_subindex(subdet_tri, subdet)
+ambiente[subdet] = subdet_tri
 # ---------------------------------------------------------------------------------------------
 # 2.2.3. SUBDETERMINANTE COMPLEXIDADE BUROCRÁTICA
+subdet = 'Complexidade Burocrática'
 ### Sinconfi
 
 tributos = ['1.1.1.2.01.0.0 - Imposto sobre a Propriedade Territorial Rural', 
@@ -183,9 +213,7 @@ iv = ['1.1.1.2.01.0.0 - Imposto sobre a Propriedade Territorial Rural',
       '1.1.1.3.03.0.0 - Imposto sobre a Renda - Retido na Fonte',
       '1.1.1.8.01.1.0 - Imposto sobre a Propriedade Predial e Territorial Urbana',
       '1.1.1.8.01.4.0 - Imposto sobre Transmissão ¿Inter Vivos¿ de Bens Imóveis e de Direitos Reais sobre Imóveis',
-      '1.1.1.0.00.0.0 - Impostos',
-      '1.1.2.0.00.0.0 - Taxas',
-      '1.2.0.0.00.0.0 - Contribuições']
+      'TOTAL DAS RECEITAS (III) = (I + II)']
 
 def sinconfi_ihh(df1,df2):
     df_mun = df1.query('Conta in @tributos')
@@ -236,11 +264,8 @@ def sinconfi_iv(df1,df2):
     del df3['1.1.1.3.03.0.0 - Imposto sobre a Renda - Retido na Fonte']
     del df3['1.1.1.8.01.1.0 - Imposto sobre a Propriedade Predial e Territorial Urbana'] 
     del df3['1.1.1.8.01.4.0 - Imposto sobre Transmissão ¿Inter Vivos¿ de Bens Imóveis e de Direitos Reais sobre Imóveis']
-    df3['Total I + T + C'] = df3['1.1.1.0.00.0.0 - Impostos'] + df3['1.1.2.0.00.0.0 - Taxas'] + df3['1.2.0.0.00.0.0 - Contribuições']
-    del df3['1.1.1.0.00.0.0 - Impostos']
-    del df3['1.1.2.0.00.0.0 - Taxas']
-    del df3['1.2.0.0.00.0.0 - Contribuições']
-    df3['ind_v'] = df3['Total Impostos']/df3['Total I + T + C']
+    df3['Total_receitas'] = df3['TOTAL DAS RECEITAS (III) = (I + II)']
+    df3['ind_v'] = df3['Total Impostos']/df3['Total_receitas']
     
     globals()['df_iv'] = df3['ind_v'].to_frame()
     
@@ -249,3 +274,25 @@ sinconfi_iv(sinconfi_mun, sinconfi_uf)
 ind_simpli_tri = df_ihh.merge(df_iv, how='left', on=['Município','UF'])
 
 ind_simpli_tri['Simplicidade Tributária'] = ind_simpli_tri['IHH']*ind_simpli_tri['ind_v']
+
+####
+
+
+
+
+subdet_tri = subdet_tri.merge(database, how='right',on=['Município','UF'])
+subdet_tri['Cod.IBGE'] = subdet_tri['Cod.IBGE'].astype(str)
+subdet_tri = subdet_tri.merge(amostra, how='right', on='Cod.IBGE')
+interesse=['NOME DO MUNICÍPIO','UF_x','Alíquota Interna do ICMS','Alíquota Interna do IPTU',
+           'Alíquota Interna do ISS','Qualidade de Gestão Fiscal']
+subdet_tri = subdet_tri[interesse]
+subdet_tri = subdet_tri.rename(columns={'UF_x':'UF','NOME DO MUNICÍPIO':'Município'})
+subdet_tri = subdet_tri.set_index(['Município','UF'])
+subdet_tri.iloc[:,0] = negative(subdet_tri.iloc[:,0])
+subdet_tri.iloc[:,1] = negative(subdet_tri.iloc[:,1])
+subdet_tri.iloc[:,2] = negative(subdet_tri.iloc[:,2])
+
+missing_data(subdet_tri)
+extreme_values(subdet_tri)
+create_subindex(subdet_tri, subdet)
+ambiente[subdet] = subdet_tri
