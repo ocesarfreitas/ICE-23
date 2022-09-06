@@ -4,6 +4,8 @@ library(httr)
 library(tidyverse)
 library(basedosdados)
 library(abjutils)
+library(readxl)
+
 # funcao para baixar dados do site ----------------------------------------
 get_muni <- function(uf, muni) {
   # import data-----------------------------------------------------------------
@@ -60,28 +62,36 @@ get_muni <- function(uf, muni) {
 set_billing_id("double-balm-306418")
 nome_uf <- read_sql(
   "SELECT id_municipio, nome_uf
-FROM `basedosdados.br_bd_diretorios_brasil.municipio`"
-  
-)
-municode <- read_csv("municode.csv") %>%
+FROM `basedosdados.br_bd_diretorios_brasil.municipio`")
+
+municode <- read_csv("AMOSTRA/100-municipios.csv")
+
+municode$id_municipio <- paste0(municode$`COD. UF`,municode$`COD. MUNIC`)
+municode$nome <- municode$`NOME DO MUNICÍPIO`
+
+municode <- municode %>%
   mutate(id_municipio = as.character(id_municipio)) %>%
-  left_join(nome_uf) %>%
+  left_join(nome_uf, by='id_municipio') %>% 
   select(id_municipio, nome_uf, nome)
+
 # raspa os dados para cada municipio --------------------------------------
 terrenos <- map2_dfr(municode$nome_uf, municode$nome, get_muni)
+
 # organiza e exclui dados faltanes
 terrenos_final <- terrenos %>%
   filter(area != 0 & !is.na(area)) %>%
   separate(
     endereco,
     sep = ">",
-    into = c("pa?s", "nome_uf", "NULL", "nome", "bairro"),
+    into = c("pais", "nome_uf", "NULL", "nome", "bairro"),
     extra = "merge"
   ) %>%
   select(nome_uf, nome, bairro, price, area)
+
 gabarito <- terrenos_final %>%
   mutate(`m^2` = price / area) %>%
   arrange(-`m^2`)
+
 df <- terrenos_final %>%
   mutate(m2 = price / area) %>%
   filter(between(m2, 100, 20000)) %>%
@@ -90,23 +100,10 @@ df <- terrenos_final %>%
     price_total = sum(price, na.rm = TRUE),
     area_total = sum(area),
     amostra = n(),
-    m2 = price_total / area_total
-  )
+    m2 = price_total / area_total)
+
 df_final <- municode %>%
   mutate(across(everything(), rm_accent)) %>%
   left_join(df) %>%
   mutate(s22_m2 = 1 / m2)
-write_excel_csv(df_final, "infraestrutura/terrenos/sd22_m2_completo.xlsx")
-terrenos <- read_excel("infraestrutura/terrenos/sd22_m2_completo.xlsx")%>%
-  mutate(m2 = as.double(m2),
-         s22_m2 = as.double(s22_m2)) %>%
-  rename(i222 = s22_m2)
-
-i222_completo <- municode %>%
-  select(id_municipio,sigla_uf) %>%
-  left_join(terrenos) %>%
-  select(-nome_uf) %>%
-  arrange(id_municipio)
-write_csv(i222_completo, "infraestrutura/i222.csv")
-i222_completo %>% select(1:3,8) %>%
-  write_csv("dados_finais/i222.csv")
+write_excel_csv(df_final, "DETERMINANTE INFRAESTRUTURA/sd22_m2_completo.csv")
