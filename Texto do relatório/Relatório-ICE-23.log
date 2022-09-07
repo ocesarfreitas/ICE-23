@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.6)  7 SEP 2022 01:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.6)  7 SEP 2022 03:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -616,163 +616,176 @@ LaTeX Warning: Command \' invalid in math mode on input line 369.
 
 LaTeX Warning: Command \' invalid in math mode on input line 401.
 
-[5] [6] [7] [8]
+[5] [6] [7] [8] [9]
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 727.
-LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 740.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 853.
+[10]
+LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 866.
 (c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmtt.fd
 File: ts1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-) [9] [10] [11]
-Overfull \vbox (0.30649pt too high) detected at line 967
+) [11]
+Underfull \vbox (badness 10000) detected at line 995
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 995
  []
 
 [12] [13]
-Underfull \vbox (badness 10000) detected at line 1153
+Underfull \vbox (badness 10000) detected at line 1093
  []
 
 
-Underfull \vbox (badness 10000) detected at line 1153
+Underfull \vbox (badness 10000) detected at line 1093
  []
 
-[14]
-Underfull \vbox (badness 10000) detected at line 1153
- []
-
-
-Underfull \vbox (badness 10000) detected at line 1153
- []
-
-[15]
-Underfull \vbox (badness 10000) detected at line 1153
+[14] [15]
+Underfull \vbox (badness 10000) detected at line 1279
  []
 
 
-Underfull \vbox (badness 10000) detected at line 1153
+Underfull \vbox (badness 10000) detected at line 1279
  []
 
-[16] [17] [18] [19]
-Underfull \vbox (badness 10000) detected at line 1471
- []
-
-
-Underfull \vbox (badness 10000) detected at line 1471
- []
-
-[20]
-Underfull \vbox (badness 10000) detected at line 1471
+[16]
+Underfull \vbox (badness 10000) detected at line 1279
  []
 
 
-Underfull \vbox (badness 10000) detected at line 1471
+Underfull \vbox (badness 10000) detected at line 1279
  []
 
-[21]
-Underfull \vbox (badness 10000) detected at line 1471
+[17]
+Underfull \vbox (badness 10000) detected at line 1279
  []
 
 
-Underfull \vbox (badness 10000) detected at line 1471
+Underfull \vbox (badness 10000) detected at line 1279
+ []
+
+[18] [19]
+Underfull \vbox (badness 10000) detected at line 1381
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 1381
+ []
+
+[20] [21]
+Underfull \vbox (badness 10000) detected at line 1597
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 1597
  []
 
 [22]
-Underfull \vbox (badness 10000) detected at line 1471
+Underfull \vbox (badness 10000) detected at line 1597
  []
 
 
-Underfull \vbox (badness 10000) detected at line 1471
+Underfull \vbox (badness 10000) detected at line 1597
  []
 
-[23] [24]
-Underfull \vbox (badness 10000) detected at line 1717
- []
-
-
-Underfull \vbox (badness 10000) detected at line 1717
- []
-
-[25]
-Underfull \vbox (badness 10000) detected at line 1717
+[23]
+Underfull \vbox (badness 10000) detected at line 1597
  []
 
 
-Underfull \vbox (badness 10000) detected at line 1717
+Underfull \vbox (badness 10000) detected at line 1597
+ []
+
+[24] [25]
+Underfull \vbox (badness 10000) detected at line 1843
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 1843
  []
 
 [26]
-Underfull \vbox (badness 10000) detected at line 1717
+Underfull \vbox (badness 10000) detected at line 1843
  []
 
 
-Underfull \vbox (badness 10000) detected at line 1717
+Underfull \vbox (badness 10000) detected at line 1843
  []
 
 [27]
-Underfull \vbox (badness 10000) detected at line 1717
+Underfull \vbox (badness 10000) detected at line 1843
  []
 
 
-Underfull \vbox (badness 10000) detected at line 1717
+Underfull \vbox (badness 10000) detected at line 1843
  []
 
 [28]
-pdfTeX warning (ext4): destination with the same identifier (name{subdet_obra_basica}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.1747 ...rotect\hypertarget{subdet_obra_basica}{}
-                                                  {clique [29]
-Underfull \vbox (badness 10000) detected at line 1906
+Underfull \vbox (badness 10000) detected at line 1843
  []
 
 
-Underfull \vbox (badness 10000) detected at line 1906
+Underfull \vbox (badness 10000) detected at line 1843
+ []
+
+[29]
+Underfull \vbox (badness 10000) detected at line 1843
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 1843
  []
 
 [30]
-Underfull \vbox (badness 10000) detected at line 1906
+pdfTeX warning (ext4): destination with the same identifier (name{subdet_obra_basica}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.1873 ...rotect\hypertarget{subdet_obra_basica}{}
+                                                  {clique [31]
+Underfull \vbox (badness 10000) detected at line 2032
  []
 
 
-Underfull \vbox (badness 10000) detected at line 1906
- []
-
-[31]
-Underfull \vbox (badness 10000) detected at line 1906
- []
-
-
-Underfull \vbox (badness 10000) detected at line 1906
+Underfull \vbox (badness 10000) detected at line 2032
  []
 
 [32]
+Underfull \vbox (badness 10000) detected at line 2032
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 2032
+ []
+
+[33] [34]
 pdfTeX warning (ext4): destination with the same identifier (name{subdet_obra_qualificada}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1919 ...t\hypertarget{subdet_obra_qualificada}{}
-                                                  {clique aqui} [33]
-Underfull \vbox (badness 10000) detected at line 2009
+l.2045 ...t\hypertarget{subdet_obra_qualificada}{}
+                                                  {clique aqui} [35]
+Underfull \vbox (badness 10000) detected at line 2135
  []
 
 
-Underfull \vbox (badness 10000) detected at line 2009
+Underfull \vbox (badness 10000) detected at line 2135
  []
 
-[34] [35] (./Relatório-ICE-23.aux) ) 
+[36] [37] (./Relatório-ICE-23.aux) ) 
 Here is how much of TeX's memory you used:
- 15539 strings out of 477015
- 255259 string characters out of 5825584
- 710219 words of memory out of 5000000
- 36077 multiletter control sequences out of 15000+600000
- 544440 words of font info for 129 fonts, out of 8000000 for 9000
+ 15551 strings out of 477015
+ 255346 string characters out of 5825584
+ 706217 words of memory out of 5000000
+ 36081 multiletter control sequences out of 15000+600000
+ 544523 words of font info for 130 fonts, out of 8000000 for 9000
  16 hyphenation exceptions out of 8191
  86i,8n,91p,1014b,614s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 pdfTeX warning (dest): name{Hfootnote.1} has been referenced but does not exist, replaced by a fixed one
 
 {c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}<c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb><c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx9.pfb><c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmex10.pfb><c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb><c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb><c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb><c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr6.pfb><c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr9.pfb><c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb><c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri8.pfb><c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb><c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb><c:/Users/CLIENTE/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on Relatório-ICE-23.pdf (35 pages, 474130 bytes).
+Output written on Relatório-ICE-23.pdf (37 pages, 476362 bytes).
 PDF statistics:
- 711 PDF objects out of 1000 (max. 8388607)
- 624 compressed objects within 7 object streams
- 241 named destinations out of 1000 (max. 500000)
+ 730 PDF objects out of 1000 (max. 8388607)
+ 641 compressed objects within 7 object streams
+ 247 named destinations out of 1000 (max. 500000)
  45353 words of extra memory for PDF output out of 51595 (max. 10000000)
 

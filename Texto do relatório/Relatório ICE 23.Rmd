@@ -168,20 +168,83 @@ Processo de coleta e tramento análogo ao Indicador Alíquota Interna do ICMS.
 |--------------------------- |--------------------------------------------------|
 | **Fonte**             	   | https://www.firjan.com.br/ifgf/                  |
 | **Período**           	   | 2021                                             |
-| **Cidades faltantes** 	   |  -                                               |
-| **Efeito**                 | Positvo 	 	 	  	 	 	 	 	 	 	 	 	 	              |
+| **Cidades faltantes** 	   | Brasília (DF), Belém (PA), São João de Meriti (RJ), Carapicuíba	(SP) |
+| **Efeito**                 | Positivo	 	 	  	 	 	 	 	 	 	 	 	 	              |
 | **Variável de interesse**  | IFGF                           	 	 	  	 	      |
 | **Problemas com a coleta** | Não     	 	  	 	 	 	 	 	 	 	 	 	                |
 
-
+O indicador não necessita de manipulação de dados.
 
 ### Subdeterminante Complexidade Burocrática {#subdet_complexidade}
 
 - [Clique aqui](#script_2.1.3) para ver o script do Subdeterminante Complexidade Burocrática.
 
 #### Indicador Simplicidade Tributária 
+
+|                       	   | **Informações**                                  |
+|--------------------------- |--------------------------------------------------|
+| **Fonte**             	   | https://siconfi.tesouro.gov.br/siconfi/index.jsf |
+| **Período**           	   | 2021                                             |
+| **Cidades faltantes** 	   | Brasília (DF)                                    |
+| **Efeito**                 | Positivo	 	 	  	 	 	 	 	 	 	 	 	 	              |
+| **Variável de interesse**  | -                           	 	 	  	 	      |
+| **Problemas com a coleta** | Não     	 	  	 	 	 	 	 	 	 	 	 	                |
+
+Escrever algo amanhã.
+
 #### Indicador CNDs Municipais
+
+|                       	   | **Informações**                                  |
+|--------------------------- |--------------------------------------------------|
+| **Fonte**             	   | Análise dos site das prefeituras                 |
+| **Período**           	   | 2021                                             |
+| **Cidades faltantes** 	   | -                                                |
+| **Efeito**                 | Positivo	 	 	  	 	 	 	 	 	 	 	 	 	              |
+| **Variável de interesse**  | CNDs Municipais                           	 	 	  |
+| **Problemas com a coleta** | Não     	 	  	 	 	 	 	 	 	 	 	 	                |
+
+Tabela com a justificativa dos CNDs = 0
+
+| **Município**         | **UF** | **Motivo**                                                           |
+|-----------------------|--------|----------------------------------------------------------------------|
+| Ananindeua            | PA     | Não foi encontrada nenhuma referência ao termo no site               |
+| Anápolis              | GO     | Não foi encontrada nenhuma referência ao termo no site               |
+| Aracaju               | SE     | Não foi encontrada nenhuma referência ao termo no site               |
+| Betim                 | MG     | Não foi encontrada nenhuma referência ao termo no site               |
+| Campina Grande        | PB     | Não foi encontrada nenhuma referência ao termo no site               |
+| Campos dos Goytacazes | RJ     | Não foi encontrada nenhuma referência ao termo no site               |
+| Carapicuíba           | SP     | Não foi encontrada nenhuma referência ao termo no site               |
+| Juiz de Fora          | MG     | Não foi encontrada nenhuma referência ao termo no site               |
+| Mossoró               | RN     | Não foi encontrada nenhuma referência ao termo no site               |
+| Natal                 | RN     | Não foi encontrada nenhuma referência ao termo no site               |
+| Ribeirão das Neves    | MG     | Não foi encontrada nenhuma referência ao termo no site               |
+| São Gonçalo           | RJ     | Não foi encontrada nenhuma referência ao termo no site               |
+| São João de Meriti    | RJ     | Não foi encontrada nenhuma referência ao termo no site               |
+| São Vicente           | SP     | Não foi encontrada nenhuma referência ao termo no site               |
+| Sumaré                | SP     | Não foi encontrada nenhuma referência ao termo no site               |
+| Taubaté               | SP     | Não foi encontrada nenhuma referência ao termo no site               |
+| Rio Branco	          | AC	   | Seção de serviços online fora do ar durante todo o período da coleta |
+| Brasília              | DF	   | 0 Site encaminha para atendimento presencial ou via e-mail           |
+| Guarulhos             | SP	   | 0 Site encaminha para atendimento presencial ou via e-mail           |
+| Itaquaquecetuba       | SP	   | 0 Site encaminha para atendimento presencial ou via e-mail           |
+| Camaçari              | BA	   | 0 Site encaminha para um pdf com todos os serviços da prefeitura, mas não indica forma de atendimento online |
+| Rio de Janeiro        | RJ	   | 0	Site foi hackeado dia 15/08/2022 e desde então não foi possível ver com clareza os serviços, porém pelas informações disponíveis foi entendido que para esse tipo de serviço o atendimento somente é presencial |
+| Belford Roxo          | RJ	   | 0 site tem emição de quitação mas não de CND                         |
+| São José dos Pinhais  | PR	   | 0 site tem uma seção no site referente a emissão de certidões, porém ao clicar nela o site da erro não abre nada. Foram feitas algumas tentativas durante a construção desse relatório e coleta dos dados. |
+
+
+
+
 #### Indicador Atualização de Zoneamento
+
+|                       	   | **Informações**                                  |
+|--------------------------- |--------------------------------------------------|
+| **Fonte**             	   |https://www.ibge.gov.br/estatisticas/sociais/protecao-social/10586-pesquisa-de-informacoes-basicas-municipais.html?=&t=downloads|
+| **Período**           	   | 2021                                             |
+| **Cidades faltantes** 	   | -                                                |
+| **Efeito**                 | Negativo 	 	 	  	 	 	 	 	 	 	 	 	 	            |
+| **Variável de interesse**  | MLEG061                    	 	 	  	 	          |
+| **Problemas com a coleta** | Não     	 	  	 	 	 	 	 	 	 	 	 	                |
 
 ## Determinante Infraestrutura
 
