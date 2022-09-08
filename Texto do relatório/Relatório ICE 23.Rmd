@@ -309,23 +309,68 @@ Esse indicador se refere a quantidade de anos desde que o município mudou a lei
 | **Período**           	  |                           01/2021 ~ 12/2021                           	|
 | **Cidades faltantes** 	  | -                                                                       |
 | **Variável de Interesse** | 	 	 	 	 	 	 	 	 	 	    VERBETE_160_OPERACOES_DE_CREDITO  	 	 	 	 	    |
-| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Negativo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Postivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
 | **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
 
-1. Obter valor em reais das operações de crédito para pessoas físicas e jurídicas por município;
-• Acessar site do Banco Central e baixar arquivo “Estatística Bancária Mensal por município” referente
-ao mês de dezembro de 2020 (ano mais recente com dados disponíveis) Na planilha, é utilizada apenas
-a coluna chamada “VERBETE_160_OPERACOES_DE_CREDITO”;
-2. Obter PIB dos municípios do ICE a preços correntes;
+1. Obter valor em reais das operações de crédito para pessoas físicas e jurídicas por município:
 
-- Utilizando a . Os dados selecionados se referem ao ano mais recente com dados disponíveis, 2018;
+- Acessar site do Banco Central e baixar arquivo “Estatística Bancária Mensal por município” referente ao mês de dezembro de 2020 (ano mais recente com dados disponíveis) Na planilha, é utilizada apenas a coluna chamada “VERBETE_160_OPERACOES_DE_CREDITO”;
 
-3. Calcular o indicador para cada município de acordo com a seguinte fórmula:
-i411 = total de operações de crédito
-PIB
+2. Obter PIB dos municípios do ICE a preços correntes:
+
+- Foi utizado o \textit{data lake} público da Base dos Dados para importar os dados referentes ao PIB Municipal, para 2018 o ano mais recente.
 
 #### Indicador Proporção Relativa de Capital de Risco
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  |                      https://www.crunchbase.com/                        |
+| **Período**           	  |                           01/2021 ~ 12/2021                           	|
+| **Cidades faltantes** 	  | Manaus (AM), Belém (PA), São Luís (MA), São Gonçalo (RJ), Maceió (AL), Duque de Caxias (RJ), Natal (RN), Teresina (PI), São Bernardo do Campo (SP), João Pessoa (PB), Nova Iguaçu (RJ), Santo André (SP), Jaboatão dos Guararapes	(PE), Osasco (SP), Contagem	(MG), Aracaju	(SE), Feira de Santana (BA), Cuiabá (MT), Aparecida de Goiânia (GO), Porto Velho (RO), Ananindeua (PA), Serra (ES), Caxias do Sul (RS), Niterói	(RJ), Belford Roxo (RJ), Campos dos Goytacazes (RJ), Vila Velha	(ES), Mauá (SP), São João de Meriti	(RJ), Mogi das Cruzes (SP), Betim (MG), Boa Vista (RR), Maringá (PR), Santos (SP), Diadema (SP), Rio Branco (AC), Montes Claros (MG), Campina Grande (PB), Carapicuíba (SP), Anápolis (GO), Olinda (PE), Cariacica (ES), Bauru (SP), Itaquaquecetuba (SP), São Vicente (SP), Caruaru	(PE), Caucaia	(CE), Petrolina	(PE), Ponta Grossa (PR), Franca (SP), Canoas (RS), Pelotas (RS), Vitória da Conquista (BA), Ribeirão das Neves (MG), Uberaba (MG), Paulista	(PE), Praia Grande (SP), São José dos Pinhais	(PR), Guarujá	(SP), Palmas (TO), Limeira (SP), Camaçari	(BA), Santarém	(PA), Petrópolis (RJ), Mossoró (RN), Suzano	(SP), Taboão da Serra	(SP), Várzea Grande	(MT), Marabá (PA), Gravataí	(RS), Santa Maria	(RS)|
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**| Em relação às **Cidades faltantes** existe um grande número de municípios sem informoações sobre o valor de capital de risco investido neles, pórém como eles são os mesmos do ICE-22, foi atualizado o dado |
+
+Passo para encontrar o dados que compõem o indicador
+
+1. Obter valor de capital de risco levantados por empresas dos municípios do ICE
+
+- Acessar a base de dados Crunchbase para obter os dados. Na área de busca, selecionar aba “Companies”
+e aplicar seguintes filtros:
+
+  - Em “Financials” marcar “Past Year” na opção “Last Funding Date”;
+  
+  - Em “Overview”, digitar nome do município na área “Headquarters Location”;
+  
+  - Importante ressaltar que assim como no ano passado, alguns municípios possuíram erros quanto a sua localização, mas nada que tenha prejudicado a coleta dos mesmos;
+  
+
+- Buscar municípios manualmente um a um e obter o valor de capital de risco levantado pelas empresas do município no último ano. Foi montada uma tabela no excel com os dados de capital de risco por município;
+
+2. Obter taxa de câmbio média do último ano de moedas diferente do real presentes na base de dados construída no passo 1 e converter valores para real;
+
+- A taxa de câmbio média para o ano de 2021 foi retirada da série histórica de câmbio do IPEA, disponível em: http://www.ipeadata.gov.br/ExibeSerie.aspx?serid=31924
+
+
 #### Indicador Capital Poupado per capita
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  |                      https://www.crunchbase.com/                        |
+| **Período**           	  |                           01/2021 ~ 12/2021                           	|
+| **Cidades faltantes** 	  |                                  -                                      |
+| **Variável de Interesse** |    VERBETE_420_DEPOSITOS_DE_POUPANCA, VERBETE_432_DEPOSITOS_A_PRAZO     |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
+
+1. Obter valor em reais das operações de crédito para pessoas físicas e jurídicas por município:
+
+- Acessar site do Banco Central e baixar arquivo “Estatística Bancária Mensal por município” referente ao mês de dezembro de 2020 (ano mais recente com dados disponíveis) Na planilha, é utilizada as colunas “VERBETE_420_DEPOSITOS_DE_POUPANCA" e "VERBETE_432_DEPOSITOS_A_PRAZO”;
+
+2. Obter PIB dos municípios do ICE a preços correntes:
+
+- Foi utizado o \textit{data lake} público da Base dos Dados para importar os dados referentes ao PIB Municipal, para 2018 o ano mais recente.
+
+3. A construção do indicador é a soma  “VERBETE_420_DEPOSITOS_DE_POUPANCA" e "VERBETE_432_DEPOSITOS_A_PRAZO”, divido pelo PIB do município.
 
 ## Determinante Inovação {#det_inovacao}
 
@@ -336,10 +381,80 @@ PIB
 - [Clique aqui](#script_2.5.1) para ver o script do Subdeterminante Inputs.
 
 #### Indicador Proporção de Mestres e Doutores em C&T
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  |https://dadosabertos.capes.gov.br/dataset                                |
+| **Período**           	  |                           01/2021 ~ 12/2021                           	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Variável de Interesse** | [2017 a 2020] Discentes da Pós-Graduação stricto sensu do Brasil        |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
+
+1. Obter para cada município o número de mestres e doutores titulados nas áreas de ciências, tecnologia,
+engenharias e matemática;
+
+- Acessar site da CAPES, ir na seção de [Conjunto de Dados](https://dadosabertos.capes.gov.br/dataset) e baixar conjunto de dados “[2017 a 2020] Discentes da Pós-Graduação stricto sensu do Brasil”. 
+
+2. Obter para cada município o número total de empresas com pelo menos um funcionário.
+
+- Para coleta desse dado foi utilizado o *data lake* público da Base dos Dados. Foram usados os dados mais
+recentes disponíveis na RAIS, referentes ao ano de 2020.
+
+
 #### Indicador Proporção de Funcionários em C&T
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  |http://pdet.mte.gov.br/microdados-rais-e-caged                           |
+| **Período**           	  |                           01/2021 ~ 12/2021                           	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Variável de Interesse** | cbo_2002, agrupamento das observações dos microdados dos empregadores e dos vínculos|
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
+
+Para esse indicador, foi utilizado somente os dados da RAIS importados pelo *data lake* públlico da Base Dos Dados. Foram criadas duas *queries* para importação dos dados, uma com a relação dos funcionários do município que trabalham nas áreas de ciência, tecnologia, engenharia, matemática, segundo o critério da CBO 2002 e outra com a relação total do número de trabalhadores do município.
+
 #### Indicador Média de Investimentos do BNDES e da FINEP
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  |https://www.bndes.gov.br/wps/portal/site/home/transparencia/centraldedownloads ; http://www.finep.gov.br/transparencia-finep/projetos-contratados-e-valores-liberados|
+| **Período**           	  |                           01/2021 ~ 12/2021                           	|
+| **Cidades faltantes** 	  | Belford Roxo (RJ); Mauá	(SP); São Vicente	(SP)                          |
+| **Variável de Interesse** | Valor Finep (FINEP); Valor contratado R$ (BNDES)                        |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
+
+O indicador é a soma dos valores de contratos do BNDES e da FINEP, dividido pelo número de empresas com pelo menos um funcionário. Para coletar os dados, somente foi acessado os sites do BNDES e da FINEP, já o número de empresas com pelo menos um funcionário foi, assim como os dados anteriores utilizando a RAIS, importado do *Data lake* público da Base dos Dados.
+
 #### Indicador Infraestrutura Tecnológica
+
+Está errado mudar depois kk
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**                 |https://www.mctic.gov.br/mctic/opencms/salaImprensa/noticias/arquivos/2019/09/MCTIC_divulga_estudo_Indicadores_de_Parques_Tecnologicos.html|
+| **Período**           	  |                           01/2021 ~ 12/2021                           	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Variável de Interesse** | 	 	 	 	 	 	 	 	 	 	    VERBETE_160_OPERACOES_DE_CREDITO  	 	 	 	 	    |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
+
 #### Indicador Contratos de Concessão
+
+Errado também socorro
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  | https://www.gov.br/inpi/pt-br/central-de-conteudo/estatisticas/estatisticas|
+| **Período**           	  |                           01/2021 ~ 12/2021                           	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Variável de Interesse** | 	 	 	 	 	 	 	 	 	 	    VERBETE_160_OPERACOES_DE_CREDITO  	 	 	 	 	    |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**| Dificuldade em encontrar o local no site em que se encontram os dados   |
+
+Ao acessar o site o INPI e a seção específica do site, que foi indicada aqui na fonte, baixou-se o arquivo `.zip` das Tabelas Completas dos Indicadores de Propriedade Industrial. 
 
 ### Subdeterminante Outputs {#subdet_output}
 
