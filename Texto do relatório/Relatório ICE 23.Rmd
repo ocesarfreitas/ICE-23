@@ -184,12 +184,29 @@ O indicador não necessita de manipulação de dados.
 |--------------------------- |--------------------------------------------------|
 | **Fonte**             	   | https://siconfi.tesouro.gov.br/siconfi/index.jsf |
 | **Período**           	   | 2021                                             |
-| **Cidades faltantes** 	   | Brasília (DF)                                    |
+| **Cidades faltantes** 	   | -                                               |
 | **Efeito**                 | Positivo	 	 	  	 	 	 	 	 	 	 	 	 	              |
-| **Variável de interesse**  | -                           	 	 	  	 	      |
 | **Problemas com a coleta** | Não     	 	  	 	 	 	 	 	 	 	 	 	                |
 
-Escrever algo amanhã.
+O indicador é o produto dos índices de Herfindahl-Hirshmann (IHH) e de visibilidade (IV). O IHH é definido como a soma dos quadrados da participação relativa do tributo na arrecadação total.
+
+\begin{equation}
+  IHH = \displaystyle\sum^n_{i=1}T^2_i
+\end{equation}
+
+O IV é a participação relativa de uma soma de de tributos na arrecadação total.
+
+\begin{equation}
+  IV = \frac{IPTU+ITBI+ITR+IRRF}{RT}
+\end{equation}
+
+Portanto, para se obter o indicador de Simplicidade Tributária.
+
+\begin{equation}
+  Simplicidade\ Tributária = IHH \cdot IV
+\end{equation}
+
+Devido a natureza da cidade de Brasília, foi coletado os dados sobre as UFs para poder conseguir os dados relativos a ela.
 
 #### Indicador CNDs Municipais
 
@@ -201,8 +218,11 @@ Escrever algo amanhã.
 | **Efeito**                 | Positivo	 	 	  	 	 	 	 	 	 	 	 	 	              |
 | **Variável de interesse**  | CNDs Municipais                           	 	 	  |
 | **Problemas com a coleta** | Não     	 	  	 	 	 	 	 	 	 	 	 	                |
+Na edição do ICE 2022, os bolsistas utilizaram a variável MTIC1211 da MUNIC 2019. Contudo, essa variável foi descontinuada na edição de 2020, então o método para classificar se o município emite CNDs online, foi entrando no site de cada prefeitura e procurando os serviços disponibilizados por ela. Para os municípios que receberam CNDs igual a 0, foi montada um tabela com a justificativa de cada um.
 
-Tabela com a justificativa dos CNDs = 0
+\begin{center}
+  \textbf{Tabela:} Justificativa dos CNDs iguais a 0
+\end{center}
 
 | **Município**         | **UF** | **Motivo**                                                           |
 |-----------------------|--------|----------------------------------------------------------------------|
@@ -231,9 +251,6 @@ Tabela com a justificativa dos CNDs = 0
 | Belford Roxo          | RJ	   | 0 site tem emição de quitação mas não de CND                         |
 | São José dos Pinhais  | PR	   | 0 site tem uma seção no site referente a emissão de certidões, porém ao clicar nela o site da erro não abre nada. Foram feitas algumas tentativas durante a construção desse relatório e coleta dos dados. |
 
-
-
-
 #### Indicador Atualização de Zoneamento
 
 |                       	   | **Informações**                                  |
@@ -243,7 +260,9 @@ Tabela com a justificativa dos CNDs = 0
 | **Cidades faltantes** 	   | -                                                |
 | **Efeito**                 | Negativo 	 	 	  	 	 	 	 	 	 	 	 	 	            |
 | **Variável de interesse**  | MLEG061                    	 	 	  	 	          |
-| **Problemas com a coleta** | Não     	 	  	 	 	 	 	 	 	 	 	 	                |
+| **Problemas com a coleta** | Sim, pergunta excluída na MUNIC 2018	 	 	 	 	 	 	|
+
+Esse indicador se refere a quantidade de anos desde que o município mudou a lei de zoneamento. O IBGE excluiu essa pergunta após a edição da MUNIC 2018, então assim como na edição do ICE 2022, somente foi feita a atualização da quantidade de anos.
 
 ## Determinante Infraestrutura
 
@@ -283,6 +302,28 @@ Tabela com a justificativa dos CNDs = 0
 - [Clique aqui](#script_2.4.1) para ver o script do Subdeterminante Capital Disponível.
 
 #### Indicador Operações de Crédito por Município
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  |https://www.bcb.gov.br/acessoinformacao/legado?url=https:%2F%2Fwww4.bcb.gov.br%2Ffis%2Fcosif%2Festban.asp|
+| **Período**           	  |                           01/2021 ~ 12/2021                           	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Variável de Interesse** | 	 	 	 	 	 	 	 	 	 	    VERBETE_160_OPERACOES_DE_CREDITO  	 	 	 	 	    |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Negativo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
+
+1. Obter valor em reais das operações de crédito para pessoas físicas e jurídicas por município;
+• Acessar site do Banco Central e baixar arquivo “Estatística Bancária Mensal por município” referente
+ao mês de dezembro de 2020 (ano mais recente com dados disponíveis) Na planilha, é utilizada apenas
+a coluna chamada “VERBETE_160_OPERACOES_DE_CREDITO”;
+2. Obter PIB dos municípios do ICE a preços correntes;
+
+- Utilizando a . Os dados selecionados se referem ao ano mais recente com dados disponíveis, 2018;
+
+3. Calcular o indicador para cada município de acordo com a seguinte fórmula:
+i411 = total de operações de crédito
+PIB
+
 #### Indicador Proporção Relativa de Capital de Risco
 #### Indicador Capital Poupado per capita
 
