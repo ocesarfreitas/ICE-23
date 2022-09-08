@@ -36,7 +36,7 @@ library(sf)
 # # rodovias federais e estaduais
 # roads <- bind_rows(br, er)
 
-roads <- st_read("estroads_shapefile/Rodovias.shp",
+roads <- st_read("estroads_shapefile/SNV_202206A.shp",
 as_tibble = T)
 
 # localizao dos municipios ------------------------------------------------
@@ -58,7 +58,7 @@ p <- geobr::read_state() %>%
     show.legend = F
   ) +
   geom_sf(data = m, fill = "#2D3E50") +
-  #geom_sf(data = roads %>% sample(1), color = "#FEBF57") +
+  geom_sf(data = roads %>% sample(1), color = "#FEBF57") +
   theme(
     panel.background = element_blank(),
     axis.title = element_blank(),
