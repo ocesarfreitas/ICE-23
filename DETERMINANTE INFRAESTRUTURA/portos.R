@@ -36,7 +36,7 @@ pub <- portos %>%
 municode <- read_csv("municode.csv") %>%
   select(id_municipio, sigla_uf, nome)
 
-m <- geobr::read_municipality(year = 2018) %>%
+m <- geobr::read_municipality(year = 2019) %>%
   select(id_municipio = 1, geom) %>%
   right_join(municode) %>%
   select(id_municipio, sigla_uf, nome, geom) %>%
@@ -91,9 +91,9 @@ munidistt <- cbind(id_municipio = names(munidist), t(munidist)) %>%
 df <- left_join(municode, munidistt, keep = FALSE) %>%
   arrange(-sd21_portos)
 
-write_excel_csv(df, "sd22_portos_completo.xlsx")
+write_csv(df, "sd22_portos_completo.csv")
 
 df2 <- df %>% select(1,2,3,5) %>% rename(i213 = sd21_portos)
 
 
-write_excel_csv(df2, "sd22_portos.xlsx")
+write_csv(df2, "sd22_portos.csv")
