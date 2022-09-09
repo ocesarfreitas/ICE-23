@@ -279,15 +279,15 @@ Esse indicador se refere a quantidade de anos desde que o município mudou a lei
 #### Indicador Custo da Energia Elétrica 
 #### Indicador Taxa de Homicídios 
 
-## Determinante Mercado
+## Determinante Mercado {#det_mercado}
 
-### Subdeterminante Desenvolvimento Econômico 
+### Subdeterminante Desenvolvimento Econômico {#subdet_des_eco}
 
 #### Indicador Índice de Desenvolvimento Humano 
 #### Indicador Crescimento Médio Real do PIB 
 #### Indicador Número de Empresas Exportadoras com Sede na Cidade
 
-### Subdeterminante Clientes Potenciais
+### Subdeterminante Clientes Potenciais {#subdet_clientes_pot}
 
 #### Indicador PIB per capita
 #### Indicador Proporção entre Grandes/Médias e Médias/Pequenas Empresas
@@ -481,22 +481,20 @@ Ao acessar o site o INPI e a seção específica do site, que foi indicada aqui 
 #### Indicador Proporção de Alunos Concluintes em Cursos de Alta Qualidade
 #### Indicador Custo Médio de Salários de Dirigentes
 
-## Determinante Cultura 
+## Determinante Cultura {#det_cultura}
 
-### Subdeterminante Iniciativa
+### Subdeterminante Iniciativa {#subdet_iniciativa}
 
 #### Indicador Pesquisas Empreendedora
 #### Indicador Pesquisas Empreendedorismo
 #### Indicador Pesquisas MEI
 
-### Subdeterminante Instituições
+### Subdeterminante Instituições {#subdet_instituicoes}
 
 #### Indicador Pesquisas SEBRAE
 #### Indicador Pesquisas Franquia
 #### Indicador Pesquisas Simples Nacional
 #### Indicador Pesquisas SENAC
-
-
 
 # Análise de Componentes Principais
 # Correlação com o ICE2022
@@ -505,12 +503,106 @@ Ao acessar o site o INPI e a seção específica do site, que foi indicada aqui 
 # Apêndice {.unnumbered #apend}
 ## Scripts {.unnumbered #script_ind}
 
+A maior parte dos scripts foram feitos em Python, mas também foram utilizadas outras linguagens de programação como R e SQL. 
+
+- Pacotes utilizados no Python para a coleta de dados
+
 ```{python setup, eval=FALSE, echo=TRUE}
 import pandas as pd
 import numpy as np
-from funcs import *
-from functools import reduce
-import basedosdados as bd
+from funcs import * # Importando as funções de tratamento criadas
+from functools import reduce 
+import basedosdados as bd # data lake público 
+```
+
+### Funções de tratamento dos dados {.unnumbered #funs_tratamento}
+#### Tratamento para Indicadores com Impacto Negativo no Empreendedorismo {.unnumbered}
+```{python tramento 1, eval=FALSE, echo=TRUE}
+# 3.1. Tratamento para Indicadores com Impacto Negativo no Empreendedorismo
+def negative(series):
+    
+    series = 1/series
+    
+    return series.replace(np.inf, 0)
+``` 
+#### Tratamento para Observações Faltantes (missing data) {.unnumbered}
+```{python tramento 2, eval=FALSE, echo=TRUE}
+# 3.2. Tratamento para Observações Faltantes (missing data)
+
+def missing_data(df):
+    
+    ind = pd.read_excel('Arquivos ICE - 23/Ind_Originais_ICE_2022.xlsx')
+    ind.columns = ind.iloc[1]
+    ind.columns.values[0] = 'Município'
+    ind = ind.set_index('Município')
+    ind = ind.tail(101)
+    
+    for c in df.columns:
+        if c in ind.columns:
+            if df[c].isna().sum()/len(df) > 0.3:
+                df[c].fillna(ind[c], inplace=True)
+        
+        df[c] = df[c].fillna(0)
+                
+    return df
+```
+#### Tratamento para Valores Extremos {.unnumbered}
+```{python tramento 3, eval=FALSE, echo=TRUE}
+# 3.3. Tratamento para Valores Extremos
+
+def extreme_values(df):
+    
+    for c in df.columns:
+    
+        df_sort = np.argsort(df[c])        
+            
+        top_values = df_sort[-3:]
+        bottom_values = df_sort[:3]
+        removed =[]
+        
+        if top_values[-1] > 5*np.mean(top_values[:-1]):
+            removed.append(top_values[-1])
+        
+        if bottom_values[0] > 5*np.mean(bottom_values[1:]):
+            removed.append(bottom_values[0])
+
+        for r in df.index:
+            if df.loc[r,c] in removed:
+                df.at[r,c] = 0
+            
+    return df
+```
+#### Padronização de Indicadores {.unnumbered}
+```{python tramento 4, eval=FALSE, echo=TRUE}
+# 3.4. Padronização de Indicadores
+
+def normalize(series):
+    return (series - series.mean())/series.std()
+
+def create_subindex(df, subdet):
+    
+    i_name = 'Índice de '+subdet
+    
+    if i_name not in df.columns:
+        norm_data = df.apply(lambda x: normalize(x), axis=0)
+        df[i_name] = normalize(norm_data.sum(axis=1)) + 6
+    
+    return df
+
+def create_detindex(df, det):
+    
+    d_name = 'Índice de ' + det
+    det_df = pd.DataFrame()
+    
+    if d_name not in df.columns:
+        for i in (df.columns.levels[0]):
+            det_df[i] = df[i,(df[i].columns[-1])]
+
+        det_df = det_df.apply(lambda x: normalize(x), axis=0)
+        det_df[d_name] = normalize(det_df.sum(axis=1)) + 6
+        df[d_name] = det_df[d_name]
+    
+    return df
 ```
 
 ### Amostra {.unnumbered #amostra}
@@ -894,6 +986,199 @@ ambiente.to_csv('DETERMINANTES/det-AMBIENTE REGULATÓRIO.csv')
 
 ### Determinante Infraestrutura {.unnumbered #script_2.2}
 ### Determinante Mercado {.unnumbered #script_2.3}
+
+- Para retornar ao relatório do Determinante Mercado [clique aqui](#det_mercado).
+
+```{python Mercado, eval=FALSE, echo=TRUE}
+# ---------------------------------------------------------------------------------------------
+# 2.4. DETERMINANTE MERCADO
+
+mercado = {}
+```
+
+#### Subdeterminante Desenvolvimento Econômico {.unnumbered #script_2.3.1}
+
+- Para retornar ao relatório do Subdeterminante Desenvolvimento Econômico [clique aqui](#subdet_des_eco).
+
+```{python Mercado 1, eval=FALSE, echo=TRUE}
+# ---------------------------------------------------------------------------------------------
+# 2.4.1. Subdeterminante Desenvolvimento Econômico
+
+subdet = 'Desenvolvimento Econômico'
+
+# 2.4.1.1. Indicador Índice de Desenvolvimento Humano
+
+ind = pd.read_excel('Arquivos ICE - 23/Ind_Originais_ICE_2022.xlsx', header=[i for i in range(6)], index_col=[0,1])
+sub_desenveco = ind['Mercado', 'Desenvolvimento Econômico', 'Índice de Desenvolvimento Humano']
+sub_desenveco.columns = sub_desenveco.columns.droplevel([0,1])
+sub_desenveco.columns.values[0] = 'Índice de Desenvolvimento Humano'
+sub_desenveco = sub_desenveco.rename_axis(None, axis=1)
+sub_desenveco.index.names = ['Município', 'UF']
+
+# 2.4.1.2. Indicador Crescimento Médio Real do PIB
+
+pib = pd.read_excel('DETERMINANTE MERCADO/tabela5938.xlsx', header=3).head(-1)
+pib.columns.values[0] = 'Município'
+pib['UF'] = pib['Município'].apply(lambda x: x.split('(')[-1][:2])
+pib['Município'] = pib['Município'].apply(lambda x: x.split('(')[0].strip())
+pib = pib.set_index(['Município', 'UF'])
+
+# O DEFLATOR DO PIB UTILIZADO É DA FONTE IPEADATA E NÃO IBGE
+
+deflator = pd.DataFrame([{
+    '2016':1.171085,
+    '2017':1.120725,
+    '2018':1.081036,
+    '2019':1
+}]).T
+
+
+pib_def = pd.DataFrame()
+for i in pib.columns:
+    pib_def[i] = pib[i]*deflator.loc[i,0]
+    
+pib_var = (pib_def.T / pib_def.T.shift(1)).apply(lambda x: x-1).T.drop('2016', axis=1)
+pib_var['Crescimento Real Médio do PIB'] = pib_var.mean(axis=1)
+
+sub_desenveco = pd.merge(sub_desenveco, pib_var['Crescimento Real Médio do PIB'], left_index=True, right_index=True)
+
+# 2.4.1.3. Indicador Número de Empresas Exportadoras com Sede na Cidade
+
+emp_exp = pd.read_excel('DETERMINANTE MERCADO/EMPRESAS_CADASTRO_2020.xlsx', header=7)
+
+convert = lambda x: unidecode.unidecode(x.upper())
+n_exp = {n:len(emp_exp.groupby(['MUNICÍPIO', 'UF']).get_group(tuple([convert(i) for i in n]))) for n in sub_desenveco.index}
+n_exp = pd.DataFrame([n_exp],index=['n_exp']).T
+n_exp.index = pd.MultiIndex.from_tuples(n_exp.index, names=['Município', 'UF'])
+
+variaveis = ('COUNT(quantidade_vinculos_ativos), id_municipio')
+
+## Montando a query
+base = '`basedosdados.br_me_rais.microdados_estabelecimentos`'
+project_id = "trim-descent-346220"
+query = f"SELECT {variaveis} FROM {base} WHERE ano = 2020 AND quantidade_vinculos_ativos > 0 GROUP BY id_municipio"
+
+## Importando o data lake
+df_rais = bd.read_sql(query=query, billing_project_id=project_id).set_index('id_municipio')
+
+cod = pd.read_excel('DETERMINANTE MERCADO/RELATORIO_DTB_BRASIL_MUNICIPIO.xls')
+cod = cod.rename(columns={'Código Município Completo':'id_municipio'})
+cod['id_municipio'] = cod['id_municipio'].apply(str)
+cod = cod[['Nome_Município','Nome_UF','id_municipio']].set_index('id_municipio')
+
+n_rais = pd.merge(cod, df_rais, left_index=True, right_index=True).rename(columns={
+    'Nome_Município':'Município',
+    'Nome_UF':'UF',
+    'f0_':'n_rais'
+}).set_index(['Município', 'UF'])
+
+ratio = pd.merge(n_rais, n_exp, left_index=True, right_index=True)
+ratio['ratio'] = ratio['n_exp']/ratio['n_rais']
+
+sub_desenveco['Número de Empresas Exportadoras com Sede na Cidade'] = ratio['ratio']
+
+missing_data(sub_desenveco)
+extreme_values(sub_desenveco)
+create_subindex(sub_desenveco, subdet)
+mercado[subdet] = sub_desenveco
+```
+
+#### Subdeterminante Clientes Potenciais {.unnumbered #script_2.3.2}
+
+- Para retornar ao relatório do Subdeterminante Clientes Potenciais [clique aqui](#subdet_clientes_pot).
+
+```{python Mercado 2, eval=FALSE, echo=TRUE}
+# ---------------------------------------------------------------------------------------------
+# 2.4.2. Subdeterminante Clientes Potenciais
+
+subdet = 'Clientes Potenciais'
+sub_clipot = pd.DataFrame()
+
+# 2.4.2.1. Indicador PIB per capita
+
+amostra = pd.read_csv('AMOSTRA/100-municipios.csv').rename(columns={
+    'COD. MUNIC':'Município'
+}).rename(columns={'Município':'None', 'NOME DO MUNICÍPIO':'Município'}).set_index(['Município', 'UF'])
+
+sub_clipot['PIB per capita'] = (pib['2019']/amostra['POPULAÇÃO ESTIMADA']).dropna()
+
+# 2.4.2.2. Indicador Proporção entre Grandes/Médias e Médias/Pequenas Empresas
+
+variaveis = ('id_municipio, COUNT(quantidade_vinculos_ativos)')
+base = '`basedosdados.br_me_rais.microdados_estabelecimentos`'
+project_id = "trim-descent-346220"
+
+df_rais = pd.DataFrame()
+
+col = 'Pequenas Empresas'
+condition = 'quantidade_vinculos_ativos > 9 AND quantidade_vinculos_ativos < 50'
+query = f"SELECT {variaveis} FROM {base} WHERE ano = 2020 AND {condition} GROUP BY id_municipio"
+query
+df_rais_peq = bd.read_sql(query=query, billing_project_id=project_id).set_index('id_municipio').rename(columns={'f0_':col})
+
+col = 'Médias Empresas'
+condition = 'quantidade_vinculos_ativos > 49 AND quantidade_vinculos_ativos < 250'
+query = f"SELECT {variaveis} FROM {base} WHERE ano = 2020 AND {condition} GROUP BY id_municipio"
+query
+df_rais_med = bd.read_sql(query=query, billing_project_id=project_id).set_index('id_municipio').rename(columns={'f0_':col})
+
+col = 'Grandes Empresas'
+condition = 'quantidade_vinculos_ativos > 249'
+query = f"SELECT {variaveis} FROM {base} WHERE ano = 2020 AND {condition} GROUP BY id_municipio"
+query
+df_rais_gra = bd.read_sql(query=query, billing_project_id=project_id).set_index('id_municipio').rename(columns={'f0_':col})
+
+df_rais = pd.merge(df_rais_peq, df_rais_med, left_index=True, right_index=True)
+df_rais = pd.merge(df_rais, df_rais_gra, left_index=True, right_index=True)
+df_rais['Med/Peq'] = df_rais['Médias Empresas']/df_rais['Pequenas Empresas']
+df_rais['Gra/Med'] = df_rais['Grandes Empresas']/df_rais['Médias Empresas']
+df_rais['ind'] = df_rais['Med/Peq']/df_rais['Gra/Med']
+
+ind_rais = pd.merge(cod, df_rais['ind'], left_index=True, right_index=True).rename(columns={
+    'Nome_Município':'Município',
+    'Nome_UF':'UF',
+    'f0_':'n_rais'
+}).set_index(['Município', 'UF'])
+
+sub_clipot['Proporção entre Grandes/Médias e Médias/Pequenas Empresas'] = ind_rais['ind']
+
+# 2.4.2.3. Indicador Compras Públicas
+
+finbra = pd.read_csv('DETERMINANTE MERCADO/finbra.csv', header=3, encoding='latin-1', sep=';')
+
+cond = (finbra['Conta'] == '3.0.00.00.00 - Despesas Correntes') | (finbra['Conta'] == '4.4.00.00.00 - Investimentos')
+desp = finbra.loc[np.where(cond)]
+desp['Cod.IBGE'] = desp['Cod.IBGE'].apply(str)
+desp['Valor'] = desp['Valor'].apply(lambda x: x.replace(',','.')).astype(float)
+
+desp = desp.groupby('Cod.IBGE').agg('sum')
+desp = pd.merge(cod, desp, left_index=True, right_index=True).rename(columns={
+    'Nome_Município':'Município',
+    'Nome_UF':'UF',
+    '0':'despesa'
+}).set_index(['Município', 'UF']).drop('População', axis=1)
+
+sub_clipot['Compras Públicas'] = desp['Valor']
+
+df = pd.read_csv('DETERMINANTE MERCADO/finbradf.csv', header=3, encoding='latin-1', sep=';')
+df = df.iloc[np.where(df['UF'] =='DF')]
+cond = (df['Conta'] == '3.0.00.00.00 - Despesas Correntes') | (df['Conta'] == '4.4.00.00.00 - Investimentos')
+df = df.iloc[np.where(cond)]
+sub_clipot.at['Brasília', 'Compras Públicas'] = sum(df['Valor'].apply(lambda x: x.replace(',','.')).astype(float))
+
+missing_data(sub_clipot)
+extreme_values(sub_clipot)
+create_subindex(sub_clipot, subdet)
+mercado[subdet] = sub_clipot
+
+# ---------------------------------------------------------------------------------------------
+
+mercado = pd.concat(mercado, axis=1)
+create_detindex(mercado, 'Mercado')
+
+mercado.to_csv('DETERMINANTES/det-MERCADO.csv')
+```
+
 ### Determinante Acesso a Capital {.unnumbered #script_2.4}
 
 - Para retornar ao relatório do Determinante Acesso a Capital [clique aqui](#det_acesso_capital).
@@ -1414,6 +1699,76 @@ inovacao.to_csv('DETERMINANTES/det-INOVACAO.csv')
 
 - Para retornar ao relatório do Determinante Capital Humano [clique aqui](#det_capital_humano).
 
+- A fim de facilitar a coleta de dados, a importação e pré-tratamento dos microdados do Enem e do Censo Escolar de 2021 foi feito no R.
+
+  - Censo Escolar 2021
+```{r Capital Humano R 1, eval=FALSE, echo=TRUE}
+# ------------------------------------------------------------------------------
+# Censo Escolar 2021
+library(data.table)
+library(tidyverse)
+
+censo_escolar_2021 <- data.table::fread("C:/Users/cesar.albuquerque/Desktop/TCC/Aplicações no R/microdados_ed_basica_2021.csv")
+
+cod_100_mun <- c(
+  "3550308","3304557","5300108","2927408","2304400","3106200","1302603","4106902",
+  "2611606","5208707","1501402","4314902","3518800","3509502","2111300","3304904",
+  "2704302","3301702","5002704","2408102","2211001","3548708","2507507","3303500",
+  "3549904","3547809","3543402","2607901","3170206","3534401","3552205","3118601",
+  "2800308","2910800","5103403","4209102","5201405","4113700","3136702","1100205",
+  "1500800","3205002","4305108","1600303","3303302","4205407","3300456","3301009",
+  "3205200","3529401","3305109","3549805","3530607","3106705","1400100","4115200",
+  "3548500","3513801","3525904","1200401","3143302","2504009","3538709","3510609",
+  "5201108","2609600","3201308","3506003","3523107","3551009","3205309","2604106",
+  "2303709","4202404","2611101","4119905","3516200","4304606","4314407","2933307",
+  "3154606","3170107","2610707","3541000","4104808","4125506","3518701","3554102",
+  "1721000","3526902","2905701","1506807","3303906","2408003","3552502","3552809",
+  "5108402","3552403","1504208","4309209","4316907"
+)
+
+ce_2021_lim <- censo_escolar_2021 %>%
+  filter(CO_MUNICIPIO %in% cod_100_mun)
+
+write.csv(ce_2021_lim, "CE_2021_100mun.csv")
+```
+  - ENEM 2021 
+```{r Capital Humano R 2, eval=FALSE, echo=TRUE}
+# ------------------------------------------------------------------------------
+# ENEM 2021
+library(data.table)
+library(tidyverse)
+
+enem_2021 <- data.table::fread("C:/Users/cesar.albuquerque/Desktop/TCC/Aplicações no R/MICRODADOS_ENEM_2021.csv")
+
+enem_2021_lim <- enem_2021 %>%
+  select(NU_INSCRICAO, CO_MUNICIPIO_ESC, TP_ST_CONCLUSAO, TP_ENSINO, NU_NOTA_CH, 
+         NU_NOTA_CN, NU_NOTA_LC, NU_NOTA_MT, NU_NOTA_REDACAO, Q001, Q002)
+
+cod_100_mun <- c(
+  "3550308","3304557","5300108","2927408","2304400","3106200","1302603","4106902",
+  "2611606","5208707","1501402","4314902","3518800","3509502","2111300","3304904",
+  "2704302","3301702","5002704","2408102","2211001","3548708","2507507","3303500",
+  "3549904","3547809","3543402","2607901","3170206","3534401","3552205","3118601",
+  "2800308","2910800","5103403","4209102","5201405","4113700","3136702","1100205",
+  "1500800","3205002","4305108","1600303","3303302","4205407","3300456","3301009",
+  "3205200","3529401","3305109","3549805","3530607","3106705","1400100","4115200",
+  "3548500","3513801","3525904","1200401","3143302","2504009","3538709","3510609",
+  "5201108","2609600","3201308","3506003","3523107","3551009","3205309","2604106",
+  "2303709","4202404","2611101","4119905","3516200","4304606","4314407","2933307",
+  "3154606","3170107","2610707","3541000","4104808","4125506","3518701","3554102",
+  "1721000","3526902","2905701","1506807","3303906","2408003","3552502","3552809",
+  "5108402","3552403","1504208","4309209","4316907"
+  )
+
+enem_2021_lim_100 <- enem_2021_lim %>%
+  filter(CO_MUNICIPIO_ESC %in% cod_100_mun)
+  
+
+write.csv(enem_2021_lim_100, "ENEM_2021_100mun.csv")
+```
+
+- Retornando ao Python
+
 ```{python Capital Humano, eval=FALSE, echo=TRUE}
 # Criando o ambiente que criará o determinante
 capital_humano = {}
@@ -1670,3 +2025,86 @@ capital_humano.to_csv('DETERMINANTES/det-CAPITAL HUMANO.csv')
 ```
 
 ### Determinante Cultura {.unnumbered #script_2.7}
+
+- Para retornar ao relatório do Determinante Capital Humano [clique aqui](#det_cultura).
+
+```{python cultura, eval=FALSE, echo=TRUE}
+# Função para coletar os dados do google trends
+
+def save_googletrends(database, term):
+    
+    name = term.split(' ')[-1].replace('_', ' ')
+    term = term.replace('_', ' ')
+    c_name = 'Pesquisas '+term
+    
+    if c_name not in database.columns:
+        indicador = pd.read_csv('DETERMINANTE CULTURA/geoMap-'+name+'.csv').reset_index()
+        indicador = indicador.rename(columns={'index':'Município', 'Category: All categories': c_name})
+        database = database.merge(indicador, how='left',on='Município').fillna(0)
+        database[c_name] = database[c_name].astype(int)
+    
+    return database
+
+# Criando o ambiente que criará o determinante
+cultura = {}
+```
+
+#### Subdeterminante Iniciativa {.unnumbered #script_2.7.1}
+
+- Para retornar ao relatório do Subdeterminante Iniciativa [clique aqui](subdet_iniciativa)
+
+```{python cultura 1, eval=FALSE, echo=TRUE}
+# ---------------------------------------------------------------------------------------------
+# 2.8.1. SUBDETERMINANTE INICIATIVA
+subdet = 'Iniciativa'
+
+iniciativa = ['pelo Termo Empreendedora', 'pelo Termo Empreendedorismo', 'pelo Termo MEI']
+sub_iniciativa = pd.DataFrame(database)
+
+sub_iniciativa = save_googletrends(sub_iniciativa, 'pelo Termo Empreendedora')
+sub_iniciativa = save_googletrends(sub_iniciativa, 'pelo Termo Empreendedorismo')
+sub_iniciativa = save_googletrends(sub_iniciativa, 'pelo Termo MEI')
+sub_iniciativa = sub_iniciativa.set_index('Município')
+
+missing_data(sub_iniciativa)
+extreme_values(sub_iniciativa)
+create_subindex(sub_iniciativa, subdet)
+cultura[subdet] = sub_iniciativa
+```
+
+#### Subdeterminante Iniciativa {.unnumbered #script_2.7.2}
+
+- Para retornar ao relatório do Subdeterminante Instituições [clique aqui](subdet_instituicoes)
+
+```{python cultura 2, eval=FALSE, echo=TRUE}
+# ---------------------------------------------------------------------------------------------
+# 2.8.2. SUBDETERMINANTE INSTITUIÇÕES
+
+subdet = 'Instituições'
+
+instituicoes = ['por Sebrae', 'por Franquia', 'por SIMPLES_Nacional', 'por Senac']
+sub_instituicoes = pd.DataFrame(database)
+
+sub_instituicoes = save_googletrends(sub_instituicoes, 'por Sebrae')
+sub_instituicoes = save_googletrends(sub_instituicoes, 'por Franquia')
+sub_instituicoes = save_googletrends(sub_instituicoes, 'por SIMPLES_Nacional')
+sub_instituicoes = save_googletrends(sub_instituicoes, 'por Senac')
+sub_instituicoes = sub_instituicoes.set_index('Município')
+
+missing_data(sub_instituicoes)
+extreme_values(sub_instituicoes)
+create_subindex(sub_instituicoes, subdet)
+cultura[subdet] = sub_instituicoes
+
+# ---------------------------------------------------------------------------------------------
+cultura = pd.concat(cultura, axis=1)
+cultura
+create_detindex(cultura, 'Cultura')
+
+cultura = cultura.reset_index()
+cultura['UF'] = amostra['UF']
+cultura = cultura.set_index(['Município', 'UF'])
+
+
+cultura.to_csv('DETERMINANTES/det-CULTURA.csv')
+```
