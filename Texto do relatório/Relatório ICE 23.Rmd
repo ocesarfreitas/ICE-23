@@ -430,11 +430,11 @@ O indicador é a soma dos valores de contratos do BNDES e da FINEP, dividido pel
 
 #### Indicador Infraestrutura Tecnológica
 
-Está errado mudar depois kk
+Fazendoooo, só atualizar com as infos
 
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
-| **Fonte**                 |https://www.mctic.gov.br/mctic/opencms/salaImprensa/noticias/arquivos/2019/09/MCTIC_divulga_estudo_Indicadores_de_Parques_Tecnologicos.html|
+| **Fonte**                 | https://www.mctic.gov.br/mctic/opencms/salaImprensa/noticias/arquivos/2019/09/MCTIC_divulga_estudo_Indicadores_de_Parques_Tecnologicos.html e sites da internet |
 | **Período**           	  |                           2019 (atualizado)                           	|
 | **Cidades faltantes** 	  | -                                                                       |
 | **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
@@ -442,7 +442,7 @@ Está errado mudar depois kk
 
 #### Indicador Contratos de Concessão
 
-Errado também socorro
+Tava certo, ajeitar amanhã
 
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
@@ -454,7 +454,7 @@ Errado também socorro
 
 1. Ao acessar o site o INPI e a seção específica do site, que foi indicada aqui na fonte, baixou-se o arquivo `.zip` das Tabelas Completas dos Indicadores de Propriedade Industrial. No arquivo `.zip` foi selecionada os seguintes arquivos para a coleta:
 
-- 5 - Registros de Contratos por Cidade do Cessionário.
+- "5 - Depósitos de Marcas por Cidade". (explicar o porquê de ser essa e não o outro lá)
 
 2. Selecionar os último anos disponíveis (2018 e 2019)
 
@@ -726,12 +726,14 @@ ensino superior completo e total de inscritos no município.
 
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
-| **Fonte**             	  |             http://pdet.mte.gov.br/microdados-rais-e-caged              |
-| **Período**           	  |                                  2019                                   |
+| **Fonte**             	  |              http://pdet.mte.gov.br/microdados-rais-e-caged             |
+| **Período**           	  |                           2020                                        	|
 | **Cidades faltantes** 	  | -                                                                       |
-| **Variável de Interesse** |                   "valor_remuneracao_media";"CBO_2002"                  |
-| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Negativa 	 	 	  	 	 	 	 	 	 	 	 	 	    |
-| **Problemas com a coleta**| Não e aparementemente não sofreu grandes perdas de dados com nova LPGD  |
+| **Variável de Interesse** | cbo_2002, valor_remuneracao_media                                       |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Negativo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
+
+Para esse indicador, foi utilizado somente os dados da RAIS importados pelo *data lake* públlico da Base Dos Dados. Foi criado uma *query* para importação dos dados, com a relação dos salários dos dirigentes, segundo o critério da CBO 2002, e o número total de dirigentes no município, para encotrar a média salarial.
 
 ## Determinante Cultura {#det_cultura}
 

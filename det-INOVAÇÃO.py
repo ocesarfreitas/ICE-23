@@ -180,6 +180,18 @@ interesse=['Cod.IBGE','Proporção de Mestres e Doutores em C&T','Proporção de
 subdet_input=subdet_input[interesse]
 
 ### 2.6.1.4. Indicador Infraestrutura Tecnológica
+### Atualizar amanhã cedo dados no wpp###
+df_infra_tec = pd.read_excel('Arquivos ICE - 23/Ind_Originais_ICE_2022.xlsx', header=5,
+                        usecols="B:C,AR")
+df_infra_tec = df_infra_tec.rename(columns={df_infra_tec.columns[1]:'Município',
+                                            df_infra_tec.columns[2]:'Infraestrutura Tecnológica'})
+
+df_infra_tec = df_infra_tec.merge(amostra, how='right', left_on='Município',
+                                    right_on='NOME DO MUNICÍPIO')
+df_infra_tec = df_infra_tec[['UF_x','Município','Infraestrutura Tecnológica','Cod.IBGE']]
+df_infra_tec = df_infra_tec.rename(columns={'UF_x':'UF'})
+
+### 2.6.1.5. Indicador Contratos de Concessão
 df_inpi_contrato = pd.read_excel('DETERMINANTE INOVAÇÃO/5 - Depósitos de Marcas por Cidade.xls',
                                  usecols='A,B,U,V', header=7).dropna()
 

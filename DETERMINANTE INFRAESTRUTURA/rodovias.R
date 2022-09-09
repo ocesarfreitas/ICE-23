@@ -2,9 +2,9 @@
 #
 # SD 21 - INFRAESTRUTURA - TRANSPORTE INTERURBANO
 
-library(tidyverse)
-library(geobr)
-library(sf)
+library("tidyverse")
+library("geobr")
+library("sf")
 # rodovias ----------------------------------------------------------------
 # federais
 # unzip(
@@ -54,11 +54,11 @@ p <- geobr::read_state() %>%
   geom_sf(
     fill = "white",
     color = "grey",
-    size = .15,
+    size = .05,
     show.legend = F
   ) +
   geom_sf(data = m, fill = "#2D3E50") +
-  #geom_sf(data = roads %>% sample(1), color = "#FEBF57") +
+  geom_sf(data = roads %>% sample(1), color = "#FEBF57", size=.15) +
   theme(
     panel.background = element_blank(),
     axis.title = element_blank(),
@@ -66,7 +66,7 @@ p <- geobr::read_state() %>%
     axis.ticks = element_blank()
   )
 
-ggsave("exemplo_rodovia.png", p)
+ggsave("exemplo_rodovia.png", p, dpi=2000)
 
 # funcoes auxiliares ------------------------------------------------------
 roads_inteiras <- roads %>% split(.$vl_codigo)
