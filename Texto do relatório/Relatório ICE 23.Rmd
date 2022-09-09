@@ -4,7 +4,7 @@ date: "`r format(Sys.time(), '%B %d, %Y')`"
 author: 
   - César Freitas
   - Vítor Borges
-  - Arnaldo
+  - Arnaldo Mauerberg Jr.
 output:
   pdf_document:
     number_sections: true
@@ -600,17 +600,138 @@ Errado também socorro
 - Como o IDEB é uma prova binual ainda não foram disponibilizados os microdados para o ano de 2021, portanto para esse indicador foi utilizado os mesmos valores do ICE 22.
 
 #### Indicador Proporção de Adultos com Pelo Menos o Ensino Médio Completo
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  | https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem |
+| **Período**           	  |                           2021                                        	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Variável de Interesse** | "Q001";"Q002"                                                           |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**| Não e aparementemente não sofreu grandes perdas de dados com nova LPGD  |
+
+- Este indicador é a média simples de dois dados:
+
+1. A razão entre o número de inscritos no ENEM no município que declararam ter pai com pelo menos
+ensino médio completo e total de inscritos no município;
+
+2. A razão entre o número de inscritos no ENEM no município que declararam ter mãe com pelo menos
+ensino médio completo e total de inscritos no município.
+
+- Para acessar esses microdados, foi preciso entrar no site do INEP e importá-los "manualmente". O dado mais recente para esse indicador foi para o ano de 2021, o que comparado ao dado usado no ICE 22 foram 2 anos de diferença. Isso ocorreu porque devido a pandemia de Covid-19, tanto o ENEM 2020 e o ENEM 2021 foram no mesmo ano, sendo eles respectivamente, no começo e final do ano.
+
 #### Indicador Taxa Líquida de Matrícula no Ensino Médio
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  | https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/censo_escolar |
+| **Período**           	  |                           2021                                        	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Variável de Interesse** | "QT_MAT_MED"                                                           |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**| Sim, devido à LGPD houve a perda dos dados mais específicos do alunos o que não permite que esse indicador seja calculado da mesma forma que era calculado na edição do ICE de 2022 |
+
+- Este indicador passou a ser construído agora a partir da razão de dois dados:
+
+1. A quantidade total de matrículas no ensino médio\footnote{Com a LGPD, como não temos mais os dados específicos dos alunos, não podemos saber com certeza qual a quantidade alunos entre 15 e 17 anos que estão no Ensino Médio, somente o valor geral de matrículas nessa etapa do ensino.};
+
+2. A população atualizada entre 15 e 17 anos do município.
+
+- Para acessar esses microdados, foi preciso entrar no site do INEP e importá-los "manualmente". O dado mais recente para esse indicador foi para o ano de 2021.
+
+\begin{equation}
+  Taxa\ Liquida\ de\ Matricula\ Ensino\ Medio = \frac{N^o\ total\ matriculas\ EM}{Pop.\ 15 \ 17}
+\end{equation}
+
 #### Indicador Nota Média no Enem
+
+|                       	  | **Informações**                                                        	  |
+|---------------------------|---------------------------------------------------------------------------|
+| **Fonte**             	  | https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem |
+| **Período**           	  |                           2021                                        	  |
+| **Cidades faltantes** 	  | -                                                                         |
+| **Variável de Interesse** | "NU_NOTA_CH"; "NU_NOTA_CN"; "NU_NOTA_LC"; "NU_NOTA_MT"; "NU_NOTA_REDACAO" |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	      |
+| **Problemas com a coleta**| Não e aparementemente não sofreu grandes perdas de dados com nova LPGD    |
+
+- Esse indicador foi somente a média simples das notas das 5 provas do ENEM para cada aluno e depois foi calculada a nota média municipal do ENEM. De modo que:
+
+\begin{equation}
+  Nota\ ENEM_{inscrição} =\frac{Nota\ CH + Nota\ CN + Nota\ LC + Nota\ MT + Nota\ Redação}{5}
+\end{equation}
+
+\begin{equation}
+  Nota\ ENEM_{município} =\frac{Nota\ ENEM_{inscrição}}{N^o\ Total\ de\ Inscrições\ no\ ENEM}
+\end{equation}
+
+- Observação: Foi dropado da amostra todos os missing values da amostra, para que caso um indivíduo não tenha ido para um dos dias de aplicação da prova ele não receba nota 0 em duas (ou mais provas), puxando assim a média para baixo e viesando os dados.
+
 #### Indicador Proporção de Matriculados no Ensino Técnico e Profissionalizante 
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  | https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/censo_escolar |
+| **Período**           	  |                           2021                                        	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Variável de Interesse** | "QT_MAT_PROF_TEC"                                                            |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**| Não, para esse dado aparementemente não houve grandes perdas devido à nova LPGD |
+
+- Este indicadoré construído a partir da razão de dois dados:
+
+1. A quantidade total de matrículas no no Ensino Técnico e Profissionalizante;
+
+2. A população atualizada acima de 15 anos do município.
+
+- Para acessar esses microdados, foi preciso entrar no site do INEP e importá-los "manualmente". O dado mais recente para esse indicador foi para o ano de 2021.
 
 ### Subdeterminante Acesso e Qualidade da Mão de Obra Qualificada {#subdet_obra_qualificada}
 
 - [Clique aqui](#script_2.6.2) para ver o script do Subdeterminante Acesso e Qualidade da Mão de Obra Qualificada.
 
 #### Indicador Proporção de Adultos com Pelo Menos o Ensino Superior Completo
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  | https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem |
+| **Período**           	  |                           2021                                        	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Variável de Interesse** | "Q001";"Q002"                                                           |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**| Não e aparementemente não sofreu grandes perdas de dados com nova LPGD  |
+
+- Este indicador é a média simples de dois dados:
+
+1. A razão entre o número de inscritos no ENEM no município que declararam ter pai com pelo menos
+ensino superior completo e total de inscritos no município;
+
+2. A razão entre o número de inscritos no ENEM no município que declararam ter mãe com pelo menos
+ensino superior completo e total de inscritos no município.
+
+- Para acessar esses microdados, foi preciso entrar no site do INEP e importá-los "manualmente". O dado mais recente para esse indicador foi para o ano de 2021, o que comparado ao dado usado no ICE 22 foram 2 anos de diferença. Isso ocorreu porque devido a pandemia de Covid-19, tanto o ENEM 2020 e o ENEM 2021 foram no mesmo ano, sendo eles respectivamente, no começo e final do ano.
+
 #### Indicador Proporção de Alunos Concluintes em Cursos de Alta Qualidade
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  | https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/indicadores-educacionais/indicadores-de-qualidade-da-educacao-superior |
+| **Período**           	  |                           2017; 2018; 2019                             	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|                 Não, foi utilizado o mesmo do ICE 22                    |
+
+- Desde a última edição do ICE não houve atualização desses dados, portanto, foi utilizado o do ano passado.
+
 #### Indicador Custo Médio de Salários de Dirigentes
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  |             http://pdet.mte.gov.br/microdados-rais-e-caged              |
+| **Período**           	  |                                  2019                                   |
+| **Cidades faltantes** 	  | -                                                                       |
+| **Variável de Interesse** |                   "valor_remuneracao_media";"CBO_2002"                  |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Negativa 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**| Não e aparementemente não sofreu grandes perdas de dados com nova LPGD  |
 
 ## Determinante Cultura {#det_cultura}
 
