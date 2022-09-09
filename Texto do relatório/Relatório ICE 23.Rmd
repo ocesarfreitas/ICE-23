@@ -384,8 +384,8 @@ e aplicar seguintes filtros:
 
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
-| **Fonte**             	  |https://dadosabertos.capes.gov.br/dataset                                |
-| **Período**           	  |                           01/2021 ~ 12/2021                           	|
+| **Fonte**             	  |https://dadosabertos.capes.gov.br/dataset ; http://pdet.mte.gov.br/microdados-rais-e-caged|
+| **Período**           	  |                           2020                                        	|
 | **Cidades faltantes** 	  | -                                                                       |
 | **Variável de Interesse** | [2017 a 2020] Discentes da Pós-Graduação stricto sensu do Brasil        |
 | **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
@@ -406,8 +406,8 @@ recentes disponíveis na RAIS, referentes ao ano de 2020.
 
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
-| **Fonte**             	  |http://pdet.mte.gov.br/microdados-rais-e-caged                           |
-| **Período**           	  |                           01/2021 ~ 12/2021                           	|
+| **Fonte**             	  | http://pdet.mte.gov.br/microdados-rais-e-caged                          |
+| **Período**           	  |                           2020                                        	|
 | **Cidades faltantes** 	  | -                                                                       |
 | **Variável de Interesse** | cbo_2002, agrupamento das observações dos microdados dos empregadores e dos vínculos|
 | **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
@@ -420,7 +420,7 @@ Para esse indicador, foi utilizado somente os dados da RAIS importados pelo *dat
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
 | **Fonte**             	  |https://www.bndes.gov.br/wps/portal/site/home/transparencia/centraldedownloads ; http://www.finep.gov.br/transparencia-finep/projetos-contratados-e-valores-liberados|
-| **Período**           	  |                           01/2021 ~ 12/2021                           	|
+| **Período**           	  |                                  2021                                 	|
 | **Cidades faltantes** 	  | Belford Roxo (RJ); Mauá	(SP); São Vicente	(SP)                          |
 | **Variável de Interesse** | Valor Finep (FINEP); Valor contratado R$ (BNDES)                        |
 | **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
@@ -435,11 +435,10 @@ Está errado mudar depois kk
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
 | **Fonte**                 |https://www.mctic.gov.br/mctic/opencms/salaImprensa/noticias/arquivos/2019/09/MCTIC_divulga_estudo_Indicadores_de_Parques_Tecnologicos.html|
-| **Período**           	  |                           01/2021 ~ 12/2021                           	|
+| **Período**           	  |                           2019 (atualizado)                           	|
 | **Cidades faltantes** 	  | -                                                                       |
-| **Variável de Interesse** | 	 	 	 	 	 	 	 	 	 	    VERBETE_160_OPERACOES_DE_CREDITO  	 	 	 	 	    |
 | **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
-| **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  ****  	 	 	  	 	 	 	 	 	 	 	 	 	    |
 
 #### Indicador Contratos de Concessão
 
@@ -448,34 +447,164 @@ Errado também socorro
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
 | **Fonte**             	  | https://www.gov.br/inpi/pt-br/central-de-conteudo/estatisticas/estatisticas|
-| **Período**           	  |                           01/2021 ~ 12/2021                           	|
+| **Período**           	  |                               2018 ~ 2019                             	|
 | **Cidades faltantes** 	  | -                                                                       |
-| **Variável de Interesse** | 	 	 	 	 	 	 	 	 	 	    VERBETE_160_OPERACOES_DE_CREDITO  	 	 	 	 	    |
 | **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
 | **Problemas com a coleta**| Dificuldade em encontrar o local no site em que se encontram os dados   |
 
-Ao acessar o site o INPI e a seção específica do site, que foi indicada aqui na fonte, baixou-se o arquivo `.zip` das Tabelas Completas dos Indicadores de Propriedade Industrial. 
+1. Ao acessar o site o INPI e a seção específica do site, que foi indicada aqui na fonte, baixou-se o arquivo `.zip` das Tabelas Completas dos Indicadores de Propriedade Industrial. No arquivo `.zip` foi selecionada os seguintes arquivos para a coleta:
+
+- 5 - Registros de Contratos por Cidade do Cessionário.
+
+2. Selecionar os último anos disponíveis (2018 e 2019)
+
+3. Utilizar os dados da RAIS referentes ao número de empresas com ao menos um funcionário
+
+4. Cálculo do indicador:
+
+\begin{equation}
+  Patentes = \frac{n^o\ de\ contratos\ de\ concessão}{n^o\ empresas\ com\ pelo\ menos \ 1\ funcionário}\cdot\frac{1}{1000}
+\end{equation}
 
 ### Subdeterminante Outputs {#subdet_output}
 
 - [Clique aqui](#script_2.5.2) para ver o script do Subdeterminante Outputs.
 
 #### Indicador Patentes
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  | https://www.gov.br/inpi/pt-br/central-de-conteudo/estatisticas/estatisticas|
+| **Período**           	  |                              2018 ~ 2019                              	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**| Dificuldade em encontrar o local no site em que se encontram os dados   |
+
+1. Ao acessar o site o INPI e a seção específica do site, que foi indicada aqui na fonte, baixou-se o arquivo `.zip` das Tabelas Completas dos Indicadores de Propriedade Industrial. No arquivo `.zip` foi selecionada os seguintes arquivos para a coleta:
+
+- "5a - Depósitos de Patentes do Tipo PI por Cidade" (PI);
+- "5b - Depósitos de Patentes do Tipo MU por Cidade" (MU);
+- "5c - Depósitos de Patentes do Tipo CA por Cidade" (CA).
+
+2. Selecionar os último anos disponíveis (2018 e 2019)
+
+3. Utilizar os dados da RAIS referentes ao número de empresas com ao menos um funcionário
+
+4. Cálculo do indicador:
+
+\begin{equation}
+  Patentes = \frac{PI+MU+CA}{n^o\ empresas\ com\ pelo\ menos \ 1\ funcionário}\cdot\frac{1}{1000}
+\end{equation}
+
 #### Indicador Tamanho da Indústria Inovadora
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  | http://pdet.mte.gov.br/microdados-rais-e-caged                          |
+| **Período**           	  |                                  2020                                 	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Variável de Interesse** | CNAE_2, agrupamento das observações dos microdados dos empregadores e dos vínculos |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|                                     Não                                 |
+ 
+1. Obter número de empresas de Indústria Inovadora nos municípios:
+
+- Foi selecionado manualmente a lista das indústrias inovadoras do Manual do ICE de 2023;
+
+- Para obter dados de quantidade de empresas de Indústria Inovadora da RAIS foi criada uma *query* em SQL para importar a RAIS do *data lake* público Base dos Dados;
+
+2. Obter para cada município o número total de empresas com pelo menos um funcionário;
+
+- Assim como o anterior foi utilizado os dados da RAIS importados do *data lake* público Base dos Dados, contudo foi criada uma diferente *query* para coletar o número total de empresas com pelo menos um funcionário.
+ 
+3. Calcular indicador para cada município de acordo com a seguinte fórmula:
+
+\begin{equation}
+  Tamanho\ da\ Indústria\ Inovadora = \frac{n^o\ de\ empresas\ industria\ inovadora}{n^o\ empresas\ com\ pelo\ menos\ 1\ funcionário}
+\end{equation}
+
 #### Indicador Tamanho da Economia Criativa
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  | http://pdet.mte.gov.br/microdados-rais-e-caged                          |
+| **Período**           	  |                                  2020                                 	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Variável de Interesse** | CNAE_2, agrupamento das observações dos microdados dos empregadores e dos vínculos |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|                                     Não                                 |
+
+1. Obter número de empresas de economia criativa nos municípios:
+
+- Foi selecionado manualmente a lista das empresas de economia criativa do Manual do ICE de 2023;
+
+- Para obter dados de quantidade de empresas de economia criativa da RAIS foi criada uma *query* em SQL para importar a RAIS do *data lake* público Base dos Dados;
+
+2. Obter para cada município o número total de empresas com pelo menos um funcionário;
+
+- Assim como o anterior foi utilizado os dados da RAIS importados do *data lake* público Base dos Dados, contudo foi criada uma diferente *query* para coletar o número total de empresas com pelo menos um funcionário.
+ 
+3. Calcular indicador para cada município de acordo com a seguinte fórmula:
+
+\begin{equation}
+  Tamanho\ da\ Indústria\ Inovadora = \frac{n^o\ de\ empresas\ eco\ criativa}{n^o\ empresas\ com\ pelo\ menos\ 1\ funcionário}
+\end{equation}
+
+
 #### Indicador Tamanho das Empresas TIC
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  | http://pdet.mte.gov.br/microdados-rais-e-caged                          |
+| **Período**           	  |                                  2020                                 	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Variável de Interesse** | CNAE_2, agrupamento das observações dos microdados dos empregadores e dos vínculos |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|                                     Não                                 |
+
+1. Obter número de empresas TIC nos municípios:
+
+- Foi selecionado manualmente a lista das empresas TIC do Manual do ICE de 2023;
+
+- Para obter dados de quantidade de empresas TIC da RAIS foi criada uma *query* em SQL para importar a RAIS do *data lake* público Base dos Dados;
+
+2. Obter para cada município o número total de empresas com pelo menos um funcionário;
+
+- Assim como o anterior foi utilizado os dados da RAIS importados do *data lake* público Base dos Dados, contudo foi criada uma diferente *query* para coletar o número total de empresas com pelo menos um funcionário.
+ 
+3. Calcular indicador para cada município de acordo com a seguinte fórmula:
+
+\begin{equation}
+  Tamanho\ da\ Indústria\ Inovadora = \frac{n^o\ de\ empresas\ TIC}{n^o\ empresas\ com\ pelo\ menos\ 1\ funcionário}
+\end{equation}
 
 ## Determinante Capital Humano {#det_capital_humano}
 
+- [Clique aqui](#script_2.6) para ver o script do Capital Humano.
+
 ### Subdeterminante Acesso e Qualidade da Mão de Obra Básica {#subdet_obra_basica}
 
+- [Clique aqui](#script_2.6.1) para ver o script do Subdeterminante Acesso e Qualidade da Mão de Obra Básica.
+
 #### Indicador Nota do Ideb
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  |https://dadosabertos.capes.gov.br/dataset|
+| **Período**           	  |                           2020                                        	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Variável de Interesse** | [2017 a 2020] Discentes da Pós-Graduação stricto sensu do Brasil        |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
+
 #### Indicador Proporção de Adultos com Pelo Menos o Ensino Médio Completo
 #### Indicador Taxa Líquida de Matrícula no Ensino Médio
 #### Indicador Nota Média no Enem
 #### Indicador Proporção de Matriculados no Ensino Técnico e Profissionalizante 
 
 ### Subdeterminante Acesso e Qualidade da Mão de Obra Qualificada {#subdet_obra_qualificada}
+
+- [Clique aqui](#script_2.6.2) para ver o script do Subdeterminante Acesso e Qualidade da Mão de Obra Qualificada.
 
 #### Indicador Proporção de Adultos com Pelo Menos o Ensino Superior Completo
 #### Indicador Proporção de Alunos Concluintes em Cursos de Alta Qualidade
