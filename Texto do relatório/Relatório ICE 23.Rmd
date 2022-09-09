@@ -590,12 +590,14 @@ Errado também socorro
 
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
-| **Fonte**             	  |https://dadosabertos.capes.gov.br/dataset|
-| **Período**           	  |                           2020                                        	|
+| **Fonte**             	  |                           http://ideb.inep.gov.br/                      |
+| **Período**           	  |                           2019                                        	|
 | **Cidades faltantes** 	  | -                                                                       |
-| **Variável de Interesse** | [2017 a 2020] Discentes da Pós-Graduação stricto sensu do Brasil        |
+| **Variável de Interesse** |                                 Nota do IDEB                            |
 | **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
 | **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
+
+- Como o IDEB é uma prova binual ainda não foram disponibilizados os microdados para o ano de 2021, portanto para esse indicador foi utilizado os mesmos valores do ICE 22.
 
 #### Indicador Proporção de Adultos com Pelo Menos o Ensino Médio Completo
 #### Indicador Taxa Líquida de Matrícula no Ensino Médio
