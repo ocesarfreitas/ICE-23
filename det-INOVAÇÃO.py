@@ -180,16 +180,9 @@ interesse=['Cod.IBGE','Proporção de Mestres e Doutores em C&T','Proporção de
 subdet_input=subdet_input[interesse]
 
 ### 2.6.1.4. Indicador Infraestrutura Tecnológica
-### Atualizar amanhã cedo dados no wpp###
-df_infra_tec = pd.read_excel('Arquivos ICE - 23/Ind_Originais_ICE_2022.xlsx', header=5,
-                        usecols="B:C,AR")
-df_infra_tec = df_infra_tec.rename(columns={df_infra_tec.columns[1]:'Município',
-                                            df_infra_tec.columns[2]:'Infraestrutura Tecnológica'})
-
-df_infra_tec = df_infra_tec.merge(amostra, how='right', left_on='Município',
-                                    right_on='NOME DO MUNICÍPIO')
-df_infra_tec = df_infra_tec[['UF_x','Município','Infraestrutura Tecnológica','Cod.IBGE']]
-df_infra_tec = df_infra_tec.rename(columns={'UF_x':'UF'})
+df_infra_tec = pd.read_excel('DETERMINANTE INOVAÇÃO/INFRA_TEC.xlsx')
+df_infra_tec['Cod.IBGE'] = df_infra_tec['Cod.IBGE'].astype(str)
+subdet_input = subdet_input.merge(df_infra_tec, how='right', on='Cod.IBGE')
 
 ### 2.6.1.5. Indicador Contratos de Concessão
 df_inpi_contrato = pd.read_excel('DETERMINANTE INOVAÇÃO/5 - Depósitos de Marcas por Cidade.xls',
@@ -204,11 +197,10 @@ df_inpi_contrato = df_inpi_contrato.merge(database, how='right', on='Cod.IBGE')
 df_inpi_contrato = df_inpi_contrato.merge(df_rais, how='right', on='Cod.IBGE')
 df_inpi_contrato['Contratos de Concessão'] = (df_inpi_contrato['2018+2019'])/df_inpi_contrato['mil_emp']
 
-subdet_input = subdet_input.merge(df_inpi_contrato, how='right', on='Cod.IBGE')
-subdet_input = subdet_input.merge(amostra, how='left', on=['Cod.IBGE'])
+subdet_input = subdet_input.merge(df_inpi_contrato, how='right', on=['Cod.IBGE','Município'])
 interesse=['Município','UF','Proporção de Mestres e Doutores em C&T',
            'Proporção de Funcionários em C&T','Média de Investimentos do BNDES e FINEP',
-           'Contratos de Concessão']
+           'Infraestrutura Tecnológica','Contratos de Concessão']
 subdet_input = subdet_input[interesse].set_index(['Município','UF'])
 
 missing_data(subdet_input)
