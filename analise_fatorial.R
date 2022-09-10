@@ -1,7 +1,10 @@
+# Bibliotecas utilizadas no R
 library("data.table")
 library("tidyverse")
 library("psych")
 
+#-------------------------------------------------------------------------------
+# Criando looping para importar os indicadores padronizados
 det <- c("ACESSO A CAPITAL","AMBIENTE REGULATÓRIO","CAPITAL HUMANO","CULTURA",
          "INFRAESTRUTURA","INOVACAO","MERCADO")
 det_s <- c("ACESSO_CAPITAL","AMBIENTE_REGULATORIO","CAPITAL_HUMANO","CULTURA",
@@ -24,11 +27,19 @@ determinantes <- df %>%
 
 colnames(determinantes)[1:2] <- c("Município","UF")
 
+#-------------------------------------------------------------------------------
+## Análise fatorial: fatores e autovalores
+
 S <- cov(determinantes[,3:9])
 S.eigen <- eigen(S)
 S.eigen$values
-plot(S.eigen$values, xlab = 'Eigenvalue Number', ylab = 'Eigenvalue Size', main = 'Scree Graph', type = 'b', xaxt = 'n')
+plot(S.eigen$values, xlab = 'Eigenvalue Number', ylab = 'Eigenvalue Size', type = 'b', xaxt = 'n')
 axis(1, at = seq(1, 7, by = 1))
 
-root.fa.covar <- principal(determinantes[,3:9], nfactors = 3, rotate = 'none', covar = TRUE)
+# Criando tabela com a Análise dos Principais Componentes 
+root.fa.covar <- principal(determinantes[,3:9], nfactors =3, rotate = 'none', covar = TRUE)
 root.fa.covar
+
+# Teste KMO
+kmo <- KMO(determinantes[,3:9])
+kmo

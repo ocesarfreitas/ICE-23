@@ -919,7 +919,52 @@ Para esse indicador, foi utilizado somente os dados da RAIS importados pelo *dat
 #### Indicador Pesquisas Simples Nacional
 #### Indicador Pesquisas SENAC
 
-# Análise de Componentes Principais
+# Análise de Componentes Principais {#analise_com_principais}
+
+- [Clique aqui](#script_acp) para ver o script da Análise de Componentes Principais.
+
+## Alguma coisa sem rotação
+
+| **Variável**                       	| **PC1** | **PC2** | **PC3** | **h²** | **u²** | **com** |
+|------------------------------------	|-------- |-------- |-------- |------- |-------	|-------- |
+| **Índice de Acesso a Capital**     	| 0.72  	| 0.16  	| -0.24 	| 0.61 	 | 0.394 	| 1.3 	  |
+| **Índice de Ambiente Regulatório** 	| 0.05  	| 0.76  	| 0.56  	| 0.89 	 | 0.107 	| 1.9 	  |
+| **Índice de Capital Humano**       	| 0.64 	  | -0.29 	| -0.18 	| 0.53 	 | 0.470 	| 1.6 	  |
+| **Índice de Cultura**              	| 0.14 	  | -0.65 	| 0.71  	| 0.94 	 | 0.058 	| 2.1 	  |
+| **Índice de Infraestrutura**       	| 0.73 	  | -0.03 	| 0.02  	| 0.53 	 | 0.466 	| 1.0 	  |
+| **Índice de Inovação**             	| 0.85 	  | 0.09  	| -0.08 	| 0.73 	 | 0.271 	| 1.0 	  |
+| **Índice de Mercado**              	| 0.78 	  | 0.10  	| 0.26  	| 0.69 	 | 0.310 	| 1.3 	  |
+
+|                           	| **PC1** 	| **PC2** 	| **PC3** 	|
+|---------------------------	|:-------:	|---------	|---------	|
+| **SS loadings**           	|   2.82  	| 1.13    	| 0.98    	|
+| **Proportion Var**        	|   0.40  	| 0.16    	| 0.14    	|
+| **Cumulative Var**        	|   0.40  	| 0.56    	| 0.70    	|
+| **Proportion Explained**  	|   0.57  	| 0.23    	| 0.20    	|
+| **Cumulative Proportion** 	|   0.57  	| 0.80    	| 1.00    	|
+
+Mean item complexity =  1.4
+Test of the hypothesis that 3 components are sufficient.
+
+The root mean square of the residuals (RMSR) is  0.1 
+ with the empirical chi square  38.62  with prob <  2.1e-08 
+
+Fit based upon off diagonal values = 0.91
+
+## Teste de Kaiser-Meyer-Olkin (KMO)
+
+| **Variável**                   	|  **KMO** 	|
+|--------------------------------	|:--------:	|
+| Índice de Acesso a Capital     	|   0.83   	|
+| Índice de Ambiente Regulatório 	|   0.43   	|
+| Índice de Capital Humano       	|   0.77   	|
+| Índice de Cultura              	|   0.43   	|
+| Índice de Infraestrutura       	|   0.82   	|
+| Índice de Inovação             	|   0.74   	|
+| Índice de Mercado              	|   0.73   	|
+| **Overall MSA**                	| **0.76** 	|
+
+
 # Correlação com o ICE2022
 # Efeito Parcial da Cultura
 # Ranking
@@ -2810,4 +2855,56 @@ cultura = cultura.set_index(['Município', 'UF'])
 
 
 cultura.to_csv('DETERMINANTES/det-CULTURA.csv')
+```
+
+### Análise de Componentes Principais {.unnumbered #script_acp}
+
+- Para retornar ao relatório da Análise de Componentes princpais [clique aqui](#analise_com_principais).
+
+```{r, eval=FALSE, echo=TRUE}
+# Bibliotecas utilizadas no R
+library("data.table")
+library("tidyverse")
+library("psych")
+
+#-------------------------------------------------------------------------------
+# Criando looping para importar os indicadores padronizados
+det <- c("ACESSO A CAPITAL","AMBIENTE REGULATÓRIO","CAPITAL HUMANO","CULTURA",
+         "INFRAESTRUTURA","INOVACAO","MERCADO")
+det_s <- c("ACESSO_CAPITAL","AMBIENTE_REGULATORIO","CAPITAL_HUMANO","CULTURA",
+           "INFRAESTRUTURA","INOVACAO","MERCADO")
+last_col <- c(7,16,13,12,12,14,11)
+
+arq <- list()
+names <- list()
+df <- list()
+
+for(i in 1:7){
+  # Importando a base
+  arq[i] <- paste0("DETERMINANTES/det-",det[i],".csv")
+  names[i] <- paste0("det_",det_s[i])
+  df[[i]] <- assign(paste0("det_",det_s[i]), drop_na(fread(arq[[i]],select = c(1:2,last_col[i]),encoding = 'UTF-8')))
+}
+
+determinantes <- df %>% 
+  reduce(full_join, by=c('V1','V2'))
+
+colnames(determinantes)[1:2] <- c("Município","UF")
+
+#-------------------------------------------------------------------------------
+## Análise fatorial: fatores e autovalores
+
+S <- cov(determinantes[,3:9])
+S.eigen <- eigen(S)
+S.eigen$values
+plot(S.eigen$values, xlab = 'Eigenvalue Number', ylab = 'Eigenvalue Size', type = 'b', xaxt = 'n')
+axis(1, at = seq(1, 7, by = 1))
+
+# Criando tabela com a Análise dos Principais Componentes 
+root.fa.covar <- principal(determinantes[,3:9], nfactors = 3, rotate = 'none', covar = TRUE)
+root.fa.covar
+
+# Teste KMO
+kmo <- KMO(determinantes[,3:9])
+kmo
 ```
