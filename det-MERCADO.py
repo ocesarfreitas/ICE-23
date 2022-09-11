@@ -31,7 +31,6 @@ pib['UF'] = pib['Município'].apply(lambda x: x.split('(')[-1][:2])
 pib['Município'] = pib['Município'].apply(lambda x: x.split('(')[0].strip())
 pib = pib.set_index(['Município', 'UF'])
 
-# O DEFLATOR DO PIB UTILIZADO É DA FONTE IPEADATA E NÃO IBGE
 
 deflator = pd.DataFrame([{
     '2016':1.171085,
