@@ -53,8 +53,12 @@ scores.ICE <- as.data.frame(psych::predict.psych(root.fa.covar, determinantes[,3
 scores.ICE <- scores.ICE %>%
   mutate(ICE = RC1 + RC2 + RC3 + 6)
 
-teste <- cbind(determinantes,scores.ICE)
+ICE_23 <- cbind(determinantes,scores.ICE[,4])
+names(ICE_23)[10] <- 'Indíce Cidades Empreendendoras 2023'
+
+write.csv(ICE_23, 'DETERMINANTES/ICE-2023.csv')
 
 # Teste KMO
 kmo <- KMO(determinantes[,3:9])
 kmo
+

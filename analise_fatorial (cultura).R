@@ -7,7 +7,7 @@ library("psych")
 # Criando looping para importar os indicadores padronizados
 det <- c("ACESSO A CAPITAL","AMBIENTE REGULATÓRIO","CAPITAL HUMANO","CULTURA",
          "INFRAESTRUTURA","INOVACAO","MERCADO")
-det_s <- c("ACESSO_CAPITAL","AMBIENTE_REGULATORIO","CAPITAL_HUMANO","CULTURA",
+det_s <- c("ACESSO_CAPITAL","AMBIENTE_REGULATORIO","CAPITAL_HUMANO","CULTURA2",
            "INFRAESTRUTURA","INOVACAO","MERCADO")
 last_col <- c(7,16,13,12,12,14,11)
 
@@ -55,6 +55,9 @@ scores.ICE <- scores.ICE %>%
 
 ICE_23 <- cbind(determinantes,scores.ICE[,4])
 names(ICE_23)[10] <- 'Indíce Cidades Empreendendoras 2023'
+
+write.csv(ICE_23, 'DETERMINANTES/ICE-2023 (cultura).csv')
+
 # Teste KMO
 kmo <- KMO(determinantes[,3:9])
 kmo
