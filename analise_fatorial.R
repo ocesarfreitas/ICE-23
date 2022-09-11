@@ -54,7 +54,18 @@ scores.ICE <- scores.ICE %>%
   mutate(ICE = RC1 + RC2 + RC3 + 6)
 
 ICE_23 <- cbind(determinantes,scores.ICE[,4])
-names(ICE_23)[10] <- 'Indíce Cidades Empreendendoras 2023'
+names(ICE_23)[10] <- 'Índice Cidades Empreendendoras 2023'
+
+ICE_23$`Rank ICE 23` <- frankv(ICE_23, cols='Índice Cidades Empreendendoras 2023', order=-1)
+ICE_23$`Rank Acesso a Capital` <- frankv(ICE_23, cols='Índice de Acesso a Capital', order=-1)
+ICE_23$`Rank Ambiente Regulatório` <- frankv(ICE_23, cols='Índice de Ambiente Regulatório', order=-1)
+ICE_23$`Rank Capital Humano` <- frankv(ICE_23, cols='Índice de Capital Humano', order=-1)
+ICE_23$`Rank Cultura` <- frankv(ICE_23, cols='Índice de Cultura', order=-1,ties.method = "max")
+ICE_23$`Rank Infraestrutura` <- frankv(ICE_23, cols='Índice de Infraestrutura', order=-1)
+ICE_23$`Rank Inovação` <- frankv(ICE_23, cols='Índice de Inovação', order=-1)
+ICE_23$`Rank Mercado` <- frankv(ICE_23, cols='Índice de Mercado', order=-1)
+
+ICE_23 <- ICE_23[, c(1:3,12,4,13,5,14,6,15,7,16,8,17,9,18,10,11)]
 
 write.csv(ICE_23, 'DETERMINANTES/ICE-2023.csv')
 
