@@ -76,4 +76,4 @@ cultura['UF'] = amostra['UF']
 cultura = cultura.set_index(['Município', 'UF'])
 
 
-cultura.to_csv('DETERMINANTES/det-CULTURA.csv')
+cultura.to_csv('DETERMINANTES/det-CULTURA2.csv')
