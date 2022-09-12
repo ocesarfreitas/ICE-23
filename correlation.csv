@@ -1,8 +1,9 @@
-,"(Correla√ß√£o 2022-2023, p-valor)"
-√çndice de Acesso a Capital,"SpearmanrResult(correlation=0.35164822364589393, pvalue=0.00031105732120126784)"
-√çndice de Ambiente Regulat√≥rio,"SpearmanrResult(correlation=-0.07029702970297029, pvalue=0.4848348196260749)"
-√çndice de Capital Humano,"SpearmanrResult(correlation=0.1244612696563774, pvalue=0.21494612325695386)"
-√çndice de Cultura,"SpearmanrResult(correlation=-0.18718343794207257, pvalue=0.06088112135879863)"
-√çndice de Infraestrutura,"SpearmanrResult(correlation=-0.04670937682003495, pvalue=0.6427669082106172)"
-√çndice de Inova√ß√£o,"SpearmanrResult(correlation=0.15419918462434476, pvalue=0.12365369835880793)"
-√çndice de Mercado,"SpearmanrResult(correlation=-0.02605707629586488, pvalue=0.7959016631746205)"
+,CorrelaÁ„o 2022-2023, p-valor
+Õndice de Acesso a Capital,0.351648224,0.000311057
+Õndice de Ambiente RegulatÛrio,-0.07029703,0.48483482
+Õndice de Capital Humano,0.12446127,0.214946123
+Õndice de Cultura,-0.191204171,0.055445229
+Õndice de Infraestrutura,-0.046709377,0.642766908
+Õndice de InovaÁ„o,0.154199185,0.123653698
+Õndice de Mercado,-0.026057076,0.795901663
+Õndice Cidades Empreendendoras,0.033221895,0.741542681
