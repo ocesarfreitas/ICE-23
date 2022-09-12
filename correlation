@@ -1,0 +1,8 @@
+,Correlação 2022-2023
+Índice de Acesso a Capital,"SpearmanrResult(correlation=0.35164822364589393, pvalue=0.00031105732120126784)"
+Índice de Ambiente Regulatório,"SpearmanrResult(correlation=-0.07029702970297029, pvalue=0.4848348196260749)"
+Índice de Capital Humano,"SpearmanrResult(correlation=0.1244612696563774, pvalue=0.21494612325695386)"
+Índice de Cultura,"SpearmanrResult(correlation=-0.18718343794207257, pvalue=0.06088112135879863)"
+Índice de Infraestrutura,"SpearmanrResult(correlation=-0.04670937682003495, pvalue=0.6427669082106172)"
+Índice de Inovação,"SpearmanrResult(correlation=0.15419918462434476, pvalue=0.12365369835880793)"
+Índice de Mercado,"SpearmanrResult(correlation=-0.02605707629586488, pvalue=0.7959016631746205)"

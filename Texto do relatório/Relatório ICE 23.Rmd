@@ -300,14 +300,13 @@ Esse indicador se refere ao número de decolagens por ano que aconteceram no aer
 
 |                       	   | **Informações**                                  |
 |--------------------------- |--------------------------------------------------|
-| **Fonte**             	   |https://www.ibge.gov.br/estatisticas/sociais/protecao-social/10586-pesquisa-de-informacoes-basicas-municipais.html?=&t=downloads|
-| **Período**           	   | 2021                                             |
+| **Fonte**             	   |https://www.gov.br/infraestrutura/pt-br/assuntos/dados-de-transportes/bit/bitmodosmapas|
+| **Período**           	   | 2022                                             |
 | **Cidades faltantes** 	   | -                                                |
-| **Efeito**                 | Negativo 	 	 	  	 	 	 	 	 	 	 	 	 	            |
-| **Variável de interesse**  | MLEG061                    	 	 	  	 	          |
-| **Problemas com a coleta** | Sim, pergunta excluída na MUNIC 2018	 	 	 	 	 	 	|
+| **Efeito**                 | Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	            |
+| **Problemas com a coleta** | Não 	 	 	 	 	 	|
 
-Esse indicador se refere a quantidade de anos desde que o município mudou a lei de zoneamento. O IBGE excluiu essa pergunta após a edição da MUNIC 2018, então assim como na edição do ICE 2022, somente foi feita a atualização da quantidade de anos.
+Esse indicador foi calculado por meio do uso de \textit{*.shp} files, o código em linguagem R do ano passado foi replicado. O manual indica que o impacto deste indicador é positivo e o índice foi calculado desta maneira, porém a intuição sugere que o impacto deste indicador deveria ser negarivo
 
 ### Subdeterminante Condições Urbanas {#subdet_cond_urb} 
 
@@ -318,53 +317,49 @@ Esse indicador se refere a quantidade de anos desde que o município mudou a lei
 
 |                       	   | **Informações**                                  |
 |--------------------------- |--------------------------------------------------|
-| **Fonte**             	   |https://www.ibge.gov.br/estatisticas/sociais/protecao-social/10586-pesquisa-de-informacoes-basicas-municipais.html?=&t=downloads|
+| **Fonte**             	   |https://dados.gov.br/dataset/dados-de-acessos-de-comunicacao-multimidia|
 | **Período**           	   | 2021                                             |
 | **Cidades faltantes** 	   | -                                                |
-| **Efeito**                 | Negativo 	 	 	  	 	 	 	 	 	 	 	 	 	            |
-| **Variável de interesse**  | MLEG061                    	 	 	  	 	          |
-| **Problemas com a coleta** | Sim, pergunta excluída na MUNIC 2018	 	 	 	 	 	 	|
+| **Efeito**                 | Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	            |
+| **Problemas com a coleta** | Não 	 	 	 	 	 	|
 
-Esse indicador se refere a quantidade de anos desde que o município mudou a lei de zoneamento. O IBGE excluiu essa pergunta após a edição da MUNIC 2018, então assim como na edição do ICE 2022, somente foi feita a atualização da quantidade de anos.
+Não houveram problemas de coleta.
 
 #### Indicador Preço Médio do m² 
 
 |                       	   | **Informações**                                  |
 |--------------------------- |--------------------------------------------------|
-| **Fonte**             	   |https://www.ibge.gov.br/estatisticas/sociais/protecao-social/10586-pesquisa-de-informacoes-basicas-municipais.html?=&t=downloads|
-| **Período**           	   | 2021                                             |
+| **Fonte**             	   |https://www.zapimoveis.com.br/|
+| **Período**           	   | 2022                                             |
 | **Cidades faltantes** 	   | -                                                |
 | **Efeito**                 | Negativo 	 	 	  	 	 	 	 	 	 	 	 	 	            |
-| **Variável de interesse**  | MLEG061                    	 	 	  	 	          |
-| **Problemas com a coleta** | Sim, pergunta excluída na MUNIC 2018	 	 	 	 	 	 	|
+| **Problemas com a coleta** | Não	 	 	 	 	 	 	|
 
-Esse indicador se refere a quantidade de anos desde que o município mudou a lei de zoneamento. O IBGE excluiu essa pergunta após a edição da MUNIC 2018, então assim como na edição do ICE 2022, somente foi feita a atualização da quantidade de anos.
+O código do ano passado que realiza a raspagem e calcula o indicador foi replicado e não houveram problemas.
 
 #### Indicador Custo da Energia Elétrica 
 
 |                       	   | **Informações**                                  |
 |--------------------------- |--------------------------------------------------|
-| **Fonte**             	   |https://www.ibge.gov.br/estatisticas/sociais/protecao-social/10586-pesquisa-de-informacoes-basicas-municipais.html?=&t=downloads|
-| **Período**           	   | 2021                                             |
+| **Fonte**             	   |https://www2.aneel.gov.br/relatoriosrig/(S(xy4w1g4lctbu4jmpix4fsf5f))/relatorio.aspx?folder=sfe&report=DistribuidoradecadaMunicipio ; https://www.gov.br/aneelranking-das-tarifas|
+| **Período**           	   | 2022                                             |
 | **Cidades faltantes** 	   | -                                                |
 | **Efeito**                 | Negativo 	 	 	  	 	 	 	 	 	 	 	 	 	            |
-| **Variável de interesse**  | MLEG061                    	 	 	  	 	          |
-| **Problemas com a coleta** | Sim, pergunta excluída na MUNIC 2018	 	 	 	 	 	 	|
+| **Problemas com a coleta** | Não 	 	 	 	 	 	|
 
-Esse indicador se refere a quantidade de anos desde que o município mudou a lei de zoneamento. O IBGE excluiu essa pergunta após a edição da MUNIC 2018, então assim como na edição do ICE 2022, somente foi feita a atualização da quantidade de anos.
+Algumas distribuidoras de energia elétrica mudaram de nome recentemente então haviam incompatibilidades na base, estes problemas foram resolvidos à mão. AS cidades que recebem o serviço de mais de uma distribuidora ficaram com o valor do indicador igual a média das tarifas de energia ponderada pelo número de clientes atendidos. 
 
 #### Indicador Taxa de Homicídios 
 
 |                       	   | **Informações**                                  |
 |--------------------------- |--------------------------------------------------|
-| **Fonte**             	   |https://www.ibge.gov.br/estatisticas/sociais/protecao-social/10586-pesquisa-de-informacoes-basicas-municipais.html?=&t=downloads|
-| **Período**           	   | 2021                                             |
+| **Fonte**             	   |http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sim/cnv/obt10br.def|
+| **Período**           	   | 2020                                             |
 | **Cidades faltantes** 	   | -                                                |
 | **Efeito**                 | Negativo 	 	 	  	 	 	 	 	 	 	 	 	 	            |
-| **Variável de interesse**  | MLEG061                    	 	 	  	 	          |
-| **Problemas com a coleta** | Sim, pergunta excluída na MUNIC 2018	 	 	 	 	 	 	|
+| **Problemas com a coleta** |  Não	 	 	 	 	 	 	|
 
-Esse indicador se refere a quantidade de anos desde que o município mudou a lei de zoneamento. O IBGE excluiu essa pergunta após a edição da MUNIC 2018, então assim como na edição do ICE 2022, somente foi feita a atualização da quantidade de anos.
+Não houveram problemas na coleta nem dados faltantes..
 
 ## Determinante Mercado {#det_mercado}
 
@@ -378,40 +373,37 @@ Esse indicador se refere a quantidade de anos desde que o município mudou a lei
 
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
-| **Fonte**             	  |              http://pdet.mte.gov.br/microdados-rais-e-caged             |
-| **Período**           	  |                           2020                                        	|
+| **Fonte**             	  |              http://www.atlasbrasil.org.br/ranking             |
+| **Período**           	  |                           2010                                        	|
 | **Cidades faltantes** 	  | -                                                                       |
-| **Variável de Interesse** | cbo_2002, valor_remuneracao_media                                       |
-| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Negativo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
 | **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
 
-Para esse indicador, foi utilizado somente os dados da RAIS importados pelo *data lake* públlico da Base Dos Dados. Foi criado uma *query* para importação dos dados, com a relação dos salários dos dirigentes, segundo o critério da CBO 2002, e o número total de dirigentes no município, para encotrar a média salarial.
+O IDH Municipal não é calculado desde 2010 então os valores do ano passado foram replicados.
 
 #### Indicador Crescimento Médio Real do PIB 
 
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
-| **Fonte**             	  |              http://pdet.mte.gov.br/microdados-rais-e-caged             |
-| **Período**           	  |                           2020                                        	|
+| **Fonte**             	  |              https://sidra.ibge.gov.br/tabela/5938 ; https://seriesestatisticas.ibge.gov.br/series.aspx?t=pib&vcodigo=scn54             |
+| **Período**           	  |                          2015 - 2019                                        	|
 | **Cidades faltantes** 	  | -                                                                       |
-| **Variável de Interesse** | cbo_2002, valor_remuneracao_media                                       |
-| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Negativo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
 | **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
 
-Para esse indicador, foi utilizado somente os dados da RAIS importados pelo *data lake* públlico da Base Dos Dados. Foi criado uma *query* para importação dos dados, com a relação dos salários dos dirigentes, segundo o critério da CBO 2002, e o número total de dirigentes no município, para encotrar a média salarial.
+Não houveram problemas na coleta.
 
 #### Indicador Número de Empresas Exportadoras com Sede na Cidade
 
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
-| **Fonte**             	  |              http://pdet.mte.gov.br/microdados-rais-e-caged             |
+| **Fonte**             	  |              https://www.gov.br/produtividade-e-comercio-exterior/pt-br/assuntos/comercio-exterior/estatisticas/empresas-brasileiras-exportadoras-e-importadoras ; https://pdet.mte.gov.br/acesso-online-as-bases-de-dados             |
 | **Período**           	  |                           2020                                        	|
 | **Cidades faltantes** 	  | -                                                                       |
-| **Variável de Interesse** | cbo_2002, valor_remuneracao_media                                       |
-| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Negativo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
 | **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
 
-Para esse indicador, foi utilizado somente os dados da RAIS importados pelo *data lake* públlico da Base Dos Dados. Foi criado uma *query* para importação dos dados, com a relação dos salários dos dirigentes, segundo o critério da CBO 2002, e o número total de dirigentes no município, para encotrar a média salarial.
+Não houveram problemas na coleta, os dados mais pesados foram coletados utilizando o SQL.
 
 ### Subdeterminante Clientes Potenciais {#subdet_clientes_pot}
 
@@ -422,39 +414,37 @@ Para esse indicador, foi utilizado somente os dados da RAIS importados pelo *dat
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
 | **Fonte**             	  |              http://pdet.mte.gov.br/microdados-rais-e-caged             |
-| **Período**           	  |                           2020                                        	|
+| **Período**           	  |                           2019                                        	|
 | **Cidades faltantes** 	  | -                                                                       |
-| **Variável de Interesse** | cbo_2002, valor_remuneracao_media                                       |
-| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Negativo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
 | **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
 
-Para esse indicador, foi utilizado somente os dados da RAIS importados pelo *data lake* públlico da Base Dos Dados. Foi criado uma *query* para importação dos dados, com a relação dos salários dos dirigentes, segundo o critério da CBO 2002, e o número total de dirigentes no município, para encotrar a média salarial.
+Os dados do PIB são os mesmos dos utilizados no *Indicador Crescimento Médio Real do PIB* não houveram problemas de coleta.
 
 #### Indicador Proporção entre Grandes/Médias e Médias/Pequenas Empresas
 
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
-| **Fonte**             	  |              http://pdet.mte.gov.br/microdados-rais-e-caged             |
+| **Fonte**             	  |              https://basedosdados.org/dataset/br-me-rais?bdm_table=microdados_vinculos             |
 | **Período**           	  |                           2020                                        	|
 | **Cidades faltantes** 	  | -                                                                       |
-| **Variável de Interesse** | cbo_2002, valor_remuneracao_media                                       |
-| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Negativo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
 | **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
 
-Para esse indicador, foi utilizado somente os dados da RAIS importados pelo *data lake* públlico da Base Dos Dados. Foi criado uma *query* para importação dos dados, com a relação dos salários dos dirigentes, segundo o critério da CBO 2002, e o número total de dirigentes no município, para encotrar a média salarial.
+Não houveram problemas na coleta, os dados mais pesados foram coletados utilizando o SQL.
 
 #### Indicador Compras Públicas
 
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
-| **Fonte**             	  |              http://pdet.mte.gov.br/microdados-rais-e-caged             |
+| **Fonte**             	  |              https://siconfi.tesouro.gov.br/siconfi/index.jsf             |
 | **Período**           	  |                           2020                                        	|
 | **Cidades faltantes** 	  | -                                                                       |
 | **Variável de Interesse** | cbo_2002, valor_remuneracao_media                                       |
 | **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Negativo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
 | **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
 
-Para esse indicador, foi utilizado somente os dados da RAIS importados pelo *data lake* públlico da Base Dos Dados. Foi criado uma *query* para importação dos dados, com a relação dos salários dos dirigentes, segundo o critério da CBO 2002, e o número total de dirigentes no município, para encotrar a média salarial.
+Não houveram problemas na coleta.
 
 ## Determinante Acesso a Capital {#det_acesso_capital}
 
@@ -907,17 +897,92 @@ Para esse indicador, foi utilizado somente os dados da RAIS importados pelo *dat
 - [Clique aqui](#script_2.7.1) para ver o script do Subdeterminante Iniciativa.
 
 #### Indicador Pesquisas Empreendedora
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  |              https://trends.google.com/trends/?geo=BR             |
+| **Período**           	  |                           2021                                        	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
+
+Nenhum problema na coleta, os indicadores do determinante de cultura possuem valor $0$ para a maioria dos municípios.
+
 #### Indicador Pesquisas Empreendedorismo
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  |              https://trends.google.com/trends/?geo=BR             |
+| **Período**           	  |                           2021                                        	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
+
+Nenhum problema na coleta, os indicadores do determinante de cultura possuem valor $0$ para a maioria dos municípios.
+
 #### Indicador Pesquisas MEI
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  |              https://trends.google.com/trends/?geo=BR             |
+| **Período**           	  |                           2021                                        	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
+
+Nenhum problema na coleta, os indicadores do determinante de cultura possuem valor $0$ para a maioria dos municípios.
 
 ### Subdeterminante Instituições {#subdet_instituicoes}
 
 - [Clique aqui](#script_2.7.2) para ver o script do Subdeterminante Instituições.
 
 #### Indicador Pesquisas SEBRAE
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  |              https://trends.google.com/trends/?geo=BR             |
+| **Período**           	  |                           2021                                        	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
+
+Nenhum problema na coleta, os indicadores do determinante de cultura possuem valor $0$ para a maioria dos municípios.
+
 #### Indicador Pesquisas Franquia
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  |              https://trends.google.com/trends/?geo=BR             |
+| **Período**           	  |                           2021                                        	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
+
+Nenhum problema na coleta, os indicadores do determinante de cultura possuem valor $0$ para a maioria dos municípios.
+
 #### Indicador Pesquisas Simples Nacional
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  |              https://trends.google.com/trends/?geo=BR             |
+| **Período**           	  |                           2021                                        	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
+
+Nenhum problema na coleta, os indicadores do determinante de cultura possuem valor $0$ para a maioria dos municípios.
+
 #### Indicador Pesquisas SENAC
+
+|                       	  | **Informações**                                                        	|
+|---------------------------|-------------------------------------------------------------------------|
+| **Fonte**             	  |              https://trends.google.com/trends/?geo=BR             |
+| **Período**           	  |                           2021                                        	|
+| **Cidades faltantes** 	  | -                                                                       |
+| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
+| **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
+
+Nenhum problema na coleta, os indicadores do determinante de cultura possuem valor $0$ para a maioria dos municípios.
 
 # Análise de Componentes Principais {#analise_com_principais}
 
@@ -1771,7 +1836,6 @@ pib['UF'] = pib['Município'].apply(lambda x: x.split('(')[-1][:2])
 pib['Município'] = pib['Município'].apply(lambda x: x.split('(')[0].strip())
 pib = pib.set_index(['Município', 'UF'])
 
-# O DEFLATOR DO PIB UTILIZADO É DA FONTE IPEADATA E NÃO IBGE
 
 deflator = pd.DataFrame([{
     '2016':1.171085,
