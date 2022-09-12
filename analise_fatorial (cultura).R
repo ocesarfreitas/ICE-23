@@ -34,7 +34,8 @@ colnames(determinantes)[1:2] <- c("Município","UF")
 S <- cov(determinantes[,3:9])
 S.eigen <- eigen(S)
 S.eigen$values
-plot(S.eigen$values, xlab = 'Eigenvalue Number', ylab = 'Eigenvalue Size', type = 'b', xaxt = 'n')
+plot(S.eigen$values, xlab = 'Fatores', ylab = 'Eigenvalue', type = 'b', xaxt = 'n',
+     main='Eigenvalues X Fatores')
 axis(1, at = seq(1, 7, by = 1))
 
 # Criando tabela com a Análise dos Principais Componentes 
@@ -52,9 +53,10 @@ root.fa.covar
 # ICE 23: soma os scores para os três fatores gerados pela análise fatorial
 scores.ICE <- as.data.frame(psych::predict.psych(root.fa.covar, determinantes[,3:9]))
 scores.ICE <- scores.ICE %>%
-  mutate(ICE = RC1 + RC2 + RC3 + 6)
+  mutate(ICE = RC1 + RC2 + RC3,
+         ICE = (ICE - mean(ICE))/sd(ICE) + 6)
 
-write.csv(ICE_23, 'DETERMINANTES/scores-ICE-23 (cultura).csv')
+write.csv(scores.ICE, 'DETERMINANTES/scores-ICE-23.csv')
 
 ICE_23 <- cbind(determinantes,scores.ICE[,4])
 names(ICE_23)[10] <- 'Índice Cidades Empreendendoras 2023'
@@ -75,4 +77,3 @@ write.csv(ICE_23, 'DETERMINANTES/ICE-2023.csv')
 # Teste KMO
 kmo <- KMO(determinantes[,3:9])
 kmo
-

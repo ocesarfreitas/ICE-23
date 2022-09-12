@@ -1,6 +1,6 @@
 ---
 title: "Relatório Índice das Cidades Empreendedoras 2023"
-date: "`r format(Sys.time(), '%B %d, %Y')`"
+date: "12 de Setembro de 2022"
 author: 
   - César Freitas
   - Vítor Borges
@@ -10,7 +10,6 @@ output:
     number_sections: true
     toc: true
     toc_depth: 3
-abstract: "A"
 classoption: dvipsnames
 header-includes:
 - \usepackage[utf8]{inputenc}
@@ -221,7 +220,7 @@ Devido a natureza da cidade de Brasília, foi coletado os dados sobre as UFs par
 Na edição do ICE 2022, os bolsistas utilizaram a variável MTIC1211 da MUNIC 2019. Contudo, essa variável foi descontinuada na edição de 2020, então o método para classificar se o município emite CNDs online, foi entrando no site de cada prefeitura e procurando os serviços disponibilizados por ela. Para os municípios que receberam CNDs igual a 0, foi montada um tabela com a justificativa de cada um.
 
 \begin{center}
-  \textbf{Tabela:} Justificativa dos CNDs iguais a 0
+  \textbf{Tabela 1:} Justificativa dos CNDs iguais a 0
 \end{center}
 
 | **Município**         | **UF** | **Motivo**                                                           |
@@ -984,11 +983,44 @@ Nenhum problema na coleta, os indicadores do determinante de cultura possuem val
 
 Nenhum problema na coleta, os indicadores do determinante de cultura possuem valor $0$ para a maioria dos municípios.
 
-# Análise de Componentes Principais {#analise_com_principais}
+# Tratamentos e Análise de Componentes Principais 
+## Tratamentos {#tratamentos}
+
+- [Clique aqui](#funs_tratamento) para ver o script das Funções de Tratamento dos Dados.
+
+### Padronização
+
+- Indicador padronizado ($I^*_i$):
+\begin{equation}
+  I^*_i = \frac{I_i-\overline{I}}{DP(I)}
+\end{equation}
+
+- Subdeterminante padronizado ($S^*_i$):
+\begin{equation}
+  S^*_i = \frac{S_i-\overline{S}}{DP(S)}
+\end{equation}
+
+- Determinante padronizado ($D^*_i$):
+\begin{equation}
+  D^*_i = \frac{D_i-\overline{D}}{DP(D)}
+\end{equation}
+
+
+## Análise de Componentes Principais {#analise_com_principais}
 
 - [Clique aqui](#script_acp) para ver o script da Análise de Componentes Principais.
 
-## Alguma coisa sem rotação
+Diferente das edições 2020 e 2022, a análise de componentes principais (PCA) foi realizada no R, principalmente utilizando o pacote `psych`. Foi gerado sete fatores, cujos autovalores (\textit{eigenvalues}) mostram o quanto de variância é explicada por cada fator. A recomendação é de se selecionar os fatores cujo os autovalores seja $\geq 1$, contudo, percebemos que o 3º fator estava muito proximo de 1, como pode-se observar na figura 1.
+
+```{r echo=FALSE,  out.width = '45%', fig.cap=' ',fig.pos='H',fig.align='center'}
+knitr::include_graphics("fig_1.png")
+```
+
+Então ao gerar as cargas fatoriais, utilizando o comando `principal()` (Tabela 2), o resultado do comando traz um teste de hipótese que confirma que os 3 compentes são suficientes, sob nível de 5\% de significância. Além disso, têm-se que essas cargas apresentam as correlações entre as variáveis originais e os fatores. Assim, quanto maior o valor absoluto carga fatorial, maior será a correlação com o fator. Valores negativos representam impacto inverso no fator. 
+
+\begin{center}
+  \textbf{Tabela 2:} Cargas Fatoriais:
+\end{center}
 
 | **Variável**                       	| **PC1** | **PC2** | **PC3** | **h²** | **u²** | **com** |
 |------------------------------------	|-------- |-------- |-------- |------- |-------	|-------- |
@@ -1000,6 +1032,12 @@ Nenhum problema na coleta, os indicadores do determinante de cultura possuem val
 | **Índice de Inovação**             	| 0.85 	  | 0.09  	| -0.08 	| 0.73 	 | 0.271 	| 1.0 	  |
 | **Índice de Mercado**              	| 0.78 	  | 0.10  	| 0.26  	| 0.69 	 | 0.310 	| 1.3 	  |
 
+Ademais, observando a tabela 3, percebe-se que esses três fatores juntos representam 70\% do total da variância dos dados (*Cumulative Var*).
+
+\begin{center}
+  \textbf{Tabela 3:} Cargas Fatoriais: Descritivas
+\end{center}
+
 |                           	| **PC1** 	| **PC2** 	| **PC3** 	|
 |---------------------------	|:-------:	|---------	|---------	|
 | **SS loadings**           	|   2.82  	| 1.13    	| 0.98    	|
@@ -1008,16 +1046,52 @@ Nenhum problema na coleta, os indicadores do determinante de cultura possuem val
 | **Proportion Explained**  	|   0.57  	| 0.23    	| 0.20    	|
 | **Cumulative Proportion** 	|   0.57  	| 0.80    	| 1.00    	|
 
-Mean item complexity =  1.4
-Test of the hypothesis that 3 components are sufficient.
+Em seguida, é feito o processo de rotação fatorial, acrescentando ao comando `principal()`, a o argumento `rotate = 'quartimax'`, comando análogo ao `rotate` do Stata. Esse processo, trata-se de um ajuste aos eixos fatoriais para facilitar a sua interpretação. Os resultados pós-rotação estão nas tabelas 4 e 5 e possuem análise similar a anterior. Importante ressaltar que mesmo após a rotação, ainda foi mantido o mesmo número de fatores com base no teste de hipótese.
 
-The root mean square of the residuals (RMSR) is  0.1 
- with the empirical chi square  38.62  with prob <  2.1e-08 
+\begin{center}
+  \textbf{Tabela 4:} Cargas Fatoriais Rotacionadas
+\end{center}
 
-Fit based upon off diagonal values = 0.91
+| **Variável**                       	| **RC1** | **RC2** | **RC3** | **h²** | **u²** | **com** |
+|------------------------------------	|-------- |-------- |-------- |------- |-------	|-------- |
+| **Índice de Acesso a Capital**     	| 0.75  	| -0.02  	| -0.22 	| 0.61 	 | 0.394 	| 1.2 	  |
+| **Índice de Ambiente Regulatório** 	| 0.05  	| 0.94  	| -0.05  	| 0.89 	 | 0.107 	| 1.0 	  |
+| **Índice de Capital Humano**       	| 0.64 	  | -0.33 	| 0.10  	| 0.53 	 | 0.470 	| 1.6 	  |
+| **Índice de Cultura**              	| 0.05 	  | -0.05 	| 0.97  	| 0.94 	 | 0.058 	| 1.0 	  |
+| **Índice de Infraestrutura**       	| 0.72 	  | 0.00 	  | 0.11  	| 0.53 	 | 0.466 	| 1.0 	  |
+| **Índice de Inovação**             	| 0.85 	  | 0.03  	| -0.02 	| 0.73 	 | 0.271 	| 1.0 	  |
+| **Índice de Mercado**              	| 0.76 	  | 0.25  	| 0.25  	| 0.69 	 | 0.310 	| 1.4 	  |
 
-## Teste de Kaiser-Meyer-Olkin (KMO)
+\begin{center}
+  \textbf{Tabela 5:} Cargas Fatoriais Rotacionadas: Descritivas
+\end{center}
 
+|                           	| **RC1** 	| **RC2** 	| **RC3** 	|
+|---------------------------	|:-------:	|---------	|---------	|
+| **SS loadings**           	|   2.80  	| 1.07    	| 1.06    	|
+| **Proportion Var**        	|   0.40  	| 0.15    	| 0.15    	|
+| **Cumulative Var**        	|   0.40  	| 0.55    	| 0.70    	|
+| **Proportion Explained**  	|   0.57  	| 0.22    	| 0.21    	|
+| **Cumulative Proportion** 	|   0.57  	| 0.79    	| 1.00    	|
+
+\begin{center}
+  \textbf{Tabela 6:} Cargas Fatoriais Rotacionadas: Matriz de correlação
+\end{center}
+
+|           | **RC1** 	| **RC2** 	| **RC3** 	|
+|----------	|:-------:	|---------	|---------	|
+| **RC1**   |   0.99   	| 0.01    	| 0.09    	|
+| **RC2**   |   0.05   	| 0.76    	| -0.63    	|
+| **RC3**   |   -0.08 	| 0.64     	| 0.77    	|
+
+
+### Teste de Kaiser-Meyer-Olkin (KMO)
+
+Após a análise de componentes principais, foi testado se a nossa amostra é adequada com um teste de Kaiser-Meyer-Olklin (KMO). Em resumo, para esse teste, têm-se valores entre zero e um de modo que quanto mais próximo de 1, mais adequado é a amostra. Em relação a amostra trabalhada, temos que ela possui um resultado geral de 0.76, o que indica que a amostra é muito adequada.
+
+\begin{center}
+  \textbf{Tabela 7:} Teste de KMO
+\end{center}
 | **Variável**                   	|  **KMO** 	|
 |--------------------------------	|:--------:	|
 | Índice de Acesso a Capital     	|   0.83   	|
@@ -1029,10 +1103,105 @@ Fit based upon off diagonal values = 0.91
 | Índice de Mercado              	|   0.73   	|
 | **Overall MSA**                	| **0.76** 	|
 
+Em sequência, é calculada os *scores* para os fatores para cada cidade através do comando `predict.psych()`. Os scores são calculados usando as cargas fatoriais como base para o cálculo de coeficientes de uma regressão padrão. Vejamos o coeficiente:
+
+\begin{equation}
+  \hat{\beta}_1=\frac{\sum(X_i - \overline{X})(Y_i - \overline{Y})}{\sum(X_i - \overline{X})^2}
+\end{equation}
+
+Por fim, é criado o Índice das Cidades Empreeendedoras, somando os scores para os três fatores gerados pela análise fatorial e, posteriormente, padronizando essa a soma (assim como feito para os determinantes e subdeterminantes). Os resultados dos scores para os três fatores estão dispostos, na seção de [ranking](#ranking).
+
+
+## Análise de Componentes princpais: Cultura {#analise_com_principais_cultura}
+
+Foi pedido também para fazer o cálculo do Índice duas vezes, um com o resultado do determinante Cultura como foi propostos para essa edição e outro com foi feito na edição passada. Como os resultados, testes e interpretações dos resultados estão bem similares e seguem o mesmo raciocínio foi somente dispostos os resultados obtidos.
+
+```{r echo=FALSE,  out.width = '55%', fig.cap=' ',fig.pos='H',fig.align='center'}
+knitr::include_graphics("fig_3.png")
+```
+
+\begin{center}
+  \textbf{Tabela 8:} Cargas Fatoriais
+\end{center}
+
+| **Variável**                       	| **PC1** | **PC2** | **PC3** | **h²** | **u²** | **com** |
+|------------------------------------	|-------- |-------- |-------- |------- |-------	|-------- |
+| **Índice de Acesso a Capital**     	| 0.73  	| -0.11  	| -0.17 	| 0.57 	 | 0.427 	| 1.2 	  |
+| **Índice de Ambiente Regulatório** 	| 0.06  	| 0.79  	| -0.52  	| 0.90 	 | 0.099 	| 1.7 	  |
+| **Índice de Capital Humano**       	| 0.64 	  | -0.28 	| 0.20  	| 0.53 	 | 0.472 	| 1.6 	  |
+| **Índice de Cultura**              	| 0.05 	  | 0.54  	| 0.81  	| 0.95 	 | 0.046 	| 1.7 	  |
+| **Índice de Infraestrutura**       	| 0.73 	  | 0.02  	| 0.09  	| 0.54 	 | 0.458 	| 1.0 	  |
+| **Índice de Inovação**             	| 0.85 	  | -0.05  	| -0.11 	| 0.73 	 | 0.266 	| 1.0 	  |
+| **Índice de Mercado**              	| 0.78 	  | 0.27  	| 0.02  	| 0.68 	 | 0.321 	| 1.2 	  |
+
+
+\begin{center}
+  \textbf{Tabela 9:} Cargas Fatoriais: Descritivas
+\end{center}
+
+|                           	| **PC1** 	| **PC2** 	| **PC3** 	|
+|---------------------------	|:-------:	|---------	|---------	|
+| **SS loadings**           	|   2.81  	| 1.08    	| 1.02    	|
+| **Proportion Var**        	|   0.40  	| 0.15    	| 0.15    	|
+| **Cumulative Var**        	|   0.40  	| 0.56    	| 0.70    	|
+| **Proportion Explained**  	|   0.57  	| 0.22    	| 0.21    	|
+| **Cumulative Proportion** 	|   0.57  	| 0.79    	| 1.00    	|
+
+\begin{center}
+  \textbf{Tabela 10:} Cargas Fatoriais Rotacionadas
+\end{center}
+
+| **Variável**                       	| **RC1** | **RC2** | **RC3** | **h²** | **u²** | **com** |
+|------------------------------------	|-------- |-------- |-------- |------- |-------	|-------- |
+| **Índice de Acesso a Capital**     	| 0.74  	| 0.01  	| -0.18 	| 0.57 	 | 0.427 	| 1.1 	  |
+| **Índice de Ambiente Regulatório** 	| 0.05  	| 0.95  	| 0.00  	| 0.90 	 | 0.099 	| 1.0 	  |
+| **Índice de Capital Humano**       	| 0.64 	  | -0.34 	| 0.04  	| 0.53 	 | 0.472 	| 1.5 	  |
+| **Índice de Cultura**              	| 0.01 	  | 0.00  	| 0.98  	| 0.95 	 | 0.046 	| 1.0 	  |
+| **Índice de Infraestrutura**       	| 0.73 	  | -0.03  	| 0.11  	| 0.54 	 | 0.458 	| 1.1 	  |
+| **Índice de Inovação**             	| 0.85 	  | 0.03  	| -0.09 	| 0.73 	 | 0.266 	| 1.0 	  |
+| **Índice de Mercado**              	| 0.77 	  | 0.22  	| 0.19  	| 0.68 	 | 0.321 	| 1.3 	  |
+
+\begin{center}
+  \textbf{Tabela 11:} Cargas Fatoriais Rotacionadas: Descritivas
+\end{center}
+
+|                           	| **RC1** 	| **RC2** 	| **RC3** 	|
+|---------------------------	|:-------:	|---------	|---------	|
+| **SS loadings**           	|   2.80  	| 1.06    	| 1.04    	|
+| **Proportion Var**        	|   0.40  	| 0.15    	| 0.15    	|
+| **Cumulative Var**        	|   0.40  	| 0.55    	| 0.70    	|
+| **Proportion Explained**  	|   0.57  	| 0.22    	| 0.21    	|
+| **Cumulative Proportion** 	|   0.57  	| 0.79    	| 1.00    	|
+
+\begin{center}
+  \textbf{Tabela 12:} Cargas Fatoriais Rotacionadas: Matriz de correlação
+\end{center}
+
+|           | **RC1** 	| **RC2** 	| **RC3** 	|
+|----------	|:-------:	|---------	|---------	|
+| **RC1**   |   0.99   	| 0.01    	| 0.03    	|
+| **RC2**   |   -0.03   | 0.84    	| 0.55    	|
+| **RC3**   |   -0.02 	| -0.55     | 0.83    	|
+
+
+### Teste de Kaiser-Meyer-Olkin (KMO)
+
+\begin{center}
+  \textbf{Tabela 7:} Teste de KMO
+\end{center}
+| **Variável**                   	|  **KMO** 	|
+|--------------------------------	|:--------:	|
+| Índice de Acesso a Capital     	|   0.84   	|
+| Índice de Ambiente Regulatório 	|   0.43   	|
+| Índice de Capital Humano       	|   0.78   	|
+| Índice de Cultura              	|   0.29   	|
+| Índice de Infraestrutura       	|   0.82   	|
+| Índice de Inovação             	|   0.73   	|
+| Índice de Mercado              	|   0.73   	|
+| **Overall MSA**                	| **0.76** 	|
 
 # Correlação com o ICE2022
-# Efeito Parcial da Cultura
-# Ranking
+# Ranking {#ranking}
 # Apêndice {.unnumbered #apend}
 ## Scripts {.unnumbered #script_ind}
 
@@ -1049,6 +1218,9 @@ import basedosdados as bd # data lake público
 ```
 
 ### Funções de tratamento dos dados {.unnumbered #funs_tratamento}
+
+- Para retornar ao relatório dos Tratamentos [clique aqui](#tratamentos).
+
 #### Tratamento para Indicadores com Impacto Negativo no Empreendedorismo {.unnumbered}
 ```{python tramento 1, eval=FALSE, echo=TRUE}
 # 3.1. Tratamento para Indicadores com Impacto Negativo no Empreendedorismo
@@ -2930,10 +3102,11 @@ cultura.to_csv('DETERMINANTES/det-CULTURA.csv')
 library("data.table")
 library("tidyverse")
 library("psych")
+install.packages(psych)
 
 #-------------------------------------------------------------------------------
 # Criando looping para importar os indicadores padronizados
-det <- c("ACESSO A CAPITAL","AMBIENTE REGULATÓRIO","CAPITAL HUMANO","CULTURA",
+det <- c("ACESSO A CAPITAL","AMBIENTE REGULATóRIO","CAPITAL HUMANO","CULTURA",
          "INFRAESTRUTURA","INOVACAO","MERCADO")
 det_s <- c("ACESSO_CAPITAL","AMBIENTE_REGULATORIO","CAPITAL_HUMANO","CULTURA",
            "INFRAESTRUTURA","INOVACAO","MERCADO")
@@ -2961,12 +3134,129 @@ colnames(determinantes)[1:2] <- c("Município","UF")
 S <- cov(determinantes[,3:9])
 S.eigen <- eigen(S)
 S.eigen$values
-plot(S.eigen$values, xlab = 'Eigenvalue Number', ylab = 'Eigenvalue Size', type = 'b', xaxt = 'n')
+plot(S.eigen$values, xlab = 'Fatores', ylab = 'Eigenvalue', type = 'b', xaxt = 'n',
+     main='Eigenvalues X Fatores')
 axis(1, at = seq(1, 7, by = 1))
 
 # Criando tabela com a Análise dos Principais Componentes 
-root.fa.covar <- principal(determinantes[,3:9], nfactors = 3, rotate = 'none', covar = TRUE)
+root.fa.covar <- principal(determinantes[,3:9], nfactors =3, rotate = 'none', covar = TRUE)
+root.fa.covar$uniquenesses
+root.fa.covar$rot.mat
 root.fa.covar
+
+# Criando tabela com a Análise dos Principais Componentes 
+root.fa.covar <- principal(determinantes[,3:9], nfactors =3, rotate = 'quartimax', covar = TRUE)
+root.fa.covar$uniquenesses
+root.fa.covar$rot.mat
+root.fa.covar
+
+# ICE 23: soma os scores para os três fatores gerados pela análise fatorial
+scores.ICE <- as.data.frame(psych::predict.psych(root.fa.covar, determinantes[,3:9]))
+scores.ICE <- scores.ICE %>%
+  mutate(ICE = RC1 + RC2 + RC3,
+         ICE = (ICE - mean(ICE))/sd(ICE) + 6)
+
+write.csv(scores.ICE, 'DETERMINANTES/scores-ICE-23.csv')
+
+ICE_23 <- cbind(determinantes,scores.ICE[,4])
+names(ICE_23)[10] <- 'Índice Cidades Empreendendoras 2023'
+
+ICE_23$`Rank ICE 23` <- frankv(ICE_23, cols='Índice Cidades Empreendendoras 2023', order=-1)
+ICE_23$`Rank Acesso a Capital` <- frankv(ICE_23, cols='Índice de Acesso a Capital', order=-1)
+ICE_23$`Rank Ambiente Regulatório` <- frankv(ICE_23, cols='Índice de Ambiente Regulatório', order=-1)
+ICE_23$`Rank Capital Humano` <- frankv(ICE_23, cols='Índice de Capital Humano', order=-1)
+ICE_23$`Rank Cultura` <- frankv(ICE_23, cols='Índice de Cultura', order=-1,ties.method = "max")
+ICE_23$`Rank Infraestrutura` <- frankv(ICE_23, cols='Índice de Infraestrutura', order=-1)
+ICE_23$`Rank Inovação` <- frankv(ICE_23, cols='Índice de Inovação', order=-1)
+ICE_23$`Rank Mercado` <- frankv(ICE_23, cols='Índice de Mercado', order=-1)
+
+ICE_23 <- ICE_23[, c(1:3,12,4,13,5,14,6,15,7,16,8,17,9,18,10,11)]
+
+write.csv(ICE_23, 'DETERMINANTES/ICE-2023.csv')
+
+# Teste KMO
+kmo <- KMO(determinantes[,3:9])
+kmo
+```
+
+- Para retornar ao relatório da Análise de Componentes princpais: Cultura [clique aqui](#analise_com_principais_cultura).
+
+```{r, eval=FALSE, echo=TRUE}
+# Bibliotecas utilizadas no R
+library("data.table")
+library("tidyverse")
+library("psych")
+install.packages(psych)
+
+#-------------------------------------------------------------------------------
+# Criando looping para importar os indicadores padronizados
+det <- c("ACESSO A CAPITAL","AMBIENTE REGULATóRIO","CAPITAL HUMANO","CULTURA2",
+         "INFRAESTRUTURA","INOVACAO","MERCADO")
+det_s <- c("ACESSO_CAPITAL","AMBIENTE_REGULATORIO","CAPITAL_HUMANO","CULTURA",
+           "INFRAESTRUTURA","INOVACAO","MERCADO")
+last_col <- c(7,16,13,12,12,14,11)
+
+arq <- list()
+names <- list()
+df <- list()
+
+for(i in 1:7){
+  # Importando a base
+  arq[i] <- paste0("DETERMINANTES/det-",det[i],".csv")
+  names[i] <- paste0("det_",det_s[i])
+  df[[i]] <- assign(paste0("det_",det_s[i]), drop_na(fread(arq[[i]],select = c(1:2,last_col[i]),encoding = 'UTF-8')))
+}
+
+determinantes <- df %>% 
+  reduce(full_join, by=c('V1','V2'))
+
+colnames(determinantes)[1:2] <- c("Município","UF")
+
+#-------------------------------------------------------------------------------
+## Análise fatorial: fatores e autovalores
+
+S <- cov(determinantes[,3:9])
+S.eigen <- eigen(S)
+S.eigen$values
+plot(S.eigen$values, xlab = 'Fatores', ylab = 'Eigenvalue', type = 'b', xaxt = 'n',
+     main='Eigenvalues X Fatores')
+axis(1, at = seq(1, 7, by = 1))
+
+# Criando tabela com a Análise dos Principais Componentes 
+root.fa.covar <- principal(determinantes[,3:9], nfactors =3, rotate = 'none', covar = TRUE)
+root.fa.covar$uniquenesses
+root.fa.covar$rot.mat
+root.fa.covar
+
+# Criando tabela com a Análise dos Principais Componentes 
+root.fa.covar <- principal(determinantes[,3:9], nfactors =3, rotate = 'quartimax', covar = TRUE)
+root.fa.covar$uniquenesses
+root.fa.covar$rot.mat
+root.fa.covar
+
+# ICE 23: soma os scores para os três fatores gerados pela análise fatorial
+scores.ICE <- as.data.frame(psych::predict.psych(root.fa.covar, determinantes[,3:9]))
+scores.ICE <- scores.ICE %>%
+  mutate(ICE = RC1 + RC2 + RC3,
+         ICE = (ICE - mean(ICE))/sd(ICE) + 6)
+
+write.csv(scores.ICE, 'DETERMINANTES/scores-ICE-23.csv')
+
+ICE_23 <- cbind(determinantes,scores.ICE[,4])
+names(ICE_23)[10] <- 'Índice Cidades Empreendendoras 2023'
+
+ICE_23$`Rank ICE 23` <- frankv(ICE_23, cols='Índice Cidades Empreendendoras 2023', order=-1)
+ICE_23$`Rank Acesso a Capital` <- frankv(ICE_23, cols='Índice de Acesso a Capital', order=-1)
+ICE_23$`Rank Ambiente Regulatório` <- frankv(ICE_23, cols='Índice de Ambiente Regulatório', order=-1)
+ICE_23$`Rank Capital Humano` <- frankv(ICE_23, cols='Índice de Capital Humano', order=-1)
+ICE_23$`Rank Cultura` <- frankv(ICE_23, cols='Índice de Cultura', order=-1,ties.method = "max")
+ICE_23$`Rank Infraestrutura` <- frankv(ICE_23, cols='Índice de Infraestrutura', order=-1)
+ICE_23$`Rank Inovação` <- frankv(ICE_23, cols='Índice de Inovação', order=-1)
+ICE_23$`Rank Mercado` <- frankv(ICE_23, cols='Índice de Mercado', order=-1)
+
+ICE_23 <- ICE_23[, c(1:3,12,4,13,5,14,6,15,7,16,8,17,9,18,10,11)]
+
+write.csv(ICE_23, 'DETERMINANTES/ICE-2023.csv')
 
 # Teste KMO
 kmo <- KMO(determinantes[,3:9])
