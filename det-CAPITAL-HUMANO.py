@@ -192,7 +192,9 @@ subdet_acesso_quali = subdet_acesso_quali['Proporção de Adultos com pelo menos
 ### 2.7.2.2. Indicador Proporção de Alunos Concluintes em Cursos de Alta Qualidade
 df_enade = pd.read_excel('Arquivos ICE - 23/Ind_Originais_ICE_2022.xlsx', header=5,
                         usecols="B:C,BH")
-df_enade = df_enade.rename(columns={df_enade.columns[2]:'Proporção de Alunos Concluintes em Cursos de Alta Qualidade'})
+df_enade = df_enade.rename(columns={
+    df_enade.columns[1]:'Município',
+    df_enade.columns[2]:'Proporção de Alunos Concluintes em Cursos de Alta Qualidade'})
 df_enade = df_enade.merge(amostra, how='right', left_on='Município',right_on='NOME DO MUNICÍPIO')
 df_enade = df_enade[['UF_x','Município','Proporção de Alunos Concluintes em Cursos de Alta Qualidade','Cod.IBGE']]
 df_enade = df_enade.rename(columns={'UF_x':'UF'})
@@ -246,6 +248,8 @@ missing_data(subdet_acesso_quali)
 extreme_values(subdet_acesso_quali)
 create_subindex(subdet_acesso_quali, subdet)
 capital_humano[subdet] = subdet_acesso_quali
+
+subdet_acesso_quali['Custo Médio de Salários de Dirigentes'] = negative(subdet_acesso_quali['Custo Médio de Salários de Dirigentes'])
 
 # -
 capital_humano = pd.concat(capital_humano, axis=1)

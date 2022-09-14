@@ -27,7 +27,7 @@ inovacao = {}
 subdet = 'Inputs'
 
 ### 2.6.1.1. Indicador Proporção de Mestres e Doutores em C&T
-variaveis = ('COUNT(quantidade_vinculos_ativos), id_municipio')
+variaveis = ('COUNT(quantidade_vinculos_ativos) AS n_emp, id_municipio')
 base = '`basedosdados.br_me_rais.microdados_estabelecimentos`'
 project_id = 'double-balm-306418'
 cod_ibge = tuple(database['Cod.IBGE'].astype(str))
@@ -37,18 +37,19 @@ query = f"SELECT {variaveis} FROM {base} WHERE ano = 2020 AND quantidade_vinculo
 df_rais = bd.read_sql(query=query, billing_project_id=project_id)
 df_rais = df_rais.rename(columns={'id_municipio':'Cod.IBGE'}).set_index('Cod.IBGE')
 df_rais = database.merge(df_rais,how='left',on='Cod.IBGE')
-df_rais['mil_emp'] = df_rais['f0_']/1000
+df_rais['mil_emp'] = df_rais['n_emp']/1000
 ## 
 df_capes = pd.read_excel('DETERMINANTE INOVAÇÃO/br-capes-colsucup-discentes-2020-2021-11-10.xlsx', usecols='D,P,Q,AD')
 df_capes['Município'] = df_capes['NM_MUNICIPIO_PROGRAMA_IES'].str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
-df_capes = database.merge(df_capes, how='left',on='Município')
+df_capes['UF'] = df_capes['SG_UF_PROGRAMA'].str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
+df_capes = database.merge(df_capes, how='left',on=['Município','UF'])
 
 areas = ['astronomia / física', 'biotecnologia', 'ciência da computação', 
          'ciência de alimentos', 'ciências agrárias I', 'ciências ambientais', 
          'ciências biológicas I', 'ciências biológicas II', 'ciências biológicas III', 
          'engenharias I', 'engenharias II', 'engenharias III', 'engenharias IV', 
-         'farmácia', 'geociências', 'matemática / probabilidade', 'estatística', 
-         'materiais e química']
+         'farmácia', 'geociências', 'matemática / probabilidade e estatística', 
+         'materiais','química']
 areas = [x.upper() for x in areas]
 
 df_capes = df_capes[df_capes['NM_SITUACAO_DISCENTE'] == 'TITULADO']
@@ -153,10 +154,13 @@ subdet_input = subdet_input[interesse]
 ## 2.6.1.3. Indicador Média de Investimentos do BNDES e da FINEP
 ###
 df_bndes = pd.read_excel('DETERMINANTE INOVAÇÃO/naoautomaticas.xlsx', 
-                         usecols='D:F,I', header=4)
+                         usecols='D:F,H:I', header=4)
+df_bndes['Data da contratação'] = pd.to_datetime(df_bndes['Data da contratação'], format='%Y-%m-%d')
+df_bndes = df_bndes[(df_bndes['Data da contratação'] >= '2021-01-01 00:00:00') 
+                     & (df_bndes['Data da contratação'] <= '2021-12-31 00:00:00')]
 df_bndes = df_bndes.rename({'Município - código':'Cod.IBGE'},axis=1).astype(str)
 df_bndes = df_bndes.merge(database, how='right', on='Cod.IBGE')
-df_bndes.iloc[:,3:4] = df_bndes.iloc[:,3:4].apply(pd.to_numeric)
+df_bndes.iloc[:,4] = df_bndes.iloc[:,4].apply(pd.to_numeric)
 df_bndes = df_bndes.groupby(['Município','UF','Cod.IBGE']).sum()
 
 ####
@@ -171,8 +175,8 @@ df_finep = df_finep.groupby(['Município','UF']).sum()
 df_finep = df_finep.merge(database, how='right',on=['Município','UF']).fillna(0)
 
 df_finep_bndes = df_finep.merge(df_bndes, how='left',on=['Município','UF']).fillna(0)
-df_finep_bndes = df_finep_bndes.merge(df_rais_2_1, left_on='Cod.IBGE', right_on='id_municipio')
-df_finep_bndes['Média de Investimentos do BNDES e FINEP'] = (df_finep_bndes['Valor Finep'] + df_finep_bndes['Valor contratado  R$'])/df_finep_bndes['n_cet']
+df_finep_bndes = df_finep_bndes.merge(df_rais, how='left',on='Cod.IBGE')
+df_finep_bndes['Média de Investimentos do BNDES e FINEP'] = (df_finep_bndes['Valor Finep'] + df_finep_bndes['Valor contratado  R$'])/df_finep_bndes['n_emp']
 
 subdet_input = subdet_input.merge(df_finep_bndes, how='right', on='Cod.IBGE')
 interesse=['Cod.IBGE','Proporção de Mestres e Doutores em C&T','Proporção de Funcionários em C&T',
@@ -314,15 +318,15 @@ cnae_2 = bd.read_sql(query=query, billing_project_id=project_id)
 cnae_2['cnae_2'] = cnae_2['cnae_2'].str.replace(r"(\d)\.",r"\1").str.replace(r"(\d)\-",r"\1")
 cnae_2 = tuple(cnae_2['cnae_2'])
 
-variaveis = ('id_municipio, count(*)')
+variaveis = ('id_municipio, count(quantidade_vinculos_ativos) AS n_ind_inova')
 base = '`basedosdados.br_me_rais.microdados_estabelecimentos`'
 project_id = 'double-balm-306418'
 cod_ibge = tuple(database['Cod.IBGE'].astype(str))
-query = (f'SELECT {variaveis} FROM {base} WHERE ano = 2020 AND id_municipio' 
-         f' IN {cod_ibge} AND cnae_2 IN {cnae_2} GROUP BY id_municipio')
+query = (f'SELECT {variaveis} FROM {base} WHERE ano = 2020 AND cnae_2 IN {cnae_2}' 
+         f' AND quantidade_vinculos_ativos > 0 GROUP BY id_municipio')
 df_rais_inova = bd.read_sql(query=query, billing_project_id=project_id)
 df_rais_inova = df_rais_inova.merge(df_rais, left_on='id_municipio', right_on='Cod.IBGE')
-df_rais_inova['Tamanho da Indústria Inovadora'] = df_rais_inova['f0__x']/df_rais_inova['f0__y']
+df_rais_inova['Tamanho da Indústria Inovadora'] = df_rais_inova['n_ind_inova']/df_rais_inova['n_emp']
 
 subdet_output = subdet_output.merge(df_rais_inova, how='left', on='Cod.IBGE')
 interesse=['Cod.IBGE','Município','UF','Patentes','Tamanho da Indústria Inovadora']
@@ -364,15 +368,15 @@ cnae_2 = bd.read_sql(query=query, billing_project_id=project_id)
 cnae_2['cnae_2'] = cnae_2['cnae_2'].str.replace(r"(\d)\.",r"\1").str.replace(r"(\d)\-",r"\1")
 cnae_2 = tuple(cnae_2['cnae_2'])
 
-variaveis = ('id_municipio, count(*)')
+variaveis = ('id_municipio, count(quantidade_vinculos_ativos) AS n_ind_cria')
 base = '`basedosdados.br_me_rais.microdados_estabelecimentos`'
 project_id = 'double-balm-306418'
 cod_ibge = tuple(database['Cod.IBGE'].astype(str))
-query = (f'SELECT {variaveis} FROM {base} WHERE ano = 2020 AND id_municipio' 
-         f' IN {cod_ibge} AND cnae_2 IN {cnae_2} GROUP BY id_municipio')
+query = (f'SELECT {variaveis} FROM {base} WHERE ano = 2020 AND cnae_2 IN {cnae_2}' 
+         f' AND quantidade_vinculos_ativos > 0 GROUP BY id_municipio')
 df_rais_cria = bd.read_sql(query=query, billing_project_id=project_id)
 df_rais_cria = df_rais_cria.merge(df_rais, left_on='id_municipio', right_on='Cod.IBGE')
-df_rais_cria['Tamanho da Indústria Criativa'] = df_rais_cria['f0__x']/df_rais_cria['f0__y']
+df_rais_cria['Tamanho da Indústria Criativa'] = df_rais_cria['n_ind_cria']/df_rais_cria['n_emp']
 
 subdet_output = subdet_output.merge(df_rais_cria, how='left', on='Cod.IBGE')
 interesse=['Cod.IBGE','Município','UF','Patentes','Tamanho da Indústria Inovadora',
@@ -410,15 +414,16 @@ cnae_2 = bd.read_sql(query=query, billing_project_id=project_id)
 cnae_2['cnae_2'] = cnae_2['cnae_2'].str.replace(r"(\d)\.",r"\1").str.replace(r"(\d)\-",r"\1")
 cnae_2 = tuple(cnae_2['cnae_2'])
 
-variaveis = ('id_municipio, count(*)')
+variaveis = ('id_municipio, count(quantidade_vinculos_ativos) AS n_ind_tic')
 base = '`basedosdados.br_me_rais.microdados_estabelecimentos`'
 project_id = 'double-balm-306418'
 cod_ibge = tuple(database['Cod.IBGE'].astype(str))
-query = (f'SELECT {variaveis} FROM {base} WHERE ano = 2020 AND id_municipio' 
-         f' IN {cod_ibge} AND cnae_2 IN {cnae_2} GROUP BY id_municipio')
+query = (f'SELECT {variaveis} FROM {base} WHERE ano = 2020 AND cnae_2 IN {cnae_2}' 
+         f' AND quantidade_vinculos_ativos > 0 GROUP BY id_municipio')
+
 df_rais_tic = bd.read_sql(query=query, billing_project_id=project_id)
 df_rais_tic = df_rais_tic.merge(df_rais, left_on='id_municipio', right_on='Cod.IBGE')
-df_rais_tic['Tamanho das Empresas TIC'] = df_rais_tic['f0__x']/df_rais_tic['f0__y']
+df_rais_tic['Tamanho das Empresas TIC'] = df_rais_tic['n_ind_tic']/df_rais_tic['n_emp']
 
 subdet_output = subdet_output.merge(df_rais_tic, how='left', on='Cod.IBGE')
 interesse=['Município','UF','Patentes','Tamanho da Indústria Inovadora',
