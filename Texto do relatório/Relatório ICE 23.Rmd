@@ -1482,34 +1482,37 @@ ambiente = {}
 - Para retornar ao relatório do Subdeterminante Tempo de Processos [clique aqui](#subdet_tempo_processo).
 
 ```{python subdet amb regulatorio 1, eval=FALSE, echo=TRUE}
-## Indicando o Subdeterminante
+# ---------------------------------------------------------------------------------------------
+# 2.2.1. SUBDETERMINANTE TEMPO DE PROCESSOS
 subdet = 'Tempo de Processos'
 
-############ Indicador Indicador Tempo de Viabilidade de Localização ###########
-
-# Looping para ler os 12 meses da variável de tempo de abertura da REDESIM
 for i in list(range(1,13)):
     globals()[f"indicador_{i}"] = pd.read_excel(f'DETERMINANTE AMBIENTE REGULATÓRIO/REDESIM/tempos-abertura-Brasil{i}2021.xlsx', 
-                                                    header=1, usecols="I,R,AA,AB")
+                                                    header=1, usecols="I,F,R,Y,AA,AB")
     pdList = []
     pdList.extend(value for name, value in locals().items() if name.startswith("indicador"))
     indicador = pd.concat(pdList, axis = 0)
 
-# Tratando a base
 indicador['Município'] = indicador['MUNICÍPIO'].str.upper().str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
-indicador = database.merge(indicador, how='left', on=['Município', 'UF'])
-indicador['Tempo de Viabilidade de Localização'] = indicador['QTDE.  HH VIABILIDADE END']
+indicador_1 = database.merge(indicador, how='left', on=['Município', 'UF'])
+indicador_1['Tempo de Viabilidade de Localização'] = indicador_1.iloc[:,4]
+indicador_1 = indicador_1.groupby(['Município','UF','Cod.IBGE_x']).mean('Tempo de Viabilidade de Localização')
+indicador_1 = indicador_1.fillna(0)
 
-########## Indicador Tempo de Registro, Cadastro e Viabilidade de Nome ##########
+indicador_1 = indicador_1['Tempo de Viabilidade de Localização'].reset_index()
 
-indicador['Tempo de Registro, Cadastro e Viabilidade de Nome'] = indicador['QTDE. HH. LIBERAÇÃO DBE']
-indicador = indicador.groupby(['Município','UF']).mean()
-indicador = indicador.fillna(0)
+indicador_2 = indicador
+indicador_2['Tempo de Registro, Cadastro e Viabilidade de Nome'] = indicador_2.iloc[:,2] + indicador.iloc[:,3] + indicador_2.iloc[:,0]
+indicador_2 = indicador_2.groupby(['UF']).mean('Tempo de Registro, Cadastro e Viabilidade de Nome')
+indicador_2 = indicador_2.merge(database, how='right',on='UF')
+indicador_2 = indicador_2[['Tempo de Registro, Cadastro e Viabilidade de Nome','Cod.IBGE_y']].reset_index()
 
-del indicador['QTDE.  HH VIABILIDADE END']
-del indicador['QTDE. HH. LIBERAÇÃO DBE']
+indicador = indicador_1.merge(indicador_2, left_on='Cod.IBGE_x', right_on='Cod.IBGE_y')
 
-################ Indicador Taxa de Congestionamento em Tribunais ################
+interesse = ['Cod.IBGE_x','Município','UF_x','Tempo de Viabilidade de Localização',
+             'Tempo de Registro, Cadastro e Viabilidade de Nome']
+indicador = indicador[interesse]
+indicador = indicador.rename(columns={'Cod.IBGE_x':'Cod.IBGE','UF_x':'UF'})
 
 var = ['novos','baixados','pendentes']
 for i in list(range(0,3)):
@@ -1540,11 +1543,8 @@ subdet_tempo['Tempo de Viabilidade de Localização'] = negative(subdet_tempo['T
 subdet_tempo['Tempo de Registro, Cadastro e Viabilidade de Nome'] = negative(subdet_tempo['Tempo de Registro, Cadastro e Viabilidade de Nome'])
 subdet_tempo['Taxa de Congestionamento em Tribunais'] = negative(subdet_tempo['Taxa de Congestionamento em Tribunais'])
 
-# Tratamentos de para os missing e outliers
 missing_data(subdet_tempo)
 extreme_values(subdet_tempo)
-
-# Criando o subdeterminante
 create_subindex(subdet_tempo, subdet)
 ambiente[subdet] = subdet_tempo
 ```
@@ -1554,10 +1554,11 @@ ambiente[subdet] = subdet_tempo
 - Para retornar ao relatório do Subdeterminante Tributação [clique aqui](#subdet_tributacao).
 
 ```{python subdet amb regulatorio 2, eval=FALSE, echo=TRUE}
-# Indicando o Subdeterminante
+# ---------------------------------------------------------------------------------------------
+# 2.2.2. SUBDETERMINANTE TRIBUTAÇÃO
 subdet = 'Tributação'
 
-## Tratamento inicial com os dados do SINCONFI
+## SINCONFI
 sinconfi_mun = pd.read_csv("DETERMINANTE AMBIENTE REGULATÓRIO/Sinconfi/finbra_mun.csv",
                            encoding='ISO-8859-1', sep=';', decimal=',')
 sinconfi_uf = pd.read_csv("DETERMINANTE AMBIENTE REGULATÓRIO/Sinconfi/finbra_uf.csv",
@@ -1570,7 +1571,6 @@ cod_ibge = tuple(database['Cod.IBGE'].astype(str))
 query = f'SELECT {var} FROM {base} WHERE ano = 2019 AND id_municipio IN {cod_ibge}'
 pib_mun = bd.read_sql(query=query,billing_project_id=project_id)
 
-# Função para calcular os indicadores de alíquota
 def sinconfi(df1,df2,pib,imposto,var):
     df_mun = df1[df1['Conta'] == var]
     df_mun = df_mun[df_mun['Coluna'] == 'Receitas Brutas Realizadas']
@@ -1591,18 +1591,32 @@ def sinconfi(df1,df2,pib,imposto,var):
     df[f'Alíquota Interna do {imposto}'] = df['Valor']/df['pib']
     
     globals()[f'df_{imposto}'] = df.drop(['Valor','pib','Cod.IBGE'], axis=1)
-    
-###################### Indicador Alíquota Interna do ICMS ######################
-sinconfi(sinconfi_mun,sinconfi_uf,pib_mun,imposto='ICMS',var='1.1.1.8.02.0.0 - Impostos sobre a Produção, Circulação de Mercadorias e Serviços')
 
-###################### Indicador Alíquota Interna do IPTU ######################
+### PIB ESTADUAL
+base = '`basedosdados.br_ibge_pib.municipio`'
+project_id = 'double-balm-306418'
+var = ('LEFT(id_municipio, 2) AS id_uf, SUM(pib) AS pib')
+query = f'SELECT {var} FROM {base} WHERE ano = 2019 GROUP BY id_uf'
+pib_uf = bd.read_sql(query=query,billing_project_id=project_id)
+pib_uf['id_uf'] = pib_uf['id_uf'].astype(int) 
+    
+### ICMS
+df_ICMS = sinconfi_uf[sinconfi_uf['Conta'] == '1.1.1.8.02.0.0 - Impostos sobre a Produção, Circulação de Mercadorias e Serviços']
+df_ICMS = df_ICMS[df_ICMS['Coluna'] == 'Receitas Brutas Realizadas'] 
+df_ICMS = df_ICMS.merge(pib_uf, left_on='Cod.IBGE', right_on='id_uf')
+df_ICMS['Alíquota Interna do ICMS'] = df_ICMS['Valor']/df_ICMS['pib']
+df_ICMS = df_ICMS[['Cod.IBGE','UF','Alíquota Interna do ICMS']]
+df_ICMS = df_ICMS.merge(database, how='left', on='UF')
+df_ICMS = df_ICMS[['Município','UF','Alíquota Interna do ICMS']]
+
+### IPTU
 sinconfi(sinconfi_mun,sinconfi_uf,pib_mun,imposto='IPTU',var='1.1.1.8.01.1.0 - Imposto sobre a Propriedade Predial e Territorial Urbana')
 
-###################### Indicador Alíquota Interna do ISS #######################
+### ISS
 sinconfi(sinconfi_mun,sinconfi_uf,pib_mun,imposto='ISS',var='1.1.1.8.02.3.0 - Imposto sobre Serviços de Qualquer Natureza')
 df_ISS = df_ISS.fillna(0)
 
-##################### Indicador Qualidade de Gestão Fiscal #####################
+## FIRJAN
 df_firjan = pd.read_excel("DETERMINANTE AMBIENTE REGULATÓRIO/Firjan/Firjan - Evolucao por Indicador 2013 a 2020 - IFGF 2021.xlsx", usecols="B:C,AA")
 df_firjan['Município'] = df_firjan['Município'].str.upper().str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
 df_firjan = database.merge(df_firjan, how='left', on = ['Município','UF']).fillna(0)
@@ -1623,17 +1637,12 @@ interesse=['NOME DO MUNICÍPIO','UF_x','Alíquota Interna do ICMS','Alíquota In
 subdet_tri = subdet_tri[interesse]
 subdet_tri = subdet_tri.rename(columns={'UF_x':'UF','NOME DO MUNICÍPIO':'Município'})
 subdet_tri = subdet_tri.set_index(['Município','UF'])
-
-# Tratamento para os indicadores com impacto negativo no índice
 subdet_tri.iloc[:,0] = negative(subdet_tri.iloc[:,0])
 subdet_tri.iloc[:,1] = negative(subdet_tri.iloc[:,1])
 subdet_tri.iloc[:,2] = negative(subdet_tri.iloc[:,2])
 
-# Tratamentos de para os missing e outliers
 missing_data(subdet_tri)
 extreme_values(subdet_tri)
-
-# Criando o subdeterminante
 create_subindex(subdet_tri, subdet)
 ambiente[subdet] = subdet_tri
 ```
@@ -1643,11 +1652,11 @@ ambiente[subdet] = subdet_tri
 - Para retornar ao relatório do Subdeterminante Complexidade Burocrática [clique aqui](#subdet_complexidade).
 
 ```{python subdet amb regulatorio 3, eval=FALSE, echo=TRUE}
-# Indicando o Subdeterminante
+# ---------------------------------------------------------------------------------------------
+# 2.2.3. SUBDETERMINANTE COMPLEXIDADE BUROCRÁTICA
 subdet = 'Complexidade Burocrática'
+### Sinconfi
 
-##################### Indicador de Simplicidade Tributária #####################
-### Sinconfi: selecionando tributos
 tributos = ['1.1.1.2.01.0.0 - Imposto sobre a Propriedade Territorial Rural', 
             '1.1.1.3.00.0.0 - Impostos sobre a Renda e Proventos de Qualquer Natureza',
             '1.1.1.3.03.1.0 - Imposto sobre a Renda - Retido na Fonte – Trabalho',
@@ -1707,7 +1716,6 @@ iv = ['1.1.1.2.01.0.0 - Imposto sobre a Propriedade Territorial Rural',
       '1.1.1.8.01.4.0 - Imposto sobre Transmissão ¿Inter Vivos¿ de Bens Imóveis e de Direitos Reais sobre Imóveis',
       'TOTAL DAS RECEITAS (III) = (I + II)']
 
-# Função para criar o IHH com base nos tributos
 def sinconfi_ihh(df1,df2):
     df_mun = df1.query('Conta in @tributos')
     df_mun['Cod.IBGE'] = df_mun['Cod.IBGE'].astype(np.int64)
@@ -1736,7 +1744,6 @@ def sinconfi_ihh(df1,df2):
     
 sinconfi_ihh(sinconfi_mun, sinconfi_uf)
 
-# Função para criar o iv com base nos tributos e receitas 
 def sinconfi_iv(df1,df2):
     df1 = df1.query('Conta in @iv')
     df1 = df1[df1['Coluna'] == 'Receitas Brutas Realizadas']
@@ -1776,13 +1783,12 @@ interesse=['NOME DO MUNICÍPIO','UF_x','Cod.IBGE','Simplicidade Tributária']
 subdet_complexidade = subdet_complexidade[interesse]
 subdet_complexidade = subdet_complexidade.rename(columns={'UF_x':'UF',
                                                           'NOME DO MUNICÍPIO':'Município'})
-
-########################## Indicador CNDs Municipais ###########################
+####
 df_cnd = pd.read_excel('DETERMINANTE AMBIENTE REGULATÓRIO/cnds_municipais.xlsx',
                        usecols='A:C')
 subdet_complexidade = subdet_complexidade.merge(df_cnd, how='right', on=['Município','UF'])
 
-##################### Indicador Atualização de Zoneamento ######################
+###
 df_zoneamento = pd.read_excel('Arquivos ICE - 23/Ind_Originais_ICE_2022.xlsx', header=5,
                         usecols="B:C,O")
 
@@ -1795,18 +1801,25 @@ subdet_complexidade = subdet_complexidade.merge(df_zoneamento, how='right', on=[
 subdet_complexidade = subdet_complexidade.set_index(['Município','UF'])
 del subdet_complexidade['Cod.IBGE']
 
-# Tratamento para os indicadores com impacto negativo no índice
 subdet_complexidade.iloc[:,2] = negative(subdet_complexidade.iloc[:,2])
 
-# Tratamentos de para os missing e outliers
 missing_data(subdet_complexidade)
 extreme_values(subdet_complexidade)
-
-# Criando o subdeterminante
 create_subindex(subdet_complexidade, subdet)
 ambiente[subdet] = subdet_complexidade
 
-################ Criando o determinante de Ambiente Regulatório ################
+# -
+subdet_tempo['Tempo de Viabilidade de Localização'] = negative(subdet_tempo['Tempo de Viabilidade de Localização'])
+subdet_tempo['Tempo de Registro, Cadastro e Viabilidade de Nome'] = negative(subdet_tempo['Tempo de Registro, Cadastro e Viabilidade de Nome'])
+subdet_tempo['Taxa de Congestionamento em Tribunais'] = negative(subdet_tempo['Taxa de Congestionamento em Tribunais'])
+
+subdet_tri.iloc[:,0] = negative(subdet_tri.iloc[:,0])
+subdet_tri.iloc[:,1] = negative(subdet_tri.iloc[:,1])
+subdet_tri.iloc[:,2] = negative(subdet_tri.iloc[:,2])
+
+subdet_complexidade.iloc[:,2] = negative(subdet_complexidade.iloc[:,2])
+
+
 ambiente = pd.concat(ambiente, axis=1)
 create_detindex(ambiente, 'Ambiente Regulatório')
 
@@ -2380,11 +2393,11 @@ inovacao = {}
 - Para retornar ao relatório do Subdeterminante Inputs [clique aqui](#subdet_input).
 
 ```{python Inovação 1, eval=FALSE, echo=TRUE}
-# Indicando o subdeterminante
+## 2.6.1. INPUTS
 subdet = 'Inputs'
 
-########## 2.6.1.1. Indicador Proporção de Mestres e Doutores em C&T ###########
-variaveis = ('COUNT(quantidade_vinculos_ativos), id_municipio')
+### 2.6.1.1. Indicador Proporção de Mestres e Doutores em C&T
+variaveis = ('COUNT(quantidade_vinculos_ativos) AS n_emp, id_municipio')
 base = '`basedosdados.br_me_rais.microdados_estabelecimentos`'
 project_id = 'double-balm-306418'
 cod_ibge = tuple(database['Cod.IBGE'].astype(str))
@@ -2394,18 +2407,19 @@ query = f"SELECT {variaveis} FROM {base} WHERE ano = 2020 AND quantidade_vinculo
 df_rais = bd.read_sql(query=query, billing_project_id=project_id)
 df_rais = df_rais.rename(columns={'id_municipio':'Cod.IBGE'}).set_index('Cod.IBGE')
 df_rais = database.merge(df_rais,how='left',on='Cod.IBGE')
-df_rais['mil_emp'] = df_rais['f0_']/1000
+df_rais['mil_emp'] = df_rais['n_emp']/1000
 ## 
 df_capes = pd.read_excel('DETERMINANTE INOVAÇÃO/br-capes-colsucup-discentes-2020-2021-11-10.xlsx', usecols='D,P,Q,AD')
 df_capes['Município'] = df_capes['NM_MUNICIPIO_PROGRAMA_IES'].str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
-df_capes = database.merge(df_capes, how='left',on='Município')
+df_capes['UF'] = df_capes['SG_UF_PROGRAMA'].str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
+df_capes = database.merge(df_capes, how='left',on=['Município','UF'])
 
 areas = ['astronomia / física', 'biotecnologia', 'ciência da computação', 
          'ciência de alimentos', 'ciências agrárias I', 'ciências ambientais', 
          'ciências biológicas I', 'ciências biológicas II', 'ciências biológicas III', 
          'engenharias I', 'engenharias II', 'engenharias III', 'engenharias IV', 
-         'farmácia', 'geociências', 'matemática / probabilidade', 'estatística', 
-         'materiais e química']
+         'farmácia', 'geociências', 'matemática / probabilidade e estatística', 
+         'materiais','química']
 areas = [x.upper() for x in areas]
 
 df_capes = df_capes[df_capes['NM_SITUACAO_DISCENTE'] == 'TITULADO']
@@ -2417,7 +2431,7 @@ df_capes['Proporção de Mestres e Doutores em C&T'] = df_capes['NM_AREA_AVALIAC
 interesse = ['Cod.IBGE','Proporção de Mestres e Doutores em C&T']
 subdet_input = df_capes[interesse]
 
-############# 2.6.1.2. Indicador Proporção de Funcionários em C&T ##############
+### 2.6.1.2. Indicador Proporção de Funcionários em C&T
 cbo_2002 = tuple(['201105','201110','201115','201205','201210','201215','201220',
                   '201225','202105','202110','202115','202120','203005','203010',
                   '203015','203020','203025','203105','203110','203115','203120',
@@ -2507,16 +2521,19 @@ subdet_input = subdet_input.merge(df_rais_2, right_on='id_municipio', left_on='C
 interesse = ['Cod.IBGE','Proporção de Mestres e Doutores em C&T','Proporção de Funcionários em C&T']
 subdet_input = subdet_input[interesse]
 
-######## 2.6.1.3. Indicador Média de Investimentos do BNDES e da FINEP #########
-## Importando dados: BNDES
+## 2.6.1.3. Indicador Média de Investimentos do BNDES e da FINEP
+###
 df_bndes = pd.read_excel('DETERMINANTE INOVAÇÃO/naoautomaticas.xlsx', 
-                         usecols='D:F,I', header=4)
+                         usecols='D:F,H:I', header=4)
+df_bndes['Data da contratação'] = pd.to_datetime(df_bndes['Data da contratação'], format='%Y-%m-%d')
+df_bndes = df_bndes[(df_bndes['Data da contratação'] >= '2021-01-01 00:00:00') 
+                     & (df_bndes['Data da contratação'] <= '2021-12-31 00:00:00')]
 df_bndes = df_bndes.rename({'Município - código':'Cod.IBGE'},axis=1).astype(str)
 df_bndes = df_bndes.merge(database, how='right', on='Cod.IBGE')
-df_bndes.iloc[:,3:4] = df_bndes.iloc[:,3:4].apply(pd.to_numeric)
+df_bndes.iloc[:,4] = df_bndes.iloc[:,4].apply(pd.to_numeric)
 df_bndes = df_bndes.groupby(['Município','UF','Cod.IBGE']).sum()
 
-## Importando dados: FINEP
+####
 df_finep = pd.read_excel('DETERMINANTE INOVAÇÃO/19_08_2022_Contratacao.xls', 
                          usecols='E,K:M', header=5).drop([4], axis=0)
 df_finep['Data Assinatura'] = pd.to_datetime(df_finep['Data Assinatura'], format='%Y-%m-%d')
@@ -2528,15 +2545,20 @@ df_finep = df_finep.groupby(['Município','UF']).sum()
 df_finep = df_finep.merge(database, how='right',on=['Município','UF']).fillna(0)
 
 df_finep_bndes = df_finep.merge(df_bndes, how='left',on=['Município','UF']).fillna(0)
-df_finep_bndes = df_finep_bndes.merge(df_rais_2_1, left_on='Cod.IBGE', right_on='id_municipio')
-df_finep_bndes['Média de Investimentos do BNDES e FINEP'] = (df_finep_bndes['Valor Finep'] + df_finep_bndes['Valor contratado  R$'])/df_finep_bndes['n_cet']
+df_finep_bndes = df_finep_bndes.merge(df_rais, how='left',on='Cod.IBGE')
+df_finep_bndes['Média de Investimentos do BNDES e FINEP'] = (df_finep_bndes['Valor Finep'] + df_finep_bndes['Valor contratado  R$'])/df_finep_bndes['n_emp']
 
 subdet_input = subdet_input.merge(df_finep_bndes, how='right', on='Cod.IBGE')
 interesse=['Cod.IBGE','Proporção de Mestres e Doutores em C&T','Proporção de Funcionários em C&T',
            'Média de Investimentos do BNDES e FINEP']
 subdet_input=subdet_input[interesse]
 
-################# 2.6.1.4. Indicador Infraestrutura Tecnológica ################
+### 2.6.1.4. Indicador Infraestrutura Tecnológica
+df_infra_tec = pd.read_excel('DETERMINANTE INOVAÇÃO/INFRA_TEC.xlsx')
+df_infra_tec['Cod.IBGE'] = df_infra_tec['Cod.IBGE'].astype(str)
+subdet_input = subdet_input.merge(df_infra_tec, how='right', on='Cod.IBGE')
+
+### 2.6.1.5. Indicador Contratos de Concessão
 df_inpi_contrato = pd.read_excel('DETERMINANTE INOVAÇÃO/5 - Depósitos de Marcas por Cidade.xls',
                                  usecols='A,B,U,V', header=7).dropna()
 
@@ -2549,18 +2571,14 @@ df_inpi_contrato = df_inpi_contrato.merge(database, how='right', on='Cod.IBGE')
 df_inpi_contrato = df_inpi_contrato.merge(df_rais, how='right', on='Cod.IBGE')
 df_inpi_contrato['Contratos de Concessão'] = (df_inpi_contrato['2018+2019'])/df_inpi_contrato['mil_emp']
 
-subdet_input = subdet_input.merge(df_inpi_contrato, how='right', on='Cod.IBGE')
-subdet_input = subdet_input.merge(amostra, how='left', on=['Cod.IBGE'])
+subdet_input = subdet_input.merge(df_inpi_contrato, how='right', on=['Cod.IBGE','Município'])
 interesse=['Município','UF','Proporção de Mestres e Doutores em C&T',
            'Proporção de Funcionários em C&T','Média de Investimentos do BNDES e FINEP',
-           'Contratos de Concessão']
+           'Infraestrutura Tecnológica','Contratos de Concessão']
 subdet_input = subdet_input[interesse].set_index(['Município','UF'])
 
-# Tratamentos de para os missing e outliers
 missing_data(subdet_input)
 extreme_values(subdet_input)
-
-# Criando o subdeterminante
 create_subindex(subdet_input, subdet)
 inovacao[subdet] = subdet_input
 ```
@@ -2570,10 +2588,9 @@ inovacao[subdet] = subdet_input
 - Para retornar ao relatório do Subdeterminante Outputs [clique aqui](#subdet_output).
 
 ```{python Inovação 2, eval=FALSE, echo=TRUE}
-# Indicando o subdeterminante
+## 2.6.2. Output
 subdet = 'Output'
-
-############################## Indicador Patentes ##############################
+### 2.6.2.1. Indicador Patentes
 letras = ['a','b','c']
 tipo = ['PI','MU','CA']
 for i in list(range(0,3)):
@@ -2600,7 +2617,7 @@ subdet_output = subdet_output.merge(amostra, how='right', on='Cod.IBGE')
 subdet_output = subdet_output[['Cod.IBGE','NOME DO MUNICÍPIO','UF','Patentes']]
 subdet_output = subdet_output.rename(columns={'NOME DO MUNICÍPIO':'Município'})
 
-################## Indicador Tamanho da indústria Inovadora ###################
+### 2.6.2.2. Indicador Tamanho da indústria Inovadora
 list_cnae = tuple([
     'Fabricação de cloro e álcalis','Fabricação de intermediários para fertilizantes',
     'Fabricação de adubos e fertilizantes','Fabricação de gases industriais',
@@ -2677,21 +2694,21 @@ cnae_2 = bd.read_sql(query=query, billing_project_id=project_id)
 cnae_2['cnae_2'] = cnae_2['cnae_2'].str.replace(r"(\d)\.",r"\1").str.replace(r"(\d)\-",r"\1")
 cnae_2 = tuple(cnae_2['cnae_2'])
 
-variaveis = ('id_municipio, count(*)')
+variaveis = ('id_municipio, count(quantidade_vinculos_ativos) AS n_ind_inova')
 base = '`basedosdados.br_me_rais.microdados_estabelecimentos`'
 project_id = 'double-balm-306418'
 cod_ibge = tuple(database['Cod.IBGE'].astype(str))
-query = (f'SELECT {variaveis} FROM {base} WHERE ano = 2020 AND id_municipio' 
-         f' IN {cod_ibge} AND cnae_2 IN {cnae_2} GROUP BY id_municipio')
+query = (f'SELECT {variaveis} FROM {base} WHERE ano = 2020 AND cnae_2 IN {cnae_2}' 
+         f' AND quantidade_vinculos_ativos > 0 GROUP BY id_municipio')
 df_rais_inova = bd.read_sql(query=query, billing_project_id=project_id)
 df_rais_inova = df_rais_inova.merge(df_rais, left_on='id_municipio', right_on='Cod.IBGE')
-df_rais_inova['Tamanho da Indústria Inovadora'] = df_rais_inova['f0__x']/df_rais_inova['f0__y']
+df_rais_inova['Tamanho da Indústria Inovadora'] = df_rais_inova['n_ind_inova']/df_rais_inova['n_emp']
 
 subdet_output = subdet_output.merge(df_rais_inova, how='left', on='Cod.IBGE')
 interesse=['Cod.IBGE','Município','UF','Patentes','Tamanho da Indústria Inovadora']
 subdet_output=subdet_output[interesse]
 
-################### Indicador Tamanho da indústria Criativa ####################
+### 2.6.2.3. Indicador Tamanho da indústria Criativa
 list_cnae = tuple([
     'Lapidação de gemas e fabricação de artefatos de ourivesaria e joalheria',
     'Fabricação de bijuterias e artefatos semelhantes','Fabricação de instrumentos musicais',
@@ -2727,22 +2744,22 @@ cnae_2 = bd.read_sql(query=query, billing_project_id=project_id)
 cnae_2['cnae_2'] = cnae_2['cnae_2'].str.replace(r"(\d)\.",r"\1").str.replace(r"(\d)\-",r"\1")
 cnae_2 = tuple(cnae_2['cnae_2'])
 
-variaveis = ('id_municipio, count(*)')
+variaveis = ('id_municipio, count(quantidade_vinculos_ativos) AS n_ind_cria')
 base = '`basedosdados.br_me_rais.microdados_estabelecimentos`'
 project_id = 'double-balm-306418'
 cod_ibge = tuple(database['Cod.IBGE'].astype(str))
-query = (f'SELECT {variaveis} FROM {base} WHERE ano = 2020 AND id_municipio' 
-         f' IN {cod_ibge} AND cnae_2 IN {cnae_2} GROUP BY id_municipio')
+query = (f'SELECT {variaveis} FROM {base} WHERE ano = 2020 AND cnae_2 IN {cnae_2}' 
+         f' AND quantidade_vinculos_ativos > 0 GROUP BY id_municipio')
 df_rais_cria = bd.read_sql(query=query, billing_project_id=project_id)
 df_rais_cria = df_rais_cria.merge(df_rais, left_on='id_municipio', right_on='Cod.IBGE')
-df_rais_cria['Tamanho da Indústria Criativa'] = df_rais_cria['f0__x']/df_rais_cria['f0__y']
+df_rais_cria['Tamanho da Indústria Criativa'] = df_rais_cria['n_ind_cria']/df_rais_cria['n_emp']
 
 subdet_output = subdet_output.merge(df_rais_cria, how='left', on='Cod.IBGE')
 interesse=['Cod.IBGE','Município','UF','Patentes','Tamanho da Indústria Inovadora',
            'Tamanho da Indústria Criativa']
 subdet_output=subdet_output[interesse]
 
-###################### Indicador Tamanho das Empresas TIC ######################
+### 2.6.2.4. Indicador Tamanho das Empresas TIC
 list_cnae = tuple([
     'Fabricação de componentes eletrônicos','Fabricação de equipamentos de informática',
     'Fabricação de periféricos para equipamentos de informática',
@@ -2773,30 +2790,28 @@ cnae_2 = bd.read_sql(query=query, billing_project_id=project_id)
 cnae_2['cnae_2'] = cnae_2['cnae_2'].str.replace(r"(\d)\.",r"\1").str.replace(r"(\d)\-",r"\1")
 cnae_2 = tuple(cnae_2['cnae_2'])
 
-variaveis = ('id_municipio, count(*)')
+variaveis = ('id_municipio, count(quantidade_vinculos_ativos) AS n_ind_tic')
 base = '`basedosdados.br_me_rais.microdados_estabelecimentos`'
 project_id = 'double-balm-306418'
 cod_ibge = tuple(database['Cod.IBGE'].astype(str))
-query = (f'SELECT {variaveis} FROM {base} WHERE ano = 2020 AND id_municipio' 
-         f' IN {cod_ibge} AND cnae_2 IN {cnae_2} GROUP BY id_municipio')
+query = (f'SELECT {variaveis} FROM {base} WHERE ano = 2020 AND cnae_2 IN {cnae_2}' 
+         f' AND quantidade_vinculos_ativos > 0 GROUP BY id_municipio')
+
 df_rais_tic = bd.read_sql(query=query, billing_project_id=project_id)
 df_rais_tic = df_rais_tic.merge(df_rais, left_on='id_municipio', right_on='Cod.IBGE')
-df_rais_tic['Tamanho das Empresas TIC'] = df_rais_tic['f0__x']/df_rais_tic['f0__y']
+df_rais_tic['Tamanho das Empresas TIC'] = df_rais_tic['n_ind_tic']/df_rais_tic['n_emp']
 
 subdet_output = subdet_output.merge(df_rais_tic, how='left', on='Cod.IBGE')
 interesse=['Município','UF','Patentes','Tamanho da Indústria Inovadora',
            'Tamanho da Indústria Criativa','Tamanho das Empresas TIC']
 subdet_output=subdet_output[interesse].set_index(['Município','UF'])
 
-# Tratamentos de para os missing e outliers
 missing_data(subdet_output)
 extreme_values(subdet_output)
-
-# Criando o subdeterminante
 create_subindex(subdet_output, subdet)
 inovacao[subdet] = subdet_output
 
-####################### Criando o Determinante Inovação ########################
+# -
 inovacao = pd.concat(inovacao, axis=1)
 create_detindex(inovacao, 'Inovação')
 
