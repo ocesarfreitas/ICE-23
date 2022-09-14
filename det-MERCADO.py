@@ -112,13 +112,13 @@ project_id = "trim-descent-346220"
 df_rais = pd.DataFrame()
 
 col = 'Pequenas Empresas'
-condition = 'quantidade_vinculos_ativos > 9 AND quantidade_vinculos_ativos < 50'
+condition = 'quantidade_vinculos_ativos BETWEEN 10 AND 49'
 query = f"SELECT {variaveis} FROM {base} WHERE ano = 2020 AND {condition} GROUP BY id_municipio"
 query
 df_rais_peq = bd.read_sql(query=query, billing_project_id=project_id).set_index('id_municipio').rename(columns={'f0_':col})
 
 col = 'Médias Empresas'
-condition = 'quantidade_vinculos_ativos > 49 AND quantidade_vinculos_ativos < 250'
+condition = 'quantidade_vinculos_ativos BETWEEN 50 AND 249'
 query = f"SELECT {variaveis} FROM {base} WHERE ano = 2020 AND {condition} GROUP BY id_municipio"
 query
 df_rais_med = bd.read_sql(query=query, billing_project_id=project_id).set_index('id_municipio').rename(columns={'f0_':col})
@@ -133,7 +133,7 @@ df_rais = pd.merge(df_rais_peq, df_rais_med, left_index=True, right_index=True)
 df_rais = pd.merge(df_rais, df_rais_gra, left_index=True, right_index=True)
 df_rais['Med/Peq'] = df_rais['Médias Empresas']/df_rais['Pequenas Empresas']
 df_rais['Gra/Med'] = df_rais['Grandes Empresas']/df_rais['Médias Empresas']
-df_rais['ind'] = df_rais['Med/Peq']/df_rais['Gra/Med']
+df_rais['ind'] = df_rais['Gra/Med']/df_rais['Med/Peq']
 
 ind_rais = pd.merge(cod, df_rais['ind'], left_index=True, right_index=True).rename(columns={
     'Nome_Município':'Município',

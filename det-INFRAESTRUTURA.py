@@ -55,7 +55,7 @@ portos = pd.read_csv('DETERMINANTE INFRAESTRUTURA/sd22_portos.csv').rename(colum
     'nome':'Município',
     'sigla_uf':'UF'
 }).drop('id_municipio',axis=1).set_index(['Município', 'UF'])
-sub_transurb = pd.merge(sub_transurb, negative(portos), left_index=True, right_index=True)
+sub_transurb = pd.merge(sub_transurb, portos, left_index=True, right_index=True)
 
 missing_data(sub_transurb)
 extreme_values(sub_transurb)
@@ -64,8 +64,7 @@ infraestrutura[subdet] = sub_transurb
 
 # Voltando as colunas negativas ao normal para salvar os dados:
 
-#sub_transurb['Distância ao Porto Mais Próximo'] = negative(sub_transurb['Distância ao Porto Mais Próximo'])
-# No manual do ICE esta indicado que esta variavel tem impacto positivo porem a intuicao sugere que seja negativo
+sub_transurb['Distância ao Porto Mais Próximo'] = negative(sub_transurb['Distância ao Porto Mais Próximo'])
 
 # ---------------------------------------------------------------------------------------------
 # 2.3.2. Subdeterminante Condições Urbanas
