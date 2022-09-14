@@ -25,20 +25,31 @@ subdet = 'Tempo de Processos'
 
 for i in list(range(1,13)):
     globals()[f"indicador_{i}"] = pd.read_excel(f'DETERMINANTE AMBIENTE REGULATÓRIO/REDESIM/tempos-abertura-Brasil{i}2021.xlsx', 
-                                                    header=1, usecols="I,R,AA,AB")
+                                                    header=1, usecols="I,F,R,Y,AA,AB")
     pdList = []
     pdList.extend(value for name, value in locals().items() if name.startswith("indicador"))
     indicador = pd.concat(pdList, axis = 0)
 
 indicador['Município'] = indicador['MUNICÍPIO'].str.upper().str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
-indicador = database.merge(indicador, how='left', on=['Município', 'UF'])
-indicador['Tempo de Viabilidade de Localização'] = indicador['QTDE.  HH VIABILIDADE END']
-indicador['Tempo de Registro, Cadastro e Viabilidade de Nome'] = indicador['QTDE. HH. LIBERAÇÃO DBE']
-indicador = indicador.groupby(['Município','UF']).mean()
-indicador = indicador.fillna(0)
+indicador_1 = database.merge(indicador, how='left', on=['Município', 'UF'])
+indicador_1['Tempo de Viabilidade de Localização'] = indicador_1.iloc[:,4]
+indicador_1 = indicador_1.groupby(['Município','UF','Cod.IBGE_x']).mean('Tempo de Viabilidade de Localização')
+indicador_1 = indicador_1.fillna(0)
 
-del indicador['QTDE.  HH VIABILIDADE END']
-del indicador['QTDE. HH. LIBERAÇÃO DBE']
+indicador_1 = indicador_1['Tempo de Viabilidade de Localização'].reset_index()
+
+indicador_2 = indicador
+indicador_2['Tempo de Registro, Cadastro e Viabilidade de Nome'] = indicador_2.iloc[:,2] + indicador.iloc[:,3] + indicador_2.iloc[:,0]
+indicador_2 = indicador_2.groupby(['UF']).mean('Tempo de Registro, Cadastro e Viabilidade de Nome')
+indicador_2 = indicador_2.merge(database, how='right',on='UF')
+indicador_2 = indicador_2[['Tempo de Registro, Cadastro e Viabilidade de Nome','Cod.IBGE_y']].reset_index()
+
+indicador = indicador_1.merge(indicador_2, left_on='Cod.IBGE_x', right_on='Cod.IBGE_y')
+
+interesse = ['Cod.IBGE_x','Município','UF_x','Tempo de Viabilidade de Localização',
+             'Tempo de Registro, Cadastro e Viabilidade de Nome']
+indicador = indicador[interesse]
+indicador = indicador.rename(columns={'Cod.IBGE_x':'Cod.IBGE','UF_x':'UF'})
 
 var = ['novos','baixados','pendentes']
 for i in list(range(0,3)):
@@ -111,9 +122,23 @@ def sinconfi(df1,df2,pib,imposto,var):
     df[f'Alíquota Interna do {imposto}'] = df['Valor']/df['pib']
     
     globals()[f'df_{imposto}'] = df.drop(['Valor','pib','Cod.IBGE'], axis=1)
+
+### PIB ESTADUAL
+base = '`basedosdados.br_ibge_pib.municipio`'
+project_id = 'double-balm-306418'
+var = ('LEFT(id_municipio, 2) AS id_uf, SUM(pib) AS pib')
+query = f'SELECT {var} FROM {base} WHERE ano = 2019 GROUP BY id_uf'
+pib_uf = bd.read_sql(query=query,billing_project_id=project_id)
+pib_uf['id_uf'] = pib_uf['id_uf'].astype(int) 
     
 ### ICMS
-sinconfi(sinconfi_mun,sinconfi_uf,pib_mun,imposto='ICMS',var='1.1.1.8.02.0.0 - Impostos sobre a Produção, Circulação de Mercadorias e Serviços')
+df_ICMS = sinconfi_uf[sinconfi_uf['Conta'] == '1.1.1.8.02.0.0 - Impostos sobre a Produção, Circulação de Mercadorias e Serviços']
+df_ICMS = df_ICMS[df_ICMS['Coluna'] == 'Receitas Brutas Realizadas'] 
+df_ICMS = df_ICMS.merge(pib_uf, left_on='Cod.IBGE', right_on='id_uf')
+df_ICMS['Alíquota Interna do ICMS'] = df_ICMS['Valor']/df_ICMS['pib']
+df_ICMS = df_ICMS[['Cod.IBGE','UF','Alíquota Interna do ICMS']]
+df_ICMS = df_ICMS.merge(database, how='left', on='UF')
+df_ICMS = df_ICMS[['Município','UF','Alíquota Interna do ICMS']]
 
 ### IPTU
 sinconfi(sinconfi_mun,sinconfi_uf,pib_mun,imposto='IPTU',var='1.1.1.8.01.1.0 - Imposto sobre a Propriedade Predial e Territorial Urbana')
@@ -308,6 +333,17 @@ create_subindex(subdet_complexidade, subdet)
 ambiente[subdet] = subdet_complexidade
 
 # -
+subdet_tempo['Tempo de Viabilidade de Localização'] = negative(subdet_tempo['Tempo de Viabilidade de Localização'])
+subdet_tempo['Tempo de Registro, Cadastro e Viabilidade de Nome'] = negative(subdet_tempo['Tempo de Registro, Cadastro e Viabilidade de Nome'])
+subdet_tempo['Taxa de Congestionamento em Tribunais'] = negative(subdet_tempo['Taxa de Congestionamento em Tribunais'])
+
+subdet_tri.iloc[:,0] = negative(subdet_tri.iloc[:,0])
+subdet_tri.iloc[:,1] = negative(subdet_tri.iloc[:,1])
+subdet_tri.iloc[:,2] = negative(subdet_tri.iloc[:,2])
+
+subdet_complexidade.iloc[:,2] = negative(subdet_complexidade.iloc[:,2])
+
+
 ambiente = pd.concat(ambiente, axis=1)
 create_detindex(ambiente, 'Ambiente Regulatório')
 
