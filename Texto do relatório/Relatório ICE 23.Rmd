@@ -302,10 +302,10 @@ Esse indicador se refere ao número de decolagens por ano que aconteceram no aer
 | **Fonte**             	   |https://www.gov.br/infraestrutura/pt-br/assuntos/dados-de-transportes/bit/bitmodosmapas|
 | **Período**           	   | 2022                                             |
 | **Cidades faltantes** 	   | -                                                |
-| **Efeito**                 | Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	            |
+| **Efeito**                 | Negativo 	 	 	  	 	 	 	 	 	 	 	 	 	            |
 | **Problemas com a coleta** | Não 	 	 	 	 	 	|
 
-Esse indicador foi calculado por meio do uso de \textit{*.shp} files, o código em linguagem R do ano passado foi replicado. O manual indica que o impacto deste indicador é positivo e o índice foi calculado desta maneira, porém a intuição sugere que o impacto deste indicador deveria ser negarivo
+Esse indicador foi calculado por meio do uso de \textit{*.shp} files, o código em linguagem R do ano passado foi replicado. O manual indica que o impacto deste indicador é positivo, as devidas alterações foram realizadas para correção deste problema e o impacto final no índice foi negativo.
 
 ### Subdeterminante Condições Urbanas {#subdet_cond_urb} 
 
@@ -1848,6 +1848,7 @@ infraestrutura = {}
 
 subdet = 'Transporte Interurbano'
 
+# ---------------------------------------------------------------------------------------------
 # 2.3.1.1 Indicador Conectividade via Rodovias
 
 ind = pd.read_excel('Arquivos ICE - 23/Ind_Originais_ICE_2022.xlsx', header=[i for i in range(6)], index_col=[0,1])
@@ -1890,7 +1891,7 @@ portos = pd.read_csv('DETERMINANTE INFRAESTRUTURA/sd22_portos.csv').rename(colum
     'nome':'Município',
     'sigla_uf':'UF'
 }).drop('id_municipio',axis=1).set_index(['Município', 'UF'])
-sub_transurb = pd.merge(sub_transurb, negative(portos), left_index=True, right_index=True)
+sub_transurb = pd.merge(sub_transurb, portos, left_index=True, right_index=True)
 
 missing_data(sub_transurb)
 extreme_values(sub_transurb)
@@ -1899,9 +1900,7 @@ infraestrutura[subdet] = sub_transurb
 
 # Voltando as colunas negativas ao normal para salvar os dados:
 
-#sub_transurb['Distância ao Porto Mais Próximo'] = negative(sub_transurb['Distância ao Porto Mais Próximo'])
-# No manual do ICE esta indicado que esta variavel tem impacto positivo porem a intuicao sugere que seja negativo
-
+sub_transurb['Distância ao Porto Mais Próximo'] = negative(sub_transurb['Distância ao Porto Mais Próximo'])
 ```
 
 #### Subdeterminante Condições Urbanas {.unnumbered #script_2.2.2}
@@ -2232,13 +2231,13 @@ project_id = "trim-descent-346220"
 df_rais = pd.DataFrame()
 
 col = 'Pequenas Empresas'
-condition = 'quantidade_vinculos_ativos > 9 AND quantidade_vinculos_ativos < 50'
+condition = 'quantidade_vinculos_ativos BETWEEN 10 AND 49'
 query = f"SELECT {variaveis} FROM {base} WHERE ano = 2020 AND {condition} GROUP BY id_municipio"
 query
 df_rais_peq = bd.read_sql(query=query, billing_project_id=project_id).set_index('id_municipio').rename(columns={'f0_':col})
 
 col = 'Médias Empresas'
-condition = 'quantidade_vinculos_ativos > 49 AND quantidade_vinculos_ativos < 250'
+condition = 'quantidade_vinculos_ativos BETWEEN 50 AND 249'
 query = f"SELECT {variaveis} FROM {base} WHERE ano = 2020 AND {condition} GROUP BY id_municipio"
 query
 df_rais_med = bd.read_sql(query=query, billing_project_id=project_id).set_index('id_municipio').rename(columns={'f0_':col})
@@ -2253,7 +2252,7 @@ df_rais = pd.merge(df_rais_peq, df_rais_med, left_index=True, right_index=True)
 df_rais = pd.merge(df_rais, df_rais_gra, left_index=True, right_index=True)
 df_rais['Med/Peq'] = df_rais['Médias Empresas']/df_rais['Pequenas Empresas']
 df_rais['Gra/Med'] = df_rais['Grandes Empresas']/df_rais['Médias Empresas']
-df_rais['ind'] = df_rais['Med/Peq']/df_rais['Gra/Med']
+df_rais['ind'] = df_rais['Gra/Med']/df_rais['Med/Peq']
 
 ind_rais = pd.merge(cod, df_rais['ind'], left_index=True, right_index=True).rename(columns={
     'Nome_Município':'Município',
