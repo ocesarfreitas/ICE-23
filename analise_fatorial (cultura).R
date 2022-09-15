@@ -6,7 +6,7 @@ install.packages(psych)
 
 #-------------------------------------------------------------------------------
 # Criando looping para importar os indicadores padronizados
-det <- c("ACESSO A CAPITAL","AMBIENTE REGULAT�RIO","CAPITAL HUMANO","CULTURA2",
+det <- c("ACESSO A CAPITAL","AMBIENTE REGULATÓRIO","CAPITAL HUMANO","CULTURA2",
          "INFRAESTRUTURA","INOVACAO","MERCADO")
 det_s <- c("ACESSO_CAPITAL","AMBIENTE_REGULATORIO","CAPITAL_HUMANO","CULTURA",
            "INFRAESTRUTURA","INOVACAO","MERCADO")
@@ -26,7 +26,7 @@ for(i in 1:7){
 determinantes <- df %>% 
   reduce(full_join, by=c('V1','V2'))
 
-colnames(determinantes)[1:2] <- c("Munic�pio","UF")
+colnames(determinantes)[1:2] <- c("Município","UF")
 
 #-------------------------------------------------------------------------------
 ## Análise fatorial: fatores e autovalores
@@ -45,7 +45,7 @@ root.fa.covar$rot.mat
 root.fa.covar
 
 # Criando tabela com a Análise dos Principais Componentes 
-root.fa.covar <- principal(determinantes[,3:9], nfactors =3, rotate = 'quartimax', covar = TRUE)
+root.fa.covar <- principal(determinantes[,3:9], nfactors =3, rotate = 'varimax', covar = TRUE)
 root.fa.covar$uniquenesses
 root.fa.covar$rot.mat
 root.fa.covar
@@ -59,16 +59,16 @@ scores.ICE <- scores.ICE %>%
 write.csv(scores.ICE, 'DETERMINANTES/scores-ICE-23.csv')
 
 ICE_23 <- cbind(determinantes,scores.ICE[,4])
-names(ICE_23)[10] <- '�ndice Cidades Empreendendoras 2023'
+names(ICE_23)[10] <- 'Índice Cidades Empreendendoras 2023'
 
-ICE_23$`Rank ICE 23` <- frankv(ICE_23, cols='�ndice Cidades Empreendendoras 2023', order=-1)
-ICE_23$`Rank Acesso a Capital` <- frankv(ICE_23, cols='�ndice de Acesso a Capital', order=-1)
-ICE_23$`Rank Ambiente Regulatório` <- frankv(ICE_23, cols='�ndice de Ambiente Regulat�rio', order=-1)
-ICE_23$`Rank Capital Humano` <- frankv(ICE_23, cols='�ndice de Capital Humano', order=-1)
-ICE_23$`Rank Cultura` <- frankv(ICE_23, cols='�ndice de Cultura', order=-1,ties.method = "max")
-ICE_23$`Rank Infraestrutura` <- frankv(ICE_23, cols='�ndice de Infraestrutura', order=-1)
-ICE_23$`Rank Inovação` <- frankv(ICE_23, cols='�ndice de Inova��o', order=-1)
-ICE_23$`Rank Mercado` <- frankv(ICE_23, cols='�ndice de Mercado', order=-1)
+ICE_23$`Rank ICE 23` <- frankv(ICE_23, cols='Índice Cidades Empreendendoras 2023', order=-1)
+ICE_23$`Rank Acesso a Capital` <- frankv(ICE_23, cols='Índice de Acesso a Capital', order=-1)
+ICE_23$`Rank Ambiente Regulatório` <- frankv(ICE_23, cols='Índice de Ambiente Regulatório', order=-1)
+ICE_23$`Rank Capital Humano` <- frankv(ICE_23, cols='Índice de Capital Humano', order=-1)
+ICE_23$`Rank Cultura` <- frankv(ICE_23, cols='Índice de Cultura', order=-1,ties.method = "max")
+ICE_23$`Rank Infraestrutura` <- frankv(ICE_23, cols='Índice de Infraestrutura', order=-1)
+ICE_23$`Rank Inovação` <- frankv(ICE_23, cols='Índice de Inovação', order=-1)
+ICE_23$`Rank Mercado` <- frankv(ICE_23, cols='Índice de Mercado', order=-1)
 
 ICE_23 <- ICE_23[, c(1:3,12,4,13,5,14,6,15,7,16,8,17,9,18,10,11)]
 
