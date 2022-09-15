@@ -167,6 +167,25 @@ cond = (df['Conta'] == '3.0.00.00.00 - Despesas Correntes') | (df['Conta'] == '4
 df = df.iloc[np.where(cond)]
 sub_clipot.at['Brasília', 'Compras Públicas'] = sum(df['Valor'].apply(lambda x: x.replace(',','.')).astype(float))
 
+variaveis = ('id_municipio, COUNT(quantidade_vinculos_ativos)')
+base = '`basedosdados.br_me_rais.microdados_estabelecimentos`'
+project_id = "trim-descent-346220"
+
+df_rais = pd.DataFrame()
+
+col = 'N Empresas'
+condition = 'quantidade_vinculos_ativos > 0'
+query = f"SELECT {variaveis} FROM {base} WHERE ano = 2020 AND {condition} GROUP BY id_municipio"
+query
+df_rais = bd.read_sql(query=query, billing_project_id=project_id).set_index('id_municipio').rename(columns={'f0_':col})
+
+ind_rais = pd.merge(cod, df_rais[col], left_index=True, right_index=True).rename(columns={
+    'Nome_Município':'Município',
+    'Nome_UF':'UF'
+}).set_index(['Município', 'UF'])
+    
+sub_clipot['Compras Públicas'] = sub_clipot['Compras Públicas']/ind_rais[col]
+
 missing_data(sub_clipot)
 extreme_values(sub_clipot)
 create_subindex(sub_clipot, subdet)
