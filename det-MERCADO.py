@@ -186,6 +186,8 @@ ind_rais = pd.merge(cod, df_rais[col], left_index=True, right_index=True).rename
     
 sub_clipot['Compras Públicas'] = sub_clipot['Compras Públicas']/ind_rais[col]
 
+sub_clipot
+
 missing_data(sub_clipot)
 extreme_values(sub_clipot)
 create_subindex(sub_clipot, subdet)
