@@ -19,12 +19,12 @@ def save_googletrends(database, term):
     name = term.split(' ')[-1].replace('_', ' ')
     term = term.replace('_', ' ')
     c_name = 'Pesquisas '+term
-    
+
     if c_name not in database.columns:
-        indicador = pd.read_csv('DETERMINANTE CULTURA/geoMap-'+name+'.csv').reset_index()
-        indicador = indicador.rename(columns={'index':'Município', 'Category: All categories': c_name})
+        indicador = pd.read_csv('DETERMINANTE CULTURA/geoMap-'+name+'.csv',header=1).reset_index(drop=True)
+        indicador = indicador.rename(columns={'City':'Município', name+': (9/16/17 - 9/16/22)': c_name})
         database = database.merge(indicador, how='left',on='Município').fillna(0)
-        database[c_name] = database[c_name].astype(int)
+        database[c_name] = database[c_name].astype(float)
     
     return database
 
@@ -38,7 +38,7 @@ subdet = 'Iniciativa'
 iniciativa = ['pelo Termo Empreendedora', 'pelo Termo Empreendedorismo', 'pelo Termo MEI']
 sub_iniciativa = pd.DataFrame(database)
 
-sub_iniciativa = save_googletrends(sub_iniciativa, 'pelo Termo Empreendedora')
+sub_iniciativa = sub_iniciativa.merge(pd.read_csv('DETERMINANTE CULTURA/geoMap-Empreendedora.csv'), how='left',on='Município').fillna(0)
 sub_iniciativa = save_googletrends(sub_iniciativa, 'pelo Termo Empreendedorismo')
 sub_iniciativa = save_googletrends(sub_iniciativa, 'pelo Termo MEI')
 sub_iniciativa = sub_iniciativa.set_index('Município')
@@ -56,9 +56,9 @@ subdet = 'Instituições'
 instituicoes = ['por Sebrae', 'por Franquia', 'por SIMPLES_Nacional', 'por Senac']
 sub_instituicoes = pd.DataFrame(database)
 
-sub_instituicoes = save_googletrends(sub_instituicoes, 'por Sebrae')
+sub_instituicoes = save_googletrends(sub_instituicoes, 'por SEBRAE')
 sub_instituicoes = save_googletrends(sub_instituicoes, 'por Franquia')
-sub_instituicoes = save_googletrends(sub_instituicoes, 'por SIMPLES_Nacional')
+sub_instituicoes = save_googletrends(sub_instituicoes, 'por Simples_Nacional')
 sub_instituicoes = save_googletrends(sub_instituicoes, 'por Senac')
 sub_instituicoes = sub_instituicoes.set_index('Município')
 
