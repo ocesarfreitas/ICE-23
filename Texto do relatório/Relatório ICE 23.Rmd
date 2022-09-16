@@ -907,19 +907,19 @@ Para esse indicador, foi utilizado somente os dados da RAIS importados pelo *dat
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
 | **Fonte**             	  |              https://trends.google.com/trends/?geo=BR             |
-| **Período**           	  |                           2021                                        	|
+| **Período**           	  |                           últimos 5 anos                                        	|
 | **Cidades faltantes** 	  | -                                                                       |
 | **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
 | **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
 
-Nenhum problema na coleta, os indicadores do determinante de cultura possuem valor $0$ para a maioria dos municípios.
+O site Google Trends não disponibilizaou os dados dos municípios para número de pesquisas pelo termo empreendedora. Desta forma foram coletados os dados por unidade federativa e os municípios de determinada UF receberam um score proporcional à sua posição dentro do ranking da UF.
 
 #### Indicador Pesquisas Empreendedorismo
 
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
 | **Fonte**             	  |              https://trends.google.com/trends/?geo=BR             |
-| **Período**           	  |                           2021                                        	|
+| **Período**           	  |                           últimos 5 anos                                        	|
 | **Cidades faltantes** 	  | -                                                                       |
 | **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
 | **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
@@ -931,7 +931,7 @@ Nenhum problema na coleta, os indicadores do determinante de cultura possuem val
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
 | **Fonte**             	  |              https://trends.google.com/trends/?geo=BR             |
-| **Período**           	  |                           2021                                        	|
+| **Período**           	  |                           últimos 5 anos                                        	|
 | **Cidades faltantes** 	  | -                                                                       |
 | **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
 | **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
@@ -947,7 +947,7 @@ Nenhum problema na coleta, os indicadores do determinante de cultura possuem val
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
 | **Fonte**             	  |              https://trends.google.com/trends/?geo=BR             |
-| **Período**           	  |                           2021                                        	|
+| **Período**           	  |                           últimos 5 anos                                        	|
 | **Cidades faltantes** 	  | -                                                                       |
 | **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
 | **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
@@ -959,7 +959,7 @@ Nenhum problema na coleta, os indicadores do determinante de cultura possuem val
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
 | **Fonte**             	  |              https://trends.google.com/trends/?geo=BR             |
-| **Período**           	  |                           2021                                        	|
+| **Período**           	  |                           últimos 5 anos                                        	|
 | **Cidades faltantes** 	  | -                                                                       |
 | **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
 | **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
@@ -971,7 +971,7 @@ Nenhum problema na coleta, os indicadores do determinante de cultura possuem val
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
 | **Fonte**             	  |              https://trends.google.com/trends/?geo=BR             |
-| **Período**           	  |                           2021                                        	|
+| **Período**           	  |                           últimos 5 anos                                        	|
 | **Cidades faltantes** 	  | -                                                                       |
 | **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
 | **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
@@ -983,7 +983,7 @@ Nenhum problema na coleta, os indicadores do determinante de cultura possuem val
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
 | **Fonte**             	  |              https://trends.google.com/trends/?geo=BR             |
-| **Período**           	  |                           2021                                        	|
+| **Período**           	  |                           últimos 5 anos                                        	|
 | **Cidades faltantes** 	  | -                                                                       |
 | **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
 | **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
