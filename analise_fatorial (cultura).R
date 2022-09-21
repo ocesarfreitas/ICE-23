@@ -8,7 +8,7 @@ install.packages(psych)
 # Criando looping para importar os indicadores padronizados
 det <- c("ACESSO A CAPITAL","AMBIENTE REGULATÓRIO","CAPITAL HUMANO","CULTURA2",
          "INFRAESTRUTURA","INOVACAO","MERCADO")
-det_s <- c("ACESSO_CAPITAL","AMBIENTE_REGULATORIO","CAPITAL_HUMANO","CULTURA",
+det_s <- c("ACESSO_CAPITAL","AMBIENTE_REGULATORIO","CAPITAL_HUMANO","CULTURA2",
            "INFRAESTRUTURA","INOVACAO","MERCADO")
 last_col <- c(7,16,13,11,12,14,11)
 
@@ -39,26 +39,34 @@ plot(S.eigen$values, xlab = 'Fatores', ylab = 'Eigenvalue', type = 'b', xaxt = '
 axis(1, at = seq(1, 7, by = 1))
 
 # Criando tabela com a Análise dos Principais Componentes 
-root.fa.covar <- principal(determinantes[,3:9], nfactors =3, rotate = 'none', covar = TRUE)
+factanal.none <- factanal(determinantes[,3:9], factors=3, scores = c("regression"),
+                          rotation = "varimax")
+
+
+root.fa.covar <- principal(determinantes[,3:9], nfactors =3, rotate = 'none',
+                           n.obs = 101, covar = TRUE)
 root.fa.covar$uniquenesses
 root.fa.covar$rot.mat
 root.fa.covar
 
 # Criando tabela com a Análise dos Principais Componentes 
-root.fa.covar <- principal(determinantes[,3:9], nfactors =3, rotate = 'varimax', covar = TRUE)
+root.fa.covar <- principal(determinantes[,3:9], nfactors =3, rotate = 'varimax',
+                           n.obs = 101, covar = TRUE)
 root.fa.covar$uniquenesses
 root.fa.covar$rot.mat
 root.fa.covar
 
 # ICE 23: soma os scores para os três fatores gerados pela análise fatorial
 scores.ICE <- as.data.frame(psych::predict.psych(root.fa.covar, determinantes[,3:9]))
+scores.ICE$`Município` <- determinantes$Município
+scores.ICE$UF <- determinantes$UF
 scores.ICE <- scores.ICE %>%
   mutate(ICE = RC1 + RC2 + RC3,
          ICE = (ICE - mean(ICE))/sd(ICE) + 6)
 
-write.csv(scores.ICE, 'DETERMINANTES/scores-ICE-23.csv')
+write.csv(scores.ICE, 'DETERMINANTES/scores-ICE-23 (cultura).csv')
 
-ICE_23 <- cbind(determinantes,scores.ICE[,4])
+ICE_23 <- cbind(determinantes,scores.ICE[,6])
 names(ICE_23)[10] <- 'Índice Cidades Empreendendoras 2023'
 
 ICE_23$`Rank ICE 23` <- frankv(ICE_23, cols='Índice Cidades Empreendendoras 2023', order=-1)
@@ -77,3 +85,4 @@ write.csv(ICE_23, 'DETERMINANTES/ICE-2023 (cultura).csv')
 # Teste KMO
 kmo <- KMO(determinantes[,3:9])
 kmo
+
