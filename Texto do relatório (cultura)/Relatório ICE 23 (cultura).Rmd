@@ -902,19 +902,7 @@ Para esse indicador, foi utilizado somente os dados da RAIS importados pelo *dat
 
 - [Clique aqui](#script_2.7.1) para ver o script do Subdeterminante Iniciativa.
 
-#### Indicador Pesquisas Empreendedora
-
-|                       	  | **Informações**                                                        	|
-|---------------------------|-------------------------------------------------------------------------|
-| **Fonte**             	  |              https://trends.google.com/trends/?geo=BR             |
-| **Período**           	  |                           últimos 5 anos                                        	|
-| **Cidades faltantes** 	  | -                                                                       |
-| **Efeito**                |  	 	 	 	 	 	 	 	 	 	     	 	 	 	Positivo 	 	 	  	 	 	 	 	 	 	 	 	 	    |
-| **Problemas com a coleta**|  	 	 	 	 	 	 	 	 	 	     	 	 	 	  Não   	 	 	  	 	 	 	 	 	 	 	 	 	    |
-
-Os dados foram coletados por unidade federativa e os municípios de determinada UF receberam um score proporcional à sua posição dentro do ranking da UF.
-
-#### Indicador Pesquisas Empreendedorismo
+#### Indicador Pesquisas Empreendedor
 
 |                       	  | **Informações**                                                        	|
 |---------------------------|-------------------------------------------------------------------------|
@@ -1160,13 +1148,13 @@ knitr::include_graphics("fig_3.png")
 
 | **Variável**                       	| **RC1** | **RC2** | **RC3** | **h²** | **u²** | **com** |
 |------------------------------------	|-------- |-------- |-------- |------- |-------	|-------- |
-| **Índice de Acesso a Capital**     	| 0.74  	| 0.01  	| -0.18 	| 0.57 	 | 0.427 	| 1.1 	  |
-| **Índice de Ambiente Regulatório** 	| 0.05  	| 0.95  	| 0.00  	| 0.90 	 | 0.099 	| 1.0 	  |
-| **Índice de Capital Humano**       	| 0.64 	  | -0.34 	| 0.04  	| 0.53 	 | 0.472 	| 1.5 	  |
-| **Índice de Cultura**              	| 0.01 	  | 0.00  	| 0.98  	| 0.95 	 | 0.046 	| 1.0 	  |
-| **Índice de Infraestrutura**       	| 0.73 	  | -0.03  	| 0.11  	| 0.54 	 | 0.458 	| 1.1 	  |
-| **Índice de Inovação**             	| 0.85 	  | 0.03  	| -0.09 	| 0.73 	 | 0.266 	| 1.0 	  |
-| **Índice de Mercado**              	| 0.77 	  | 0.22  	| 0.19  	| 0.68 	 | 0.321 	| 1.3 	  |
+| **Índice de Acesso a Capital**     	| 0.65  	| 0.27  	| -0.06 	| 0.50 	 | 0.50 	| 1.4 	  |
+| **Índice de Ambiente Regulatório** 	| 0.11  	| 0.92  	| 0.14  	| 0.88 	 | 0.12 	| 1.1 	  |
+| **Índice de Capital Humano**       	| 0.80 	  | -0.20 	| 0.07  	| 0.68 	 | 0.32 	| 1.1 	  |
+| **Índice de Cultura**              	| 0.02 	  | 0.17  	| 0.93  	| 0.89 	 | 0.11 	| 1.1 	  |
+| **Índice de Infraestrutura**       	| 0.63 	  | 0.26  	| -0.43  	| 0.65 	 | 0.35 	| 2.1 	  |
+| **Índice de Inovação**             	| 0.85 	  | 0.05  	| -0.09 	| 0.74 	 | 0.26 	| 1.0 	  |
+| **Índice de Mercado**              	| 0.75 	  | 0.24  	| 0.08  	| 0.63 	 | 0.37 	| 1.2 	  |
 
 \begin{center}
   \textbf{Tabela 11:} Cargas Fatoriais Rotacionadas: Descritivas
@@ -1174,11 +1162,11 @@ knitr::include_graphics("fig_3.png")
 
 |                           	| **RC1** 	| **RC2** 	| **RC3** 	|
 |---------------------------	|:-------:	|---------	|---------	|
-| **SS loadings**           	|   2.80  	| 1.06    	| 1.04    	|
-| **Proportion Var**        	|   0.40  	| 0.15    	| 0.15    	|
-| **Cumulative Var**        	|   0.40  	| 0.55    	| 0.70    	|
-| **Proportion Explained**  	|   0.57  	| 0.22    	| 0.21    	|
-| **Cumulative Proportion** 	|   0.57  	| 0.79    	| 1.00    	|
+| **SS loadings**           	|   2.76  	| 1.11    	| 1.09    	|
+| **Proportion Var**        	|   0.39  	| 0.16    	| 0.16    	|
+| **Cumulative Var**        	|   0.39  	| 0.55    	| 0.71    	|
+| **Proportion Explained**  	|   0.56  	| 0.22    	| 0.22    	|
+| **Cumulative Proportion** 	|   0.56  	| 0.78    	| 1.00    	|
 
 \begin{center}
   \textbf{Tabela 12:} Cargas Fatoriais Rotacionadas: Matriz de correlação
@@ -1186,9 +1174,9 @@ knitr::include_graphics("fig_3.png")
 
 |           | **RC1** 	| **RC2** 	| **RC3** 	|
 |----------	|:-------:	|---------	|---------	|
-| **RC1**   |   0.99   	| 0.01    	| 0.03    	|
-| **RC2**   |   -0.03   | 0.84    	| 0.55    	|
-| **RC3**   |   -0.02 	| -0.55     | 0.83    	|
+| **RC1**   |   0.96   	| -0.10    	| -0.26    	|
+| **RC2**   |   -0.08   | 0.77    	| -0.62    	|
+| **RC3**   |   0.26 	| 0.61     | 0.73    	|
 
 
 ### Teste de Kaiser-Meyer-Olkin (KMO)
@@ -1198,133 +1186,133 @@ knitr::include_graphics("fig_3.png")
 \end{center}
 | **Variável**                   	|  **KMO** 	|
 |--------------------------------	|:--------:	|
-| Índice de Acesso a Capital     	|   0.84   	|
-| Índice de Ambiente Regulatório 	|   0.43   	|
-| Índice de Capital Humano       	|   0.78   	|
-| Índice de Cultura              	|   0.29   	|
+| Índice de Acesso a Capital     	|   0.83   	|
+| Índice de Ambiente Regulatório 	|   0.68   	|
+| Índice de Capital Humano       	|   0.84   	|
+| Índice de Cultura              	|   0.43   	|
 | Índice de Infraestrutura       	|   0.82   	|
-| Índice de Inovação             	|   0.73   	|
-| Índice de Mercado              	|   0.73   	|
-| **Overall MSA**                	| **0.76** 	|
+| Índice de Inovação             	|   0.78   	|
+| Índice de Mercado              	|   0.80   	|
+| **Overall MSA**                	| **0.79** 	|
 
 # Correlação com o ICE2022
 
 |                                | Correlação 2022-2023 | p-valor     |
 |--------------------------------|----------------------|-------------|
 | Índice de Acesso a Capital     | 0.351648224          | 0.000311057 |
-| Índice de Ambiente Regulatório | -0.07029703          | 0.48483482  |
+| Índice de Ambiente Regulatório | 0.047920792          | 0.634162037 |
 | Índice de Capital Humano       | 0.12446127           | 0.214946123 |
-| Índice de Cultura              | -0.191204171         | 0.055445229 |
-| Índice de Infraestrutura       | -0.046709377         | 0.642766908 |
-| Índice de Inovação             | 0.154199185          | 0.123653698 |
-| Índice de Mercado              | -0.026057076         | 0.795901663 |
-| Índice Cidades Empreendendoras | 0.033221895          | 0.741542681 |
+| Índice de Cultura              | 0.108859688          | 0.278527649 |
+| Índice de Infraestrutura       | 0.087850903          | 0.382340639 |
+| Índice de Inovação             | 0.201106581          | 0.043738143 |
+| Índice de Mercado              | 0.022306348          | 0.82477073  |
+| Índice Cidades Empreendendoras | 0.338864492          | 0.000527664 |
 
 # Ranking {#ranking}
 
-| Município               | UF | RC1   | RC2   | RC3   | ICE   |
-|-------------------------|----|-------|-------|-------|-------|
-| Jundiaí                 | SP | 0.989 | 0.153 | 4.134 | 9.046 |
-| São Paulo               | SP | 4.249 | 1.407 | -0.68 | 8.869 |
-| Cascavel                | PR | 0.523 | 0.991 | 3.177 | 8.709 |
-| Taboão da Serra         | SP | -0.00 | -0.70 | 5.362 | 8.682 |
-| Niterói                 | RJ | 1.342 | 1.819 | 0.097 | 7.881 |
-| Rio de Janeiro          | RJ | 1.315 | 2.218 | -0.78 | 7.589 |
-| São José dos Campos     | SP | 0.905 | -0.08 | 1.867 | 7.549 |
-| São José dos Pinhais    | PR | 0.535 | 1.947 | 0.010 | 7.439 |
-| Goiânia                 | GO | 0.491 | 2.232 | -0.39 | 7.345 |
-| Praia Grande            | SP | -0.24 | 1.127 | 1.241 | 7.225 |
-| Joinville               | SC | 0.925 | 1.369 | -0.27 | 7.168 |
-| Boa Vista               | RR | -0.52 | 0.868 | 1.643 | 7.145 |
-| Palmas                  | TO | -0.16 | -0.52 | 2.567 | 7.079 |
-| Macapá                  | AP | -1.03 | 1.664 | 1.177 | 7.041 |
-| Caxias do Sul           | RS | 0.929 | 0.861 | -0.26 | 6.882 |
-| Gravataí                | RS | -0.40 | 1.490 | 0.416 | 6.865 |
-| Aparecida de Goiânia    | GO | -0.78 | 2.168 | 0.075 | 6.844 |
-| Piracicaba              | SP | 1.186 | -0.23 | 0.373 | 6.762 |
-| São Bernardo do Campo   | SP | 1.224 | -0.22 | 0.307 | 6.752 |
-| Franca                  | SP | 0.353 | -0.42 | 1.362 | 6.746 |
-| Santo André             | SP | 0.763 | -0.39 | 0.840 | 6.700 |
-| Diadema                 | SP | 0.512 | 0.308 | 0.359 | 6.681 |
-| Brasília                | DF | 1.681 | -1.07 | 0.429 | 6.599 |
-| Florianópolis           | SC | 1.988 | -0.28 | -0.67 | 6.590 |
-| Canoas                  | RS | 0.055 | 0.825 | 0.057 | 6.541 |
-| Osasco                  | SP | 1.900 | -0.15 | -0.80 | 6.541 |
-| Londrina                | PR | 0.463 | 0.847 | -0.49 | 6.470 |
-| Limeira                 | SP | 1.110 | -0.76 | 0.434 | 6.452 |
-| Serra                   | ES | -0.31 | 1.246 | -0.21 | 6.412 |
-| Mogi das Cruzes         | SP | 0.261 | 0.022 | 0.309 | 6.342 |
-| Betim                   | MG | -0.25 | 1.203 | -0.36 | 6.339 |
-| Campos dos Goytacazes   | RJ | -0.23 | 0.890 | -0.13 | 6.305 |
-| Mauá                    | SP | -0.21 | 0.481 | 0.191 | 6.265 |
-| Suzano                  | SP | -0.02 | 0.079 | 0.378 | 6.252 |
-| Manaus                  | AM | -0.70 | 1.540 | -0.42 | 6.235 |
-| Uberlândia              | MG | 0.616 | 0.192 | -0.40 | 6.234 |
-| Porto Velho             | RO | -0.35 | 1.343 | -0.62 | 6.212 |
-| Maringá                 | PR | 0.825 | -0.14 | -0.34 | 6.192 |
-| Contagem                | MG | -0.56 | 1.252 | -0.39 | 6.165 |
-| Cuiabá                  | MT | 0.284 | -0.23 | 0.203 | 6.144 |
-| Santa Maria             | RS | 0.739 | -0.06 | -0.42 | 6.143 |
-| Sorocaba                | SP | 1.048 | -1.13 | 0.298 | 6.122 |
-| Curitiba                | PR | 2.063 | -0.58 | -1.27 | 6.120 |
-| Blumenau                | SC | 0.480 | 0.162 | -0.49 | 6.083 |
-| Ponta Grossa            | PR | 0.228 | 0.160 | -0.29 | 6.055 |
-| Campinas                | SP | 1.606 | -1.02 | -0.49 | 6.050 |
-| Uberaba                 | MG | 0.018 | 0.404 | -0.35 | 6.037 |
-| Cariacica               | ES | -0.81 | 1.141 | -0.27 | 6.027 |
-| Porto Alegre            | RS | 1.712 | -0.54 | -1.15 | 6.006 |
-| São João de Meriti      | RJ | -1.41 | -0.66 | 2.080 | 5.999 |
-| Guarulhos               | SP | 0.649 | -0.57 | -0.13 | 5.965 |
-| Ribeirão Preto          | SP | 0.736 | -0.32 | -0.47 | 5.964 |
-| Fortaleza               | CE | -0.41 | 0.948 | -0.60 | 5.958 |
-| Bauru                   | SP | 0.290 | -0.76 | 0.302 | 5.899 |
-| Anápolis                | GO | -0.41 | 0.625 | -0.39 | 5.894 |
-| Pelotas                 | RS | -0.04 | -0.31 | 0.044 | 5.819 |
-| Várzea Grande           | MT | -0.42 | 0.426 | -0.36 | 5.792 |
-| João Pessoa             | PB | -0.38 | 0.044 | -0.02 | 5.785 |
-| Belo Horizonte          | MG | 1.594 | -0.82 | -1.17 | 5.762 |
-| Petrópolis              | RJ | -0.49 | 0.475 | -0.41 | 5.746 |
-| Camaçari                | BA | -0.40 | 0.327 | -0.39 | 5.727 |
-| Paulista                | PE | -1.33 | 0.790 | 0.072 | 5.724 |
-| São José do Rio Preto   | SP | 0.675 | -0.76 | -0.45 | 5.687 |
-| São Gonçalo             | RJ | -1.45 | 1.416 | -0.54 | 5.667 |
-| Teresina                | PI | -0.42 | -0.96 | 0.779 | 5.650 |
-| Taubaté                 | SP | 0.123 | -1.19 | 0.411 | 5.617 |
-| Santos                  | SP | 0.547 | -0.88 | -0.35 | 5.595 |
-| Sumaré                  | SP | -0.45 | -0.04 | -0.29 | 5.544 |
-| Vitória                 | ES | 1.104 | -1.08 | -0.82 | 5.537 |
-| Itaquaquecetuba         | SP | 0.143 | -0.92 | -0.05 | 5.521 |
-| Vila Velha              | ES | -0.10 | -0.40 | -0.32 | 5.510 |
-| Jaboatão dos Guararapes | PE | -1.38 | 1.026 | -0.49 | 5.503 |
-| Campo Grande            | MS | -0.07 | -0.40 | -0.39 | 5.489 |
-| Caucaia                 | CE | -1.61 | 1.025 | -0.46 | 5.389 |
-| Guarujá                 | SP | -0.46 | -0.17 | -0.42 | 5.384 |
-| São Luís                | MA | -0.58 | -0.69 | 0.163 | 5.355 |
-| Nova Iguaçu             | RJ | -0.99 | 0.302 | -0.45 | 5.339 |
-| Campina Grande          | PB | 0.028 | -0.46 | -0.72 | 5.330 |
-| Duque de Caxias         | RJ | -0.66 | -0.15 | -0.39 | 5.296 |
-| Marabá                  | PA | -1.07 | 0.329 | -0.49 | 5.282 |
-| Aracaju                 | SE | -0.89 | -0.98 | 0.530 | 5.219 |
-| Salvador                | BA | -0.57 | -0.04 | -0.73 | 5.215 |
-| Belford Roxo            | RJ | -1.64 | 0.699 | -0.52 | 5.146 |
-| Feira de Santana        | BA | -0.85 | -0.13 | -0.52 | 5.127 |
-| Recife                  | PE | 0.283 | -1.18 | -0.68 | 5.084 |
-| Juiz de Fora            | MG | 0.219 | -1.55 | -0.38 | 5.002 |
-| Santarém                | PA | -1.37 | 0.074 | -0.54 | 4.930 |
-| Ribeirão das Neves      | MG | -1.44 | -0.00 | -0.58 | 4.824 |
-| Montes Claros           | MG | -0.54 | -1.13 | -0.40 | 4.797 |
-| Ananindeua              | PA | -1.46 | -0.82 | 0.193 | 4.788 |
-| Petrolina               | PE | -0.97 | -0.81 | -0.42 | 4.718 |
-| Mossoró                 | RN | -0.46 | -1.45 | -0.41 | 4.652 |
-| Rio Branco              | AC | -0.89 | -0.93 | -0.51 | 4.644 |
-| Caruaru                 | PE | -1.11 | -0.87 | -0.57 | 4.523 |
-| Vitória da Conquista    | BA | -1.15 | -0.87 | -0.53 | 4.520 |
-| Maceió                  | AL | -1.04 | -0.91 | -0.67 | 4.484 |
-| Natal                   | RN | -0.53 | -2.11 | 0.011 | 4.481 |
-| Olinda                  | PE | -1.31 | -0.76 | -0.63 | 4.430 |
-| Carapicuíba             | SP | -0.25 | -2.27 | -0.28 | 4.376 |
-| Belém                   | PA | -0.72 | -2.17 | -0.19 | 4.211 |
-| São Vicente             | SP | -1.15 | -1.60 | -0.49 | 4.119 |
+| Município               | UF | RC1   | RC3   | RC2   | ICE   | ranking |
+|-------------------------|----|-------|-------|-------|-------|---------|
+| São Paulo               | SP | 2.624 | 3.076 | -1.41 | 8.474 | 1       |
+| Florianópolis           | SC | 2.521 | 0.737 | 0.798 | 8.342 | 2       |
+| Joinville               | SC | 1.301 | 1.726 | 0.662 | 8.130 | 3       |
+| Niterói                 | RJ | 1.328 | 1.436 | 0.587 | 7.935 | 4       |
+| Rio de Janeiro          | RJ | 0.666 | 1.987 | 0.573 | 7.863 | 5       |
+| Curitiba                | PR | 1.857 | 0.994 | 0.134 | 7.723 | 6       |
+| Goiânia                 | GO | -0.13 | 2.361 | 0.713 | 7.699 | 7       |
+| Brasília                | DF | 1.166 | 0.548 | 0.995 | 7.565 | 8       |
+| Boa Vista               | RR | -0.35 | 0.650 | 2.398 | 7.555 | 9       |
+| Blumenau                | SC | 0.950 | 1.117 | 0.260 | 7.344 | 10      |
+| São José dos Pinhais    | PR | 0.384 | 1.574 | 0.356 | 7.337 | 11      |
+| Jundiaí                 | SP | 1.312 | -0.09 | 0.953 | 7.255 | 12      |
+| Osasco                  | SP | 1.433 | 0.909 | -0.20 | 7.235 | 13      |
+| Macapá                  | AP | -1.08 | 1.385 | 1.393 | 6.979 | 14      |
+| Maringá                 | PR | 0.464 | 0.681 | 0.377 | 6.879 | 15      |
+| Porto Alegre            | RS | 2.090 | -0.49 | -0.16 | 6.828 | 16      |
+| Palmas                  | TO | 0.329 | -1.43 | 2.449 | 6.775 | 17      |
+| Londrina                | PR | 0.214 | 0.980 | 0.100 | 6.747 | 18      |
+| Belo Horizonte          | MG | 1.599 | -0.40 | 0.003 | 6.694 | 19      |
+| Santo André             | SP | 0.899 | 0.093 | 0.209 | 6.693 | 20      |
+| São José dos Campos     | SP | 1.058 | -0.15 | 0.297 | 6.693 | 21      |
+| Aracaju                 | SE | -0.39 | 0.177 | 1.373 | 6.668 | 22      |
+| Aparecida de Goiânia    | GO | -1.37 | 1.691 | 0.816 | 6.656 | 23      |
+| Manaus                  | AM | -0.59 | 0.546 | 1.168 | 6.644 | 24      |
+| Caxias do Sul           | RS | 0.937 | -0.44 | 0.564 | 6.611 | 25      |
+| Marabá                  | PA | -1.07 | 0.934 | 1.126 | 6.568 | 26      |
+| Serra                   | ES | -0.24 | 0.523 | 0.641 | 6.532 | 27      |
+| Ponta Grossa            | PR | 0.485 | 0.694 | -0.33 | 6.490 | 28      |
+| Bauru                   | SP | 0.916 | -0.53 | 0.358 | 6.426 | 29      |
+| Vila Velha              | ES | 0.366 | -0.72 | 1.076 | 6.416 | 30      |
+| São Bernardo do Campo   | SP | 1.072 | 0.189 | -0.54 | 6.414 | 31      |
+| Cascavel                | PR | 0.057 | 0.966 | -0.31 | 6.409 | 32      |
+| Santarém                | PA | -1.37 | 0.519 | 1.494 | 6.371 | 33      |
+| Anápolis                | GO | -0.88 | 1.173 | 0.327 | 6.354 | 34      |
+| Piracicaba              | SP | 1.138 | 0.090 | -0.77 | 6.261 | 35      |
+| Sorocaba                | SP | 1.163 | -0.74 | -0.04 | 6.218 | 36      |
+| Campinas                | SP | 1.544 | -0.53 | -0.68 | 6.191 | 37      |
+| Fortaleza               | CE | -0.49 | 0.869 | -0.05 | 6.182 | 38      |
+| Mogi das Cruzes         | SP | 0.180 | 0.580 | -0.47 | 6.165 | 39      |
+| Contagem                | MG | -0.73 | 0.809 | 0.179 | 6.147 | 40      |
+| Uberlândia              | MG | 0.509 | 0.154 | -0.40 | 6.146 | 41      |
+| Natal                   | RN | 0.623 | -1.52 | 1.138 | 6.135 | 42      |
+| Cuiabá                  | MT | 0.221 | -0.93 | 0.943 | 6.134 | 43      |
+| Santa Maria             | RS | 1.026 | -1.03 | 0.231 | 6.128 | 44      |
+| Porto Velho             | RO | -0.27 | -0.05 | 0.545 | 6.126 | 45      |
+| São Luís                | MA | -0.14 | -0.17 | 0.508 | 6.109 | 46      |
+| Petrópolis              | RJ | -0.53 | 0.515 | 0.200 | 6.102 | 47      |
+| São Gonçalo             | RJ | -1.54 | 1.675 | -0.03 | 6.053 | 48      |
+| Ribeirão Preto          | SP | 0.561 | -0.04 | -0.43 | 6.043 | 49      |
+| Salvador                | BA | -0.03 | 0.360 | -0.28 | 6.024 | 50      |
+| Recife                  | PE | 1.038 | -1.23 | 0.196 | 6.001 | 51      |
+| João Pessoa             | PB | 0.184 | -0.97 | 0.735 | 5.968 | 52      |
+| Gravataí                | RS | -0.49 | 0.395 | 0.016 | 5.954 | 53      |
+| Limeira                 | SP | 1.665 | -0.45 | -1.32 | 5.937 | 54      |
+| Suzano                  | SP | 0.035 | 0.491 | -0.65 | 5.923 | 55      |
+| Praia Grande            | SP | -1.04 | 1.032 | -0.15 | 5.903 | 56      |
+| Nova Iguaçu             | RJ | -1.09 | 0.681 | 0.186 | 5.871 | 57      |
+| Teresina                | PI | -0.00 | -1.22 | 0.935 | 5.829 | 58      |
+| Rio Branco              | AC | -0.81 | -1.04 | 1.525 | 5.807 | 59      |
+| Maceió                  | AL | -0.66 | -0.82 | 1.156 | 5.806 | 60      |
+| Betim                   | MG | -0.63 | 0.580 | -0.30 | 5.790 | 61      |
+| Taubaté                 | SP | 0.550 | -1.13 | 0.212 | 5.786 | 62      |
+| Campo Grande            | MS | 0.121 | -1.13 | 0.618 | 5.774 | 63      |
+| Várzea Grande           | MT | -0.69 | -0.15 | 0.422 | 5.750 | 64      |
+| Canoas                  | RS | -0.09 | -0.23 | -0.12 | 5.741 | 65      |
+| Franca                  | SP | 0.185 | -0.30 | -0.34 | 5.728 | 66      |
+| Belém                   | PA | 0.269 | -2.01 | 1.263 | 5.719 | 67      |
+| Camaçari                | BA | -0.41 | -0.49 | 0.391 | 5.700 | 68      |
+| Paulista                | PE | -1.17 | 0.458 | 0.123 | 5.658 | 69      |
+| Pelotas                 | RS | 0.331 | -1.08 | 0.063 | 5.599 | 70      |
+| Duque de Caxias         | RJ | -0.74 | 0.151 | -0.11 | 5.594 | 71      |
+| Ananindeua              | PA | -1.27 | -0.66 | 1.203 | 5.574 | 72      |
+| Santos                  | SP | 0.446 | 0.152 | -1.37 | 5.551 | 73      |
+| Vitória                 | ES | 1.446 | -0.75 | -1.52 | 5.516 | 74      |
+| Uberaba                 | MG | -0.26 | 0.103 | -0.82 | 5.430 | 75      |
+| Feira de Santana        | BA | -0.81 | -0.38 | 0.172 | 5.410 | 76      |
+| Olinda                  | PE | -0.47 | -0.70 | 0.113 | 5.384 | 77      |
+| Campina Grande          | PB | 0.497 | -1.98 | 0.342 | 5.337 | 78      |
+| Mossoró                 | RN | -0.31 | -1.19 | 0.357 | 5.331 | 79      |
+| Juiz de Fora            | MG | 0.607 | -1.47 | -0.31 | 5.314 | 80      |
+| Petrolina               | PE | -0.80 | -1.18 | 0.781 | 5.304 | 81      |
+| Diadema                 | SP | 0.113 | -0.14 | -1.37 | 5.186 | 82      |
+| Taboão da Serra         | SP | -0.18 | -0.65 | -0.70 | 5.108 | 83      |
+| Montes Claros           | MG | -0.43 | -1.14 | 0.028 | 5.102 | 84      |
+| Jaboatão dos Guararapes | PE | -1.79 | 0.772 | -0.54 | 5.090 | 85      |
+| Caruaru                 | PE | -0.82 | -1.30 | 0.539 | 5.083 | 86      |
+| Sumaré                  | SP | -0.78 | -0.01 | -0.81 | 5.065 | 87      |
+| São João de Meriti      | RJ | -1.26 | -0.83 | 0.266 | 4.941 | 88      |
+| Guarujá                 | SP | -0.54 | 0.704 | -1.99 | 4.936 | 89      |
+| Mauá                    | SP | -0.61 | 0.457 | -1.69 | 4.926 | 90      |
+| Caucaia                 | CE | -2.15 | 0.615 | -0.42 | 4.871 | 91      |
+| Belford Roxo            | RJ | -2.17 | 0.898 | -0.67 | 4.870 | 92      |
+| São José do Rio Preto   | SP | 0.542 | -0.45 | -2.05 | 4.860 | 93      |
+| Vitória da Conquista    | BA | -1.07 | -1.14 | 0.097 | 4.771 | 94      |
+| Campos dos Goytacazes   | RJ | -0.38 | -0.02 | -1.81 | 4.718 | 95      |
+| Ribeirão das Neves      | MG | -1.77 | -0.17 | -0.75 | 4.439 | 96      |
+| Cariacica               | ES | -1.25 | 0.504 | -2.28 | 4.246 | 97      |
+| Guarulhos               | SP | -0.07 | -0.25 | -3.02 | 4.068 | 98      |
+| Itaquaquecetuba         | SP | -0.65 | -0.76 | -2.20 | 3.905 | 99      |
+| São Vicente             | SP | -1.16 | -1.21 | -1.50 | 3.756 | 100     |
+| Carapicuíba             | SP | -0.75 | -2.60 | -2.60 | 2.551 | 101     |
 
 # Apêndice {.unnumbered #apend}
 ## Scripts {.unnumbered #script_ind}
@@ -3226,7 +3214,7 @@ ufs = { 'AC': 'State of Acre',
 
 subdet = 'Iniciativa'
 
-iniciativa = ["empreendedora", "empreendedorismo", "mei"]
+iniciativa = ["empreendedor", "mei"]
 
 sub_iniciativa = pd.DataFrame(database)
 
@@ -3254,8 +3242,7 @@ for term in iniciativa:
         region_df.loc[i,term] = np.nan
     sub_iniciativa = pd.merge(sub_iniciativa, region_df, left_index=True, right_index=True)
     
-sub_iniciativa.columns = ['Pesquisas pelo Termo Empreendedora',
-                          'Pesquisas pelo Termo Empreendedorismo',
+sub_iniciativa.columns = ['Pesquisas pelo Termo Empreendedor',
                           'Pesquisas pelo Termo MEI']
 
 missing_data(sub_iniciativa)
