@@ -1031,13 +1031,13 @@ Então ao gerar as cargas fatoriais, utilizando o comando `principal()` (Tabela 
 
 | **Variável**                       	| **PC1** | **PC2** | **PC3** | **h²** | **u²** | **com** |
 |------------------------------------	|-------- |-------- |-------- |------- |-------	|-------- |
-| **Índice de Acesso a Capital**     	| 0.72  	| 0.16  	| -0.24 	| 0.61 	 | 0.394 	| 1.3 	  |
-| **Índice de Ambiente Regulatório** 	| 0.05  	| 0.76  	| 0.56  	| 0.89 	 | 0.107 	| 1.9 	  |
-| **Índice de Capital Humano**       	| 0.64 	  | -0.29 	| -0.18 	| 0.53 	 | 0.470 	| 1.6 	  |
-| **Índice de Cultura**              	| 0.14 	  | -0.65 	| 0.71  	| 0.94 	 | 0.058 	| 2.1 	  |
-| **Índice de Infraestrutura**       	| 0.73 	  | -0.03 	| 0.02  	| 0.53 	 | 0.466 	| 1.0 	  |
-| **Índice de Inovação**             	| 0.85 	  | 0.09  	| -0.08 	| 0.73 	 | 0.271 	| 1.0 	  |
-| **Índice de Mercado**              	| 0.78 	  | 0.10  	| 0.26  	| 0.69 	 | 0.310 	| 1.3 	  |
+| **Índice de Acesso a Capital**     	| 0.70  	| 0.03  	| -0.05 	| 0.50 	 | 0.504 	| 1.0 	  |
+| **Índice de Ambiente Regulatório** 	| 0.34  	| 0.60  	| -0.66  	| 0.92 	 | 0.081 	| 2.5 	  |
+| **Índice de Capital Humano**       	| 0.71 	  | -0.07 	| 0.39 	| 0.66 	 | 0.338 	| 1.6 	  |
+| **Índice de Cultura**              	| 0.01 	  | 0.83 	| 0.46  	| 0.90 	 | 0.095 	| 1.6 	  |
+| **Índice de Infraestrutura**       	| 0.71 	  | -0.28 	| -0.22  	| 0.64 	 | 0.364 	| 1.5 	  |
+| **Índice de Inovação**             	| 0.84 	  | -0.09  	| 0.15 	| 0.74 	 | 0.264 	| 1.1 	  |
+| **Índice de Mercado**              	| 0.78 	  | 0.12  	| 0.01  	| 0.62 	 | 0.383 	| 1.1 	  |
 
 Ademais, observando a tabela 3, percebe-se que esses três fatores juntos representam 70\% do total da variância dos dados (*Cumulative Var*).
 
@@ -1047,13 +1047,13 @@ Ademais, observando a tabela 3, percebe-se que esses três fatores juntos repres
 
 |                           	| **PC1** 	| **PC2** 	| **PC3** 	|
 |---------------------------	|:-------:	|---------	|---------	|
-| **SS loadings**           	|   2.82  	| 1.13    	| 0.98    	|
-| **Proportion Var**        	|   0.40  	| 0.16    	| 0.14    	|
-| **Cumulative Var**        	|   0.40  	| 0.56    	| 0.70    	|
-| **Proportion Explained**  	|   0.57  	| 0.23    	| 0.20    	|
-| **Cumulative Proportion** 	|   0.57  	| 0.80    	| 1.00    	|
+| **SS loadings**           	|   2.93  	| 1.17    	| 0.88    	|
+| **Proportion Var**        	|   0.42  	| 0.17    	| 0.13    	|
+| **Cumulative Var**        	|   0.42  	| 0.59    	| 0.71    	|
+| **Proportion Explained**  	|   0.59  	| 0.24    	| 0.18    	|
+| **Cumulative Proportion** 	|   0.59  	| 0.82    	| 1.00    	|
 
-Em seguida, é feito o processo de rotação fatorial, acrescentando ao comando `principal()`, a o argumento `rotate = 'quartimax'`, comando análogo ao `rotate` do Stata. Esse processo, trata-se de um ajuste aos eixos fatoriais para facilitar a sua interpretação. Os resultados pós-rotação estão nas tabelas 4 e 5 e possuem análise similar a anterior. Importante ressaltar que mesmo após a rotação, ainda foi mantido o mesmo número de fatores com base no teste de hipótese.
+Em seguida, é feito o processo de rotação fatorial, acrescentando ao comando `principal()`, a o argumento `rotate = 'varimax'`, comando análogo ao `rotate` do Stata. Esse processo, trata-se de um ajuste aos eixos fatoriais para facilitar a sua interpretação. Os resultados pós-rotação estão nas tabelas 4 e 5 e possuem análise similar a anterior. Importante ressaltar que mesmo após a rotação, ainda foi mantido o mesmo número de fatores com base no teste de hipótese.
 
 \begin{center}
   \textbf{Tabela 4:} Cargas Fatoriais Rotacionadas
@@ -1061,13 +1061,13 @@ Em seguida, é feito o processo de rotação fatorial, acrescentando ao comando 
 
 | **Variável**                       	| **RC1** | **RC2** | **RC3** | **h²** | **u²** | **com** |
 |------------------------------------	|-------- |-------- |-------- |------- |-------	|-------- |
-| **Índice de Acesso a Capital**     	| 0.75  	| -0.02  	| -0.22 	| 0.61 	 | 0.394 	| 1.2 	  |
-| **Índice de Ambiente Regulatório** 	| 0.05  	| 0.94  	| -0.05  	| 0.89 	 | 0.107 	| 1.0 	  |
-| **Índice de Capital Humano**       	| 0.64 	  | -0.33 	| 0.10  	| 0.53 	 | 0.470 	| 1.6 	  |
-| **Índice de Cultura**              	| 0.05 	  | -0.05 	| 0.97  	| 0.94 	 | 0.058 	| 1.0 	  |
-| **Índice de Infraestrutura**       	| 0.72 	  | 0.00 	  | 0.11  	| 0.53 	 | 0.466 	| 1.0 	  |
-| **Índice de Inovação**             	| 0.85 	  | 0.03  	| -0.02 	| 0.73 	 | 0.271 	| 1.0 	  |
-| **Índice de Mercado**              	| 0.76 	  | 0.25  	| 0.25  	| 0.69 	 | 0.310 	| 1.4 	  |
+| **Índice de Acesso a Capital**     	| 0.67  	| 0.22  	| -0.04 	| 0.50 	 | 0.504 	| 1.2 	  |
+| **Índice de Ambiente Regulatório** 	| 0.12  	| 0.95  	| 0.10  	| 0.92 	 | 0.081 	| 1.1 	  |
+| **Índice de Capital Humano**       	| 0.78 	  | -0.18 	| 0.13  	| 0.66 	 | 0.338 	| 1.2 	  |
+| **Índice de Cultura**              	| 0.03 	  | 0.12 	| 0.94  	| 0.90 	 | 0.095 	| 1.0 	  |
+| **Índice de Infraestrutura**       	| 0.67 	  | 0.18 	  | -0.39  	| 0.64 	 | 0.364 	| 1.8 	  |
+| **Índice de Inovação**             	| 0.86 	  | 0.04  	| -0.03 	| 0.74 	 | 0.264 	| 1.0 	  |
+| **Índice de Mercado**              	| 0.74 	  | 0.25  	| 0.07  	| 0.62 	 | 0.383 	| 1.2 	  |
 
 \begin{center}
   \textbf{Tabela 5:} Cargas Fatoriais Rotacionadas: Descritivas
@@ -1075,11 +1075,11 @@ Em seguida, é feito o processo de rotação fatorial, acrescentando ao comando 
 
 |                           	| **RC1** 	| **RC2** 	| **RC3** 	|
 |---------------------------	|:-------:	|---------	|---------	|
-| **SS loadings**           	|   2.80  	| 1.07    	| 1.06    	|
-| **Proportion Var**        	|   0.40  	| 0.15    	| 0.15    	|
-| **Cumulative Var**        	|   0.40  	| 0.55    	| 0.70    	|
-| **Proportion Explained**  	|   0.57  	| 0.22    	| 0.21    	|
-| **Cumulative Proportion** 	|   0.57  	| 0.79    	| 1.00    	|
+| **SS loadings**           	|   2.81  	| 1.09    	| 1.08    	|
+| **Proportion Var**        	|   0.40  	| 0.16    	| 0.15    	|
+| **Cumulative Var**        	|   0.40  	| 0.56    	| 0.71    	|
+| **Proportion Explained**  	|   0.56  	| 0.22    	| 0.22    	|
+| **Cumulative Proportion** 	|   0.56  	| 0.78    	| 1.00    	|
 
 \begin{center}
   \textbf{Tabela 6:} Cargas Fatoriais Rotacionadas: Matriz de correlação
@@ -1087,9 +1087,9 @@ Em seguida, é feito o processo de rotação fatorial, acrescentando ao comando 
 
 |           | **RC1** 	| **RC2** 	| **RC3** 	|
 |----------	|:-------:	|---------	|---------	|
-| **RC1**   |   0.99   	| 0.01    	| 0.09    	|
-| **RC2**   |   0.05   	| 0.76    	| -0.63    	|
-| **RC3**   |   -0.08 	| 0.64     	| 0.77    	|
+| **RC1**   |   0.969   	| -0.049    	| -0.239    	|
+| **RC2**   |   -0.098   	| 0.817    	| -0.637    	|
+| **RC3**   |   0.224 	| 0.573     	| 0.787    	|
 
 
 ### Teste de Kaiser-Meyer-Olkin (KMO)
@@ -1102,13 +1102,13 @@ Após a análise de componentes principais, foi testado se a nossa amostra é ad
 | **Variável**                   	|  **KMO** 	|
 |--------------------------------	|:--------:	|
 | Índice de Acesso a Capital     	|   0.83   	|
-| Índice de Ambiente Regulatório 	|   0.43   	|
-| Índice de Capital Humano       	|   0.77   	|
-| Índice de Cultura              	|   0.43   	|
+| Índice de Ambiente Regulatório 	|   0.69   	|
+| Índice de Capital Humano       	|   0.83   	|
+| Índice de Cultura              	|   0.39   	|
 | Índice de Infraestrutura       	|   0.82   	|
-| Índice de Inovação             	|   0.74   	|
-| Índice de Mercado              	|   0.73   	|
-| **Overall MSA**                	| **0.76** 	|
+| Índice de Inovação             	|   0.78   	|
+| Índice de Mercado              	|   0.81   	|
+| **Overall MSA**                	| **0.79** 	|
 
 Em sequência, é calculada os *scores* para os fatores para cada cidade através do comando `predict.psych()`. Os scores são calculados usando as cargas fatoriais como base para o cálculo de coeficientes de uma regressão padrão. Vejamos o coeficiente:
 
@@ -1118,94 +1118,6 @@ Em sequência, é calculada os *scores* para os fatores para cada cidade atravé
 
 Por fim, é criado o Índice das Cidades Empreeendedoras, somando os scores para os três fatores gerados pela análise fatorial e, posteriormente, padronizando essa a soma (assim como feito para os determinantes e subdeterminantes). Os resultados dos scores para os três fatores estão dispostos, na seção de [ranking](#ranking).
 
-
-## Análise de Componentes princpais: Cultura {#analise_com_principais_cultura}
-
-Foi pedido também para fazer o cálculo do Índice duas vezes, um com o resultado do determinante Cultura como foi propostos para essa edição e outro com foi feito na edição passada. Como os resultados, testes e interpretações dos resultados estão bem similares e seguem o mesmo raciocínio foi somente dispostos os resultados obtidos.
-
-```{r echo=FALSE,  out.width = '55%', fig.cap=' ',fig.pos='H',fig.align='center'}
-knitr::include_graphics("fig_3.png")
-```
-
-\begin{center}
-  \textbf{Tabela 8:} Cargas Fatoriais
-\end{center}
-
-| **Variável**                       	| **PC1** | **PC2** | **PC3** | **h²** | **u²** | **com** |
-|------------------------------------	|-------- |-------- |-------- |------- |-------	|-------- |
-| **Índice de Acesso a Capital**     	| 0.73  	| -0.11  	| -0.17 	| 0.57 	 | 0.427 	| 1.2 	  |
-| **Índice de Ambiente Regulatório** 	| 0.06  	| 0.79  	| -0.52  	| 0.90 	 | 0.099 	| 1.7 	  |
-| **Índice de Capital Humano**       	| 0.64 	  | -0.28 	| 0.20  	| 0.53 	 | 0.472 	| 1.6 	  |
-| **Índice de Cultura**              	| 0.05 	  | 0.54  	| 0.81  	| 0.95 	 | 0.046 	| 1.7 	  |
-| **Índice de Infraestrutura**       	| 0.73 	  | 0.02  	| 0.09  	| 0.54 	 | 0.458 	| 1.0 	  |
-| **Índice de Inovação**             	| 0.85 	  | -0.05  	| -0.11 	| 0.73 	 | 0.266 	| 1.0 	  |
-| **Índice de Mercado**              	| 0.78 	  | 0.27  	| 0.02  	| 0.68 	 | 0.321 	| 1.2 	  |
-
-
-\begin{center}
-  \textbf{Tabela 9:} Cargas Fatoriais: Descritivas
-\end{center}
-
-|                           	| **PC1** 	| **PC2** 	| **PC3** 	|
-|---------------------------	|:-------:	|---------	|---------	|
-| **SS loadings**           	|   2.81  	| 1.08    	| 1.02    	|
-| **Proportion Var**        	|   0.40  	| 0.15    	| 0.15    	|
-| **Cumulative Var**        	|   0.40  	| 0.56    	| 0.70    	|
-| **Proportion Explained**  	|   0.57  	| 0.22    	| 0.21    	|
-| **Cumulative Proportion** 	|   0.57  	| 0.79    	| 1.00    	|
-
-\begin{center}
-  \textbf{Tabela 10:} Cargas Fatoriais Rotacionadas
-\end{center}
-
-| **Variável**                       	| **RC1** | **RC2** | **RC3** | **h²** | **u²** | **com** |
-|------------------------------------	|-------- |-------- |-------- |------- |-------	|-------- |
-| **Índice de Acesso a Capital**     	| 0.74  	| 0.01  	| -0.18 	| 0.57 	 | 0.427 	| 1.1 	  |
-| **Índice de Ambiente Regulatório** 	| 0.05  	| 0.95  	| 0.00  	| 0.90 	 | 0.099 	| 1.0 	  |
-| **Índice de Capital Humano**       	| 0.64 	  | -0.34 	| 0.04  	| 0.53 	 | 0.472 	| 1.5 	  |
-| **Índice de Cultura**              	| 0.01 	  | 0.00  	| 0.98  	| 0.95 	 | 0.046 	| 1.0 	  |
-| **Índice de Infraestrutura**       	| 0.73 	  | -0.03  	| 0.11  	| 0.54 	 | 0.458 	| 1.1 	  |
-| **Índice de Inovação**             	| 0.85 	  | 0.03  	| -0.09 	| 0.73 	 | 0.266 	| 1.0 	  |
-| **Índice de Mercado**              	| 0.77 	  | 0.22  	| 0.19  	| 0.68 	 | 0.321 	| 1.3 	  |
-
-\begin{center}
-  \textbf{Tabela 11:} Cargas Fatoriais Rotacionadas: Descritivas
-\end{center}
-
-|                           	| **RC1** 	| **RC2** 	| **RC3** 	|
-|---------------------------	|:-------:	|---------	|---------	|
-| **SS loadings**           	|   2.80  	| 1.06    	| 1.04    	|
-| **Proportion Var**        	|   0.40  	| 0.15    	| 0.15    	|
-| **Cumulative Var**        	|   0.40  	| 0.55    	| 0.70    	|
-| **Proportion Explained**  	|   0.57  	| 0.22    	| 0.21    	|
-| **Cumulative Proportion** 	|   0.57  	| 0.79    	| 1.00    	|
-
-\begin{center}
-  \textbf{Tabela 12:} Cargas Fatoriais Rotacionadas: Matriz de correlação
-\end{center}
-
-|           | **RC1** 	| **RC2** 	| **RC3** 	|
-|----------	|:-------:	|---------	|---------	|
-| **RC1**   |   0.99   	| 0.01    	| 0.03    	|
-| **RC2**   |   -0.03   | 0.84    	| 0.55    	|
-| **RC3**   |   -0.02 	| -0.55     | 0.83    	|
-
-
-### Teste de Kaiser-Meyer-Olkin (KMO)
-
-\begin{center}
-  \textbf{Tabela 7:} Teste de KMO
-\end{center}
-| **Variável**                   	|  **KMO** 	|
-|--------------------------------	|:--------:	|
-| Índice de Acesso a Capital     	|   0.84   	|
-| Índice de Ambiente Regulatório 	|   0.43   	|
-| Índice de Capital Humano       	|   0.78   	|
-| Índice de Cultura              	|   0.29   	|
-| Índice de Infraestrutura       	|   0.82   	|
-| Índice de Inovação             	|   0.73   	|
-| Índice de Mercado              	|   0.73   	|
-| **Overall MSA**                	| **0.76** 	|
 
 # Correlação com o ICE2022
 
