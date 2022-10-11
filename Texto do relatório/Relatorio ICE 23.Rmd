@@ -24,6 +24,9 @@ header-includes:
 - \usepackage[onehalfspacing]{setspace}
 - \usepackage{float}
 - \floatplacement{figure}{H}
+- \usepackage{pdflscape}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
 indent: true
 toc-title: "Sumário"
 geometry: "left=3cm, right=2cm, top=3cm, bottom=2cm"
@@ -1237,6 +1240,8 @@ Por fim, é criado o Índice das Cidades Empreeendedoras, somando os scores para
 | Guarulhos               | SP | 0.093 | -0.44 | -2.90 | 4.119 | 99      |
 | São Vicente             | SP | -1.08 | -1.30 | -1.08 | 3.991 | 100     |
 | Carapicuíba             | SP | -0.66 | -2.78 | -2.49 | 2.564 | 101     |
+
+\blandscape
 
 # Apêndice {.unnumbered #apend}
 ## Scripts {.unnumbered #script_ind}
@@ -3401,3 +3406,5 @@ write.csv(ICE_23, 'DETERMINANTES/ICE-2023.csv')
 kmo <- KMO(determinantes[,3:9])
 kmo
 ```
+
+\elandscape
