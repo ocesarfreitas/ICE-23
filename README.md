@@ -1,9 +1,12 @@
-# ICE-22
+# Índice de Cidades Empreendedoras (ICE) 2023
 
+O Índice de Cidades Empreendedoras analisa o ambiente de negócios das 100+1 cidades mais populosas do Brasil para avaliar quais possuem as condições mais propícias para o empreendedorismo. Para isso, os municípios são analisados em 48 indicadores, divididos entre 7 determinantes: ambiente regulatório, infraestrutura, mercado, acesso a capital, inovação, capital humano e cultura.
 
-## 🤝 Colaboradores
+Os indicadores são calculados a partir de dados primários (coletados diretamente) e secundários (provenientes de outras pesquisas e bases já publicadas), e posteriormente, padronizados e então ponderados por meio de análise fatorial, que nos permite avaliar como as variações naquele indicador contribuem para o resultado final.
 
-Agradecemos às seguintes pessoas que contribuíram para este projeto:
+Desta forma, o ranking final é calculado exclusivamente com base em dados numéricos. Nenhuma informação qualitativa ou percepção subjetiva dos pesquisadores interfere na classificação de uma cidade no Índice. As políticas ou os programas específicos que forem implementados por um município só serão refletidos na classificação da cidade no Índice caso provoquem efeitos (positivos ou negativos) em algum dos indicadores analisados no estudo.
+
+## Assistentes de Pesquisa para o cálculo do ICE 2023
 
 <table>
   <tr>
