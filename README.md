@@ -7,7 +7,6 @@ Os indicadores são calculados a partir de dados primários (coletados diretamen
 Desta forma, o ranking final é calculado exclusivamente com base em dados numéricos. Nenhuma informação qualitativa ou percepção subjetiva dos pesquisadores interfere na classificação de uma cidade no Índice. As políticas ou os programas específicos que forem implementados por um município só serão refletidos na classificação da cidade no Índice caso provoquem efeitos (positivos ou negativos) em algum dos indicadores analisados no estudo.
 
 ## Assistentes de Pesquisa para o cálculo do ICE 2023
-
 <table>
   <tr>
     <td align="center">
